@@ -214,17 +214,107 @@ Hay dos cosas nuevas en ese selector:
 
 ## `width` vs `max-width`, y centrar
 
-- `width: 600px` → siempre 600px. En un móvil de 375px… **se sale**.
-- `max-width: 600px` → **como mucho** 600px. En pantallas pequeñas se encoge. ✅ Casi siempre es lo que queréis.
+Ya sabemos darle un ancho a una caja. Pero una web no se ve solo en un monitor grande: también en un portátil, en una tablet… y sobre todo en un **móvil de unos 375px de ancho**. Si una caja mide siempre lo mismo, ¿qué pasa cuando la pantalla es más estrecha que ella?
 
-Para **centrar horizontalmente** una caja con ancho definido:
+Y otra pregunta que sale siempre: una caja con ancho fijo se queda **pegada a la izquierda**. ¿Cómo la centro?
+
+Vamos a verlo. Cread una carpeta aparte (por ejemplo `06-ancho`) con un `index.html` y un `styles.css`.
+
+### Paso 1: una caja con `width`
+
+_./index.html_
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>width vs max-width</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="caja">
+      Soy una caja de 600px. Tengo bastante texto para que se note bien cómo
+      me comporto cuando la ventana es más estrecha que yo.
+    </div>
+  </body>
+</html>
+```
+
+_./styles.css_
 
 ```css
-.contenedor {
-  max-width: 600px;
-  margin: 0 auto; /* 0 arriba y abajo, "auto" a los lados → reparte el hueco */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+}
+
+.caja {
+  width: 600px;
+  padding: 16px;
+  background-color: #fef3c7;
+  border: 1px solid #d97706;
 }
 ```
+
+Con la ventana grande, todo bien: una caja de 600px.
+
+Ahora **estrechad la ventana del navegador** (sin modo móvil) hasta que sea más pequeña que la caja. 😬 La caja **no se adapta**: se corta por la derecha y aparece una **barra de scroll horizontal**. `width: 600px` significa 600px **siempre**, quepa o no.
+
+Y en el **modo móvil** de DevTools (icono del móvil, `Ctrl+Shift+M` / `Cmd+Shift+M`, con un ancho de unos 400px) te pueden pasar dos cosas: o aparece el mismo problema con el scroll, o no hay scroll, pero **todo se ve diminuto**. Como la caja no cabe, el navegador móvil **aleja la página entera** para que quepa, y la letra queda ilegible. Es el mismo problema, disimulado.
+
+### Paso 2: `max-width`
+
+¿Qué queremos en realidad? No que la caja mida **siempre** 600px, sino algo así como: *"ocupa como mucho 600px; y si la pantalla es más estrecha, ocupa lo que haya"*. Un **límite máximo**, no un tamaño fijo.
+
+Para eso existe `max-width`. En vez de decirle a la caja cuánto mide, le decimos **hasta dónde puede crecer**:
+
+_./styles.css_
+
+```diff
+  .caja {
+-   width: 600px;
++   max-width: 600px;
+    padding: 16px;
+```
+
+Recargad: con la ventana estrecha, la caja **se encoge** para caber y ya no hay scroll horizontal. En el modo móvil, la letra vuelve a su **tamaño normal**. Y si hacéis la ventana grande, la caja **no pasa de 600px**.
+
+- `width: 600px` → **siempre** 600px.
+- `max-width: 600px` → **como mucho** 600px; si no hay sitio, menos. ✅ Casi siempre es lo que queréis.
+
+> Existen también `min-width`, `height`, `min-height` y `max-height`, con la misma idea. Ya usamos `min-height` en el 05 (la portada con `100vh`).
+
+### Paso 3: centrar la caja
+
+Con la ventana grande, la caja está **pegada a la izquierda**. Queremos centrarla:
+
+_./styles.css_
+
+```diff
+  .caja {
+    max-width: 600px;
++   margin: 0 auto;
+    padding: 16px;
+```
+
+`margin: 0 auto` = 0 arriba y abajo, `auto` a izquierda y derecha. `auto` significa "navegador, reparte tú el espacio que sobra", y como lo pone a los dos lados, lo reparte **a partes iguales**: la caja queda centrada.
+
+Comprobadlo en DevTools: con la caja seleccionada, el dibujo de **Computed** muestra el margen izquierdo y el derecho con el mismo valor. Cambiad el tamaño de la ventana: los dos márgenes van cambiando, siempre iguales.
+
+> ⚠️ Para que `margin: auto` centre, la caja tiene que tener un ancho (`width` o `max-width`). Sin él, ya ocupa todo el ancho y no sobra nada que repartir.
+
+👉 Esta combinación (`max-width` + `margin: 0 auto`) es la forma clásica de hacer el **contenedor principal** de una web: el contenido centrado y con un ancho máximo cómodo de leer.
+
+> 💡 **¿Y flexbox y grid?** Más adelante veremos **flexbox** (y en otras sesiones **CSS grid**), que sirven para colocar **varios elementos** unos respecto a otros: en fila, en columnas, repartidos, centrados también en vertical… Mucha gente tira de flex para todo, incluso para centrar una sola caja. Funciona, pero para **una caja centrada en la página** no hace falta: `max-width` + `margin: 0 auto` es más simple y no obliga a tocar el padre. Regla práctica: **una caja → margin auto; colocar varias → flex o grid.**
+>
+> Y en Tailwind lo veréis mucho así: `class="max-w-2xl mx-auto"`. Es exactamente esto (`mx` = margin en el eje x, izquierda y derecha).
 
 ## Las rarezas del `margin`
 
