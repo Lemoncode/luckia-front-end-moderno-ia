@@ -197,7 +197,20 @@ En vez de ponerlo caja a caja, se lo ponemos **a todos los elementos** con el se
 }
 ```
 
-👉 **Lo usa todo el mundo**: prácticamente todos los reset CSS lo incluyen, y Tailwind lo trae de serie. Lo volvemos a ver en el 08. (`::before` y `::after` son pseudo-elementos: el 14.)
+Hay dos cosas nuevas en ese selector:
+
+- **Las comas**: separan varios selectores que comparten las mismas declaraciones. `h1, h2 { color: red; }` es lo mismo que escribir una regla para `h1` y otra para `h2`. Aquí son tres selectores: `*`, `*::before` y `*::after`.
+- **`::before` y `::after`**: son **pseudo-elementos**. Con CSS se puede añadir contenido "de mentira" justo antes o justo después del contenido de un elemento (un icono, una comilla decorativa, una línea…), sin tocar el HTML:
+
+  ```css
+  .nota::before {
+    content: "💡 ";
+  }
+  ```
+
+  Eso pinta un 💡 delante del texto de cada `.nota`. Esos "elementos de mentira" también son cajas, pero el `*` **no los incluye**, por eso se añaden a mano. Los veremos a fondo en el 14.
+
+👉 **Lo usa todo el mundo**: prácticamente todos los reset CSS lo incluyen, y Tailwind lo trae de serie. Lo volvemos a ver en el 08.
 
 ## `width` vs `max-width`, y centrar
 
