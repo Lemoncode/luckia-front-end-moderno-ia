@@ -74,8 +74,6 @@ a {
 
 ## 🛠️ Práctica
 
-### 1. Selector de elemento: el color ## 🛠️ Práctica
-
 ### 0. Punto de partida
 
 Cread una carpeta nueva `04-selectores` con estos dos ficheros:
@@ -237,6 +235,7 @@ Recargad y mirad cómo **todo** es una caja: el `nav`, cada `a`, cada `p`, el `s
 
 **Quitadlo** antes de seguir.
 
-loper.mozilla.org/es/docs/Learn/CSS/Building_blocks/Selectors)
+## Para ampliar
 
+- [MDN · Selectores CSS](https://developer.mozilla.org/es/docs/Learn/CSS/Building_blocks/Selectors)
 - [MDN · Selectores de tipo, clase e ID](https://developer.mozilla.org/es/docs/Learn/CSS/Building_blocks/Selectors/Type_Class_and_ID_Selectors)
