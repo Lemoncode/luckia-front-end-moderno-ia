@@ -14,25 +14,28 @@ Las dos cosas tienen la misma explicación: la **herencia**.
 Algunas propiedades, si no se las defines a un elemento, **las toma de su padre**, y este del suyo… hasta llegar al `html`.
 
 ```html
-<body>            ← font-family: system-ui
-  <article>       ← (hereda system-ui)
-    <p>           ← (hereda system-ui)
-      <strong>    ← (hereda system-ui)
+<body>
+  ← font-family: system-ui
+  <article>
+    ← (hereda system-ui)
+    <p>← (hereda system-ui) <strong> ← (hereda system-ui)</strong></p>
+  </article>
+</body>
 ```
 
 ## Qué se hereda y qué no
 
 La regla para acordarse: **lo que tiene que ver con el texto se hereda; lo que tiene que ver con la caja (lo que vimos en el 06), no**.
 
-| ✅ Se hereda (texto) | ❌ No se hereda (caja) |
-|---|---|
-| `color` | `margin`, `padding` |
-| `font-family`, `font-size`, `font-weight`, `font-style` | `border` |
-| `line-height` | `background` |
-| `text-align`, `letter-spacing` | `width`, `height` |
-| `list-style` | `display`, `position` |
-| `cursor`, `visibility` | |
-| las **variables CSS** (`--lo-que-sea`) | |
+| ✅ Se hereda (texto)                                    | ❌ No se hereda (caja) |
+| ------------------------------------------------------- | ---------------------- |
+| `color`                                                 | `margin`, `padding`    |
+| `font-family`, `font-size`, `font-weight`, `font-style` | `border`               |
+| `line-height`                                           | `background`           |
+| `text-align`, `letter-spacing`                          | `width`, `height`      |
+| `list-style`                                            | `display`, `position`  |
+| `cursor`, `visibility`                                  |                        |
+| las **variables CSS** (`--lo-que-sea`)                  |                        |
 
 ¿Por qué `border` no se hereda? Imaginad que le ponéis un borde a una tarjeta y **cada párrafo, cada enlace y cada negrita** de dentro tuviera también su borde. 😅
 
@@ -44,6 +47,69 @@ Un valor heredado **pierde contra cualquier regla que apunte directamente al ele
 
 - Los enlaces: el navegador tiene una regla para `a` que los pone azules → gana al `color` heredado.
 - Los botones y los campos de formulario: el navegador les pone **su propia fuente** → no heredan la nuestra.
+
+### Vedlo: un formulario que va por libre
+
+Montamos un mini formulario y le damos al `body` una letra **muy reconocible**, para que se note bien quién la hereda y quién no. Cread una carpeta (por ejemplo `07-formulario`):
+
+_./index.html_
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Herencia en formularios</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <p>
+      Apúntate a nuestra newsletter.
+      <a href="#">Ver un ejemplo</a>
+    </p>
+    <input type="email" placeholder="tu@email.com" />
+    <button>Suscribirme</button>
+  </body>
+</html>
+```
+
+_./styles.css_
+
+```css
+body {
+  font-family: Georgia, serif;
+  font-size: 1.5rem;
+  color: #3b2412;
+}
+```
+
+Recargad y comparad:
+
+- ✅ El párrafo: Georgia, grande y marrón. **Ha heredado todo.**
+- ❌ El enlace: Georgia y grande sí… pero **azul**.
+- ❌ El campo de email y el botón: **letra pequeña, sin remates y negra**. No han heredado **nada**. Parecen de otra web.
+
+👉 En DevTools, seleccionad el `<button>` y mirad **Styles**: hay una regla **user agent stylesheet** para `button` que le pone su propia fuente y su propio tamaño (en Chrome, unos 13px). Como esa regla apunta **directamente** al botón, gana al valor heredado del `body`.
+
+Lo arreglamos pidiéndoles explícitamente que hereden:
+
+_./styles.css_
+
+```diff
++ a {
++   color: inherit;
++ }
++
++ button,
++ input {
++   font: inherit;
++ }
+```
+
+Recargad: ahora el enlace es marrón (y sigue subrayado) y el formulario usa **la misma letra y el mismo tamaño** que el resto. Probad a cambiar la `font-family` o el `font-size` del `body`: **todo** cambia a la vez.
+
+Vamos a ver qué es ese `inherit`.
 
 ## Forzar la herencia: `inherit`
 
@@ -64,11 +130,11 @@ input {
 
 Otras palabras clave que funcionan en cualquier propiedad:
 
-| Valor | Significa |
-|---|---|
-| `inherit` | Usa el valor del padre |
+| Valor     | Significa                                                |
+| --------- | -------------------------------------------------------- |
+| `inherit` | Usa el valor del padre                                   |
 | `initial` | Usa el valor "de fábrica" de CSS (¡no el del navegador!) |
-| `unset` | Si la propiedad se hereda, `inherit`; si no, `initial` |
+| `unset`   | Si la propiedad se hereda, `inherit`; si no, `initial`   |
 
 ## 🛠️ Práctica
 
@@ -226,4 +292,4 @@ La segunda tarjeta y **su botón** cambian a verde: el botón hereda la variable
 
 - [MDN · Herencia](https://developer.mozilla.org/es/docs/Web/CSS/Inheritance)
 - [MDN · Cascada, especificidad y herencia](https://developer.mozilla.org/es/docs/Learn/CSS/Building_blocks/Cascade_and_inheritance)
-- En MDN, la ficha de cada propiedad dice si se hereda o no (apartado *Definición formal → Heredable*).
+- En MDN, la ficha de cada propiedad dice si se hereda o no (apartado _Definición formal → Heredable_).
