@@ -207,7 +207,18 @@ El campo y el botón pasan a usar la misma letra y tamaño que el resto de la p�
 
 ### Paso 6: comprobadlo en DevTools
 
-Seleccionad el `h1` y mirad **Styles**: la regla del navegador (`margin-block-start: 0.67em`…) sigue ahí, pero **tachada**. Nuestro reset la ha sobrescrito. Ese es el truco: **no borramos** los estilos del navegador, los **pisamos**.
+Seleccionad el `h1` y mirad **Styles**. Veréis las reglas **de arriba abajo por orden de prioridad**: primero las nuestras (`*` de `reset.css`), y debajo la del navegador (`h1 { … }` *user agent stylesheet*) con su `margin-block-start: 0.67em`.
+
+🤔 Curiosamente, la regla del navegador **no sale tachada**, aunque en pantalla el `h1` ya no tiene ese margen. ¿Por qué? El navegador usa propiedades **lógicas** (`margin-block-start`, `margin-block-end`) y nuestro `margin: 0` se traduce a las **físicas** (`margin-top`, `margin-bottom`…). Son "la misma" propiedad por detrás, pero DevTools no siempre sabe relacionarlas para tacharlas.
+
+Para ver el valor que **de verdad** se aplica, id a la pestaña **Computed** y escribid `margin` en el filtro:
+
+- `margin-top: 0px` y `margin-bottom: 0px`.
+- Desplegad la flechita de cualquiera de ellos: os dice **de qué regla sale** (`* { margin: 0 }` en `reset.css`).
+
+👉 Moraleja: **Styles** te dice qué reglas le llegan al elemento; **Computed** te dice el valor **final** que gana. Cuando dudéis, Computed manda.
+
+Ese es el truco del reset: **no borramos** los estilos del navegador (siguen ahí), los **pisamos** con los nuestros.
 
 ## El reset completo
 
