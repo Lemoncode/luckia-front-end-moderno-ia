@@ -459,6 +459,8 @@ El padding **separa** el borde de la cabecera de su primer hijo: ya no se "tocan
 
 ## 🛠️ Práctica
 
+> 🏠 **Práctica para casa.** En clase ya hemos visto cada concepto con su demo; esta práctica **junta todo lo del modelo de caja** en un componente real (una tarjeta de producto) y seguramente no nos dé tiempo a hacerla en la sesión. Hacedla al repasar la guía: es la mejor forma de asentar lo visto.
+
 ### 0. Punto de partida
 
 Cread una carpeta `06-caja` con estos ficheros:
@@ -489,8 +491,8 @@ _./index.html_
     <article class="tarjeta">
       <img
         class="tarjeta-imagen"
-        src="https://images.unsplash.com/photo-1715692727454-130e0dcad687?w=600&h=300&fit=crop"
-        alt="Taza de café sobre una mesa de madera"
+        src="https://images.unsplash.com/photo-1657778232464-2932ffa2b68d?w=600&h=300&fit=crop"
+        alt="Taza de café recién hecho"
       />
       <h2>Café de Colombia</h2>
       <p>Chocolate y caramelo. Tueste medio, perfecto para espresso.</p>
