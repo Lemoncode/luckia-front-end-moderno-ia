@@ -195,6 +195,8 @@ _./styles.css_
 + }
 ```
 
+> La clase h1 aplica elemento, y `.texto` lo usamos en el html en un parrafo
+
 Ahora cambiad el tamaño de letra **del navegador**:
 
 - Chrome: _Configuración → Aspecto → Tamaño de fuente → Muy grande_.
@@ -220,6 +222,28 @@ Recargad: ahora **sí** crece. Dejad el tamaño del navegador como estaba.
 
 ### 2. El peligro de `em`: se multiplica
 
+En el HTML tenemos una lista con tres niveles, una dentro de otra:
+
+_./index.html_
+
+```html
+<ul class="lista">
+  <li>
+    Métodos
+    <ul>
+      <li>
+        Filtro
+        <ul>
+          <li>V60</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+```
+
+Queremos que el texto de la lista sea un poco más grande que el normal (un 20% más). Probamos con `em`:
+
 _./styles.css_
 
 ```diff
@@ -234,16 +258,18 @@ Cada nivel de la lista es más grande que el anterior: `1.2 × 1.2 × 1.2…` po
 
 ### 3. Donde `em` brilla: botones
 
+Primero lo hacemos "a lo normal": `rem` para la letra y `px` para el resto.
+
 _./styles.css_
 
 ```diff
 + .boton {
 +   font-size: 1rem;
-+   padding: 0.5em 1em;
++   padding: 8px 16px;
 +   background-color: #b45309;
 +   color: white;
 +   border: none;
-+   border-radius: 0.5em;
++   border-radius: 8px;
 + }
 +
 + .boton-grande {
@@ -251,11 +277,43 @@ _./styles.css_
 + }
 ```
 
-> `padding: 0.5em 1em` = 0.5em arriba y abajo, 1em a los lados. Estas formas cortas las vemos en el 07.
+> `padding: 8px 16px` = 8px arriba y abajo, 16px a los lados. Estas formas cortas las vemos en el 07.
 
-Solo hemos cambiado el `font-size` del botón grande… y el **padding y el redondeo han crecido solos**, en proporción. Eso es `em`.
+Mirad el botón grande: la **letra ha crecido**, pero el padding y el redondeo **siguen igual**. Se ve apretado, como si el texto no cupiera. Tendríamos que ajustar a mano el padding y el radio de cada tamaño de botón…
+
+Ahora cambiamos los `px` por `em`:
+
+```diff
+  .boton {
+    font-size: 1rem;
+-   padding: 8px 16px;
++   padding: 0.5em 1em;
+    background-color: #b45309;
+    color: white;
+    border: none;
+-   border-radius: 8px;
++   border-radius: 0.5em;
+  }
+```
+
+> Si prueba a cambiar el fon-size de boton-grande a 4rem se ve más el efecto
+
+El botón normal se ve **igual** que antes (con letra de 16px, `0.5em` = 8px y `1em` = 16px). Pero el grande ahora tiene el **padding y el redondeo en proporción**, sin tocar nada más. Eso es `em`: crece con su propio texto.
 
 ### 4. `vh`: portada a pantalla completa
+
+Al principio del HTML tenemos una cabecera con el nombre de la web:
+
+_./index.html_
+
+```html
+<header class="portada">
+  <h1>Café &amp; Código</h1>
+  <p>Una web sobre café hecha con CSS.</p>
+</header>
+```
+
+Ahora mismo mide solo lo que ocupa su texto. Queremos que sea una **portada**: que ocupe **toda la pantalla** al entrar en la web y que el contenido aparezca al hacer scroll. No sabemos cuánto mide la pantalla de cada usuario… pero `vh` sí:
 
 _./styles.css_
 
@@ -267,10 +325,9 @@ _./styles.css_
 + }
 ```
 
-La portada ocupa **toda la pantalla**. Haced scroll para ver el resto.
+`100vh` = el 100% del alto de la ventana. La portada ocupa **toda la pantalla**; haced scroll para ver el resto. Probad a cambiar el tamaño de la ventana: la portada se adapta.
 
-- Si lo miráis en el modo móvil de DevTools, cambiad `100vh` por `100dvh`.
-- 👀 ¿Veis el **hueco blanco** alrededor de la portada? Es un `margin` que el navegador le pone al `body`. Lo quitamos en el 08 (reset).
+> Si queréis podemo dejarla en 20vh o quitarla
 
 ### 5. `ch`: texto que se lee bien
 
