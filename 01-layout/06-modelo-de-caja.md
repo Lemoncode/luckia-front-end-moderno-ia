@@ -68,23 +68,126 @@ border-bottom: 1px solid #ddd; /* solo un lado */
 
 ## El ancho: la sorpresa de `box-sizing`
 
+Ya sabemos que una caja tiene contenido, padding, borde y margen. Ahora la pregunta del millón: si a una caja le decimos `width: 300px`, **¿cuánto mide?**
+
+Parece obvio: 300px. Pues **depende**. Depende de si el navegador cuenta el padding y el borde **dentro** de esos 300px o los **suma por fuera**. Y por defecto… los suma por fuera. La propiedad que controla esto se llama **`box-sizing`**.
+
+Es una de las cosas que más despistan al empezar a maquetar ("¡le he puesto 300px y se me sale!"), así que vamos a verlo en el navegador paso a paso. Cread una carpeta aparte (por ejemplo `06-box-sizing`) con un `index.html` y un `styles.css`.
+
+### Paso 1: una regla de 300px y una caja de 300px
+
+_./index.html_
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>box-sizing</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="regla">Esto mide 300px</div>
+    <div class="caja">Soy una caja</div>
+  </body>
+</html>
+```
+
+_./styles.css_
+
 ```css
-.tarjeta {
+body {
+  font-family: system-ui, sans-serif;
+}
+
+/* Una "regla" de 300px para comparar */
+.regla {
   width: 300px;
-  padding: 24px;
-  border: 1px solid #ddd;
+  background-color: #b45309;
+  color: white;
+  text-align: center;
+}
+
+.caja {
+  width: 300px;
+  background-color: #fef3c7;
+  margin-top: 16px;
 }
 ```
 
-¿Cuánto mide la tarjeta? Lo lógico sería 300px… pero **mide 350px**:
+Recargad: a ojo, el div con la clase `caja` y el del div `regla`miden **lo mismo**. Vamos a comprobarlo con DevTools; lo usaremos en todo el ejemplo:
+
+1. F12 → pestaña **Elements**.
+2. Pasad el ratón (sin hacer clic) por encima de la línea `<div class="regla">`. En la página, el elemento se ilumina y aparece un **cartelito** con su nombre y medidas: `div.regla  300 × 24`. El primer número es el **ancho**, el segundo el alto.
+3. Haced lo mismo con `<div class="caja">`: también **300** de ancho.
+
+### Paso 2: le damos aire por dentro
+
+El texto está pegado al borde de la caja. Le ponemos padding:
+
+_./styles.css_
+
+```diff
+  .caja {
+    width: 300px;
++   padding: 24px;
+    background-color: #fef3c7;
+    margin-top: 16px;
+  }
+```
+
+Recargad… 😮 **la caja ha crecido**. Ya no coincide con la regla: sobresale por la derecha, aunque sigue diciendo `width: 300px`.
+
+### Paso 3: y un borde
+
+_./styles.css_
+
+```diff
+  .caja {
+    width: 300px;
+    padding: 24px;
++   border: 1px solid #333;
+    background-color: #fef3c7;
+    margin-top: 16px;
+  }
+```
+
+Ha crecido **otra vez**. Medidla: en DevTools (Elements), pasad el ratón por encima del `<div class="caja">` y mirad el cartelito. **350px**:
 
 ```
 300 (width) + 24 + 24 (padding) + 1 + 1 (border) = 350px
 ```
 
-Por defecto (`box-sizing: content-box`), `width` es **solo el contenido**, y el padding y el borde **se suman por fuera**. Cada vez que cambias el padding, cambia el tamaño total. Un lío.
+¿Por qué? Porque por defecto (`box-sizing: content-box`) el `width` es **solo el contenido**, y el padding y el borde **se suman por fuera**. Cada vez que tocas el padding o el borde, cambia el tamaño total. Un lío para maquetar.
 
-Con `box-sizing: border-box`, `width` es el tamaño **total** (contenido + padding + borde). Si pones 300px, mide 300px, y el padding se come espacio **hacia dentro**.
+### Paso 4: `border-box` al rescate
+
+Añadimos una segunda caja, idéntica, para comparar:
+
+_./index.html_
+
+```diff
+    <div class="regla">Esto mide 300px</div>
+    <div class="caja">Soy una caja</div>
++   <div class="caja caja-border">Soy una caja con border-box</div>
+```
+
+_./styles.css_
+
+```diff
++ .caja-border {
++   box-sizing: border-box;
++ }
+```
+
+Recargad: la segunda caja **encaja exacta con la regla**. Con `border-box`, el `width` es el tamaño **total** (contenido + padding + borde). Si pones 300px, mide 300px, y el padding y el borde se meten **hacia dentro** (el contenido se queda en `300 − 48 − 2 = 250px`).
+
+Probad a subir el `padding` de `.caja` a `48px`: la primera caja **crece**, la de border-box **se queda en 300**.
+
+### La receta
+
+En vez de ponerlo caja a caja, se lo ponemos **a todos los elementos** con el selector universal, al principio del CSS:
 
 ```css
 *,
