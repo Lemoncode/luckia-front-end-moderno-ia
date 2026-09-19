@@ -203,6 +203,41 @@ Una regla, dos elementos. Si mañana queremos las notas en verde, se cambia en *
 
 > `border` y `padding` son del **modelo de caja**; los vemos en detalle en el 06.
 
+### 3b. Varias clases en un mismo elemento
+
+El segundo consejo es más importante que el primero y queremos que destaque **en rojo**… pero sin perder el estilo de nota (el padding, el borde a la izquierda). No hace falta copiar la regla `.nota` entera: un elemento puede tener **varias clases a la vez**, separadas por un espacio:
+
+_./index.html_
+
+```diff
+- <p class="nota">Consejo: una báscula de cocina es tu mejor aliada.</p>
++ <p class="nota nota-importante">Consejo: una báscula de cocina es tu mejor aliada.</p>
+```
+
+_./styles.css_
+
+```diff
+  .nota {
+    background-color: #fef3c7;
+    border-left: 4px solid #d97706;
+    padding: 12px;
+  }
++
++ .nota-importante {
++   background-color: #fee2e2;
++   border-left-color: #dc2626;
++ }
+```
+
+Recargad. El segundo consejo recibe **las dos reglas**:
+
+- De `.nota`: el padding y el borde de 4px a la izquierda.
+- De `.nota-importante`: el fondo rojizo y el color del borde en rojo.
+
+¿Y el `background-color`, que lo definen las dos? Gana **`.nota-importante`** porque está **después** en el CSS. Cuando dos reglas "pesan" lo mismo, gana la última. (Qué significa exactamente "pesar", lo vemos en el 15, especificidad.)
+
+👉 Es la forma habitual de hacer **variantes**: una clase base (`nota`, `boton`, `tarjeta`) y otra que cambia solo lo que haga falta (`nota-importante`, `boton-grande`…).
+
 ### 4. Id: un enlace interno
 
 _./index.html_
