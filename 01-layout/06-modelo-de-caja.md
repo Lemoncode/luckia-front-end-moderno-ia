@@ -320,13 +320,136 @@ Comprobadlo en DevTools: con la caja seleccionada, el dibujo de **Computed** mue
 
 ### 1. Los márgenes verticales se "colapsan"
 
-Dos cajas una encima de otra: la de arriba con `margin-bottom: 32px` y la de abajo con `margin-top: 32px`. ¿Separación? **32px, no 64px.**
+> ⏱️ **Si vamos justos de tiempo, en clase nos saltamos este punto.** Queda aquí para que lo repaséis y lo probéis por vuestra cuenta: no es algo que se use a diario, pero cuando os pase sabréis qué es.
 
-Cuando dos márgenes verticales se tocan, **no se suman: se queda el mayor**. Solo pasa en vertical (en horizontal sí se suman).
+Tenemos dos cajas, una encima de otra. Queremos separarlas, y a la de arriba le ponemos `margin-bottom: 32px` y a la de abajo `margin-top: 32px`. ¿Cuánta separación habrá? Lo lógico sería 64px… Vamos a verlo. Cread una carpeta (por ejemplo `06-colapso`):
+
+_./index.html_
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colapso de márgenes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="caja caja-arriba">Caja de arriba (margin-bottom: 32px)</div>
+    <div class="caja caja-abajo">Caja de abajo (margin-top: 32px)</div>
+  </body>
+</html>
+```
+
+_./styles.css_
+
+```css
+body {
+  font-family: system-ui, sans-serif;
+}
+
+.caja {
+  padding: 16px;
+  background-color: #fef3c7;
+  border: 1px solid #d97706;
+}
+
+.caja-arriba {
+  margin-bottom: 32px;
+}
+
+.caja-abajo {
+  margin-top: 32px;
+}
+```
+
+En DevTools (Elements), pasad el ratón por la **caja de arriba**: su margen se pinta en **naranja** debajo de ella. Ahora por la **de abajo**: su margen naranja ocupa **exactamente el mismo hueco**. La separación es de **32px, no 64px**: los dos márgenes se han **solapado**.
+
+Probad a cambiar el `margin-top` de la caja de abajo a `16px`: la separación **sigue siendo 32px**. Y a `50px`: pasa a 50px.
+
+👉 Cuando dos márgenes verticales se tocan, **no se suman: se queda el mayor**. Solo pasa en **vertical**; en horizontal los márgenes sí se suman.
 
 ### 2. El margen del hijo se "escapa" del padre
 
-Si el primer hijo de una caja tiene `margin-top` y el padre **no tiene ni padding ni borde** arriba, ese margen **se sale del padre** y lo empuja hacia abajo. El clásico "¿por qué hay un hueco encima de mi cabecera si no le he puesto margen?". Suele ser un `h1` con su margen de navegador. Se arregla poniéndole algo de padding al padre.
+> ⏱️ **Igual que el anterior: si no hay tiempo, lo saltamos en clase** y queda para estudio. Eso sí, este os lo vais a encontrar tarde o temprano.
+
+Tenemos una cabecera con color de fondo y un título dentro. Queremos que la cabecera empiece **pegada arriba del todo** de la página. Cread una carpeta (por ejemplo `06-margen-escapa`):
+
+_./index.html_
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>El margen que se escapa</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="cabecera">
+      <h1>Café &amp; Código</h1>
+    </header>
+  </body>
+</html>
+```
+
+_./styles.css_
+
+```css
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0; /* quitamos el margen del navegador al body (lo vemos en el 08) */
+}
+
+.cabecera {
+  background-color: #3b2412;
+  color: white;
+}
+```
+
+Recargad: hay una **franja blanca encima de la cabecera**. 🤔 No le hemos puesto margen a nada… y el `body` tiene `margin: 0`.
+
+Investigadlo en DevTools: pasad el ratón por el `<h1>`. Su **margen de arriba** (el que le pone el navegador) se pinta en naranja **por encima de la cabecera**, fuera de ella. El margen del hijo **se ha escapado del padre** y empuja a toda la cabecera hacia abajo.
+
+Pasa cuando el **primer hijo** tiene `margin-top` y **no hay nada entre el borde de arriba del padre y ese hijo** (ni padding, ni borde). Entonces el navegador junta el margen del hijo con el del padre, y el margen acaba **fuera** del padre.
+
+¿Cómo lo arreglamos? Hay dos formas, y cada una dice una cosa distinta:
+
+**Opción A: quitarle el margen al `h1`**
+
+_./styles.css_
+
+```diff
++ h1 {
++   margin-top: 0;
++ }
+```
+
+La franja blanca desaparece… pero ahora el texto queda **pegado al borde de arriba** de la cabecera, sin aire. Hemos quitado el hueco, pero no teníamos el espacio que queríamos.
+
+**Opción B: el espacio lo pone el padre, con padding**
+
+Quitad la regla del `h1` y probad esto:
+
+_./styles.css_
+
+```diff
+  .cabecera {
+    background-color: #3b2412;
+    color: white;
++   padding: 16px;
+  }
+```
+
+El padding **separa** el borde de la cabecera de su primer hijo: ya no se "tocan", así que el margen del `h1` no se puede escapar y se queda **dentro** de la cabecera. Bastaría con `padding-top: 1px`: **el valor da igual**, lo que importa es que haya algo en medio. Ponemos 16px porque, de paso, queremos que la cabecera tenga aire por dentro (arriba, abajo y a los lados).
+
+👉 Esto enlaza con el consejo de abajo: **el espacio de dentro de una caja es cosa de su padding**, no del margen de lo que tiene dentro.
+
+> 🔮 **¿Y con un reset CSS?** Muchos resets (y Tailwind) ponen `margin: 0` a los títulos y párrafos. Con eso desaparece el margen que pone el navegador, y este caso concreto **ya no pasa**. Pero el comportamiento sigue ahí: el día que vosotros le pongáis un `margin-top` al primer hijo de una caja, se volverá a escapar. Por eso conviene saber qué es. Los resets, en el 08.
+
+👉 Es el clásico *"¿por qué hay un hueco encima de mi cabecera si no le he puesto margen?"*. Casi siempre es un `h1` (o un `p`) con su margen de navegador que se escapa.
 
 ### 3. Consejo: cuidado con dónde pones el margin
 
