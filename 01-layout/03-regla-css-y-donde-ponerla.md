@@ -134,7 +134,7 @@ Recargad. 🎉 Ya parece otra cosa.
 
 3. **¡Ojo al detalle!** La regla es solo para `body`… pero **los `h1`, los párrafos, las listas y los enlaces** también han cambiado de fuente. ¿Por qué, si no les hemos dicho nada?
 
-   Eso es **herencia**: algunas propiedades pasan de padres a hijos. No todas se heredan (el borde o el margen, por ejemplo, no). Lo vemos en detalle en el 06.
+   Eso es **herencia**: algunas propiedades pasan de padres a hijos. No todas se heredan (el borde o el margen, por ejemplo, no). Lo vemos en detalle en el 07.
 
    Y los enlaces siguen azules aunque hemos puesto `color: #333`… 🤔 ¿Por qué? Pista: mirad los estilos del navegador del `<a>`. También lo retomamos más adelante.
 

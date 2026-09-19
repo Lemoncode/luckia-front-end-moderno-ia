@@ -201,7 +201,7 @@ _./styles.css_
 
 Una regla, dos elementos. Si mañana queremos las notas en verde, se cambia en **un** sitio.
 
-> `border` y `padding` son del **modelo de caja**; los vemos en detalle en el 07.
+> `border` y `padding` son del **modelo de caja**; los vemos en detalle en el 06.
 
 ### 4. Id: un enlace interno
 

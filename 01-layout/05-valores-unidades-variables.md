@@ -286,7 +286,7 @@ _./styles.css_
 + }
 ```
 
-> `padding: 8px 16px` = 8px arriba y abajo, 16px a los lados. Estas formas cortas las vemos en el 07.
+> `padding: 8px 16px` = 8px arriba y abajo, 16px a los lados. Estas formas cortas las vemos en el 06.
 
 Mirad el botón grande: la **letra ha crecido**, pero el padding y el redondeo **siguen igual**. Se ve apretado, como si el texto no cupiera. Tendríamos que ajustar a mano el padding y el radio de cada tamaño de botón…
 
