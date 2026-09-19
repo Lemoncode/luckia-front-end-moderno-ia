@@ -135,8 +135,8 @@ La solución:
         <p>
           Preparar un buen café no requiere una cafetera de mil euros. Con
           <strong>café recién molido</strong> y un poco de paciencia puedes
-          conseguir en casa una taza <em>mucho</em> mejor que la de la
-          máquina de la oficina.
+          conseguir en casa una taza <em>mucho</em> mejor que la de la máquina
+          de la oficina.
         </p>
 
         <section>
@@ -162,7 +162,7 @@ La solución:
 
         <figure>
           <img
-            src="https://picsum.photos/800/400"
+            src="https://images.unsplash.com/photo-1657778232464-2932ffa2b68d?w=800&h=400"
             alt="Taza de café recién hecho sobre una mesa de madera"
           />
           <figcaption>Una buena taza empieza por un buen grano.</figcaption>
@@ -191,7 +191,7 @@ Detalles para comentar:
 - El nombre del blog **no es `h1`**: el `h1` es el título del artículo, que es lo que trata la página.
 - Hay **dos `header`**: el de la página y el del artículo. Es válido.
 - El `aside` va **fuera del `main`** porque no es el contenido principal.
-- `&amp;` es la forma de escribir `&` en HTML (una *entidad*). Aquí funcionaría sin escapar, pero es buena costumbre.
+- `&amp;` es la forma de escribir `&` en HTML (una _entidad_). Aquí funcionaría sin escapar, pero es buena costumbre.
 - El `alt` describe la imagen, no dice "imagen de…".
 
 ## Para ampliar
