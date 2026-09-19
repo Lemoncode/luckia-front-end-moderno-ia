@@ -258,7 +258,16 @@ Cada nivel de la lista es más grande que el anterior: `1.2 × 1.2 × 1.2…` po
 
 ### 3. Donde `em` brilla: botones
 
-Primero lo hacemos "a lo normal": `rem` para la letra y `px` para el resto.
+Al final del `main` tenemos dos botones. Los dos tienen la clase `boton`, y el segundo además `boton-grande`:
+
+_./index.html_
+
+```html
+<button class="boton">Suscribirme</button>
+<button class="boton boton-grande">Suscribirme</button>
+```
+
+Queremos que los dos tengan el mismo estilo, pero que el segundo sea más grande. Primero lo hacemos "a lo normal": `rem` para la letra y `px` para el resto.
 
 _./styles.css_
 
@@ -331,7 +340,18 @@ _./styles.css_
 
 ### 5. `ch`: texto que se lee bien
 
-Haced la ventana muy ancha: el párrafo se estira de lado a lado y cuesta seguir las líneas.
+Dentro del `main` tenemos un párrafo largo con la clase `texto` (el mismo al que le pusimos el `font-size` en el paso 1):
+
+_./index.html_
+
+```html
+<p class="texto">
+  Preparar un buen café no requiere una cafetera de mil euros. Con café
+  recién molido, agua a la temperatura adecuada y un poco de paciencia…
+</p>
+```
+
+Haced la ventana muy ancha: el párrafo se estira de lado a lado y, al acabar cada línea, cuesta encontrar el principio de la siguiente. Queremos limitar su ancho a algo cómodo de leer, **sea cual sea el tamaño de la ventana**:
 
 _./styles.css_
 
@@ -346,7 +366,9 @@ Ahora, por ancha que sea la ventana, las líneas no pasan de unos 65 caracteres.
 
 ### 6. Variables: cambiar la paleta en un segundo
 
-Pasad los colores a variables:
+Repasad el `styles.css`: tenemos los colores escritos a mano en varios sitios (`#333` en el `body`, `#b45309` en el botón, `#3b2412` en la portada). En una web real serían decenas de sitios. Si diseño decide cambiar el color principal, toca buscarlos todos…
+
+Vamos a pasar los colores a variables:
 
 _./styles.css_
 
