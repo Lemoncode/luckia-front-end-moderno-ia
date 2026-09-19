@@ -138,6 +138,8 @@ Otras palabras clave que funcionan en cualquier propiedad:
 
 ## 🛠️ Práctica
 
+> 🏠 **Práctica para casa.** En clase ya hemos visto la herencia con la demo del formulario; esta práctica la aplica a un componente completo (una tarjeta de newsletter) e incluye un extra con variables heredadas. Seguramente no nos dé tiempo en la sesión: hacedla al repasar la guía.
+
 ### 0. Punto de partida
 
 Cread una carpeta `07-herencia` con estos ficheros:
