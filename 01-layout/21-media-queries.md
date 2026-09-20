@@ -314,6 +314,133 @@ Hay personas a las que las animaciones les provocan mareo (vértigo, migrañas),
 
 No hemos visto animaciones hoy, pero guardad la receta: es de esas cosas que cuestan tres líneas y para alguien marcan la diferencia. (Y sí, aquí el `!important` del 15 está justificado 😄.)
 
+## Tipografía fluida con `clamp()`
+
+Un último truco muy agradecido, y en la misma línea de "cuantas menos media queries, mejor". Vamos por pasos.
+
+### 1. Un tamaño que depende del ancho de la ventana: `vw`
+
+Recordad el 05: **`vw` = *viewport width*, el ancho de la ventana**. `1vw` es el **1% de ese ancho**.
+
+Hasta ahora hemos puesto tamaños de letra en `rem`, que son fijos. Pero también podemos decirle al título que mida un **porcentaje de la ventana**:
+
+```css
+h1 {
+  font-size: 5vw;
+}
+```
+
+"Mide siempre el **5% del ancho de la ventana**", sea un móvil o un monitor:
+
+| Ancho de la ventana | `5vw` son… |
+|---|---|
+| 320px (móvil pequeño) | 16px |
+| 768px (tablet) | 38px |
+| 1440px (portátil) | 72px |
+| 2560px (monitor grande) | 128px |
+
+Y lo mejor: al estrechar la ventana, el tamaño cambia **de forma continua**, sin los saltos de una media query.
+
+### 2. El problema: sin límites, se va de madre
+
+Mirad otra vez la tabla: en el móvil el título acaba midiendo 16px, **lo mismo que un párrafo** (no parece un título), y en el monitor grande, 128px, una barbaridad que ocupa media pantalla.
+
+La idea de "que crezca con la ventana" es buena, pero le falta **un suelo y un techo** (un mínimo y un máximo).
+
+### 3. `clamp()`: suelo, fórmula y techo
+
+```css
+h1 {
+  font-size: clamp(1.75rem, 5vw, 3rem);
+}
+/*                    ↑      ↑     ↑
+                    suelo  fórmula techo
+                  (mínimo)        (máximo)   */
+```
+
+El navegador calcula la fórmula del medio y después la **recorta**:
+
+- ¿Sale **menos** que el suelo? → usa el **suelo** (1.75rem = 28px). Es el tamaño mínimo del título.
+- ¿Sale **más** que el techo? → usa el **techo** (3rem = 48px). Es el máximo.
+- ¿Sale **entre medias**? → usa lo que dé la fórmula.
+
+Con los mismos anchos de antes:
+
+| Ancho de la ventana | `5vw` da… | ¿Qué se aplica? |
+|---|---|---|
+| 320px | 16px | Menos que el suelo → **28px** |
+| 560px | 28px | Justo el suelo → **28px** |
+| 768px | 38px | Entre medias → **38px** |
+| 960px | 48px | Justo el techo → **48px** |
+| 2560px | 128px | Más que el techo → **48px** |
+
+Es decir: entre los 560px y los 960px de ventana, el título **va creciendo poco a poco**; fuera de ese tramo, se queda quieto en su mínimo o en su máximo.
+
+### 4. El retoque final: `4vw + 1rem`
+
+En la práctica, la fórmula del medio no suele ser `5vw` a secas, sino algo como:
+
+```css
+font-size: clamp(1.75rem, 4vw + 1rem, 3rem);
+```
+
+Es la misma idea, pero la fórmula ahora dice "el **4%** del ancho **más 16px**". ¿Por qué?
+
+- **Crece más despacio**, que suele quedar mejor: el punto de partida ya es alto (esos 16px fijos) y el crecimiento es más suave.
+
+- Y lo importante: **respeta al usuario**. Si alguien ha configurado su navegador con la letra más grande (05), `vw` se lo salta olímpicamente, porque solo mira la ventana. La parte en `rem` **sí** lo tiene en cuenta.
+
+👉 Regla práctica: **en el valor del medio, mezclad siempre `vw` con `rem`**.
+
+### 5. Vedlo funcionando
+
+Cread una carpeta aparte (por ejemplo `21-clamp`) con estos dos ficheros:
+
+_./index.html_
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clamp()</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1 class="fija">Título de tamaño fijo</h1>
+    <h1 class="fluida">Título que crece con la ventana</h1>
+    <p>Estrechad y ensanchad la ventana y comparad los dos títulos.</p>
+  </body>
+</html>
+```
+
+_./styles.css_
+
+```css
+body {
+  font-family: system-ui, sans-serif;
+  padding: 1rem;
+}
+
+.fija {
+  font-size: 3rem;
+}
+
+.fluida {
+  font-size: clamp(1.75rem, 4vw + 1rem, 3rem);
+}
+```
+
+Cambiad el ancho de la ventana poco a poco:
+
+- El **primer** título mide siempre lo mismo: en el móvil se sale o se ve enorme.
+- El **segundo** va creciendo y encogiendo… hasta que toca sus topes y se queda quieto.
+
+👉 En DevTools, seleccionad el título fluido y mirad **Computed** → `font-size`: veréis el valor en píxeles **cambiando** mientras movéis la ventana.
+
+`clamp()` no es solo para la letra: vale para cualquier medida. Por ejemplo, `padding: clamp(1rem, 5vw, 4rem)` da unos márgenes que crecen con la pantalla pero nunca se pasan.
+
 ## Lo que viene después: _container queries_
 
 Una media query pregunta por el tamaño de **la ventana**. Pero muchas veces lo que importa es el **espacio que tiene el componente**: la misma tarjeta puede estar en una columna ancha o en una barra lateral estrecha… y la ventana mide lo mismo en los dos casos.
