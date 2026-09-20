@@ -2,8 +2,6 @@
 
 > ⏱️ ~10 min · Intro corta: lo justo para entenderlo cuando os lo encontréis (y os lo vais a encontrar).
 
-> Ojo con el nombre: **layer** (capa), no **layout** (maquetación). No tiene nada que ver con colocar cajas; tiene que ver con **quién gana** en la cascada.
-
 ## El problema: en un proyecto real, todos se pelean
 
 En el 15 vimos la **guerra de especificidad**: un id perdido en una regla antigua y, para ganarle, hay que subir la apuesta (otro id, `!important`…).
