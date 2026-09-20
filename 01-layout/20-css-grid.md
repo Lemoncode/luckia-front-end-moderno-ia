@@ -2,8 +2,6 @@
 
 > ⏱️ ~30 min
 
-> 🏠 Si en la sesión no llegamos hasta aquí, **no pasa nada**: esta guía está pensada para que la podáis seguir en casa. Grid y flexbox se complementan, así que merece la pena verla aunque sea después.
-
 ## Flexbox coloca en una dirección; grid, en dos
 
 En el 19 pusimos las tarjetas en fila y, cuando no cabían, saltaban de línea. Pero fijaos en un detalle: cuando saltan, **las filas no tienen por qué cuadrar**. Flexbox mira cada línea por separado; no sabe nada de "columnas".
@@ -23,10 +21,10 @@ cada línea va a su aire           filas Y columnas cuadradas
 
 **Regla práctica:**
 
-| Si lo que queréis es… | Usad |
-|---|---|
+| Si lo que queréis es…                                                  | Usad        |
+| ---------------------------------------------------------------------- | ----------- |
 | Una fila (o una columna) de cosas: un menú, unos botones, una cabecera | **flexbox** |
-| Una cuadrícula: una galería, un catálogo, el esqueleto de una página | **grid** |
+| Una cuadrícula: una galería, un catálogo, el esqueleto de una página   | **grid**    |
 
 Y no son excluyentes: lo normal es usar grid para el esqueleto y flexbox **dentro** de cada pieza.
 
@@ -47,13 +45,13 @@ Y no son excluyentes: lo normal es usar grid para el esqueleto y flexbox **dentr
 
 ### La unidad `fr`
 
-`fr` (*fraction*) es una unidad que **solo existe en grid**: significa "una parte del espacio **sobrante**".
+`fr` (_fraction_) es una unidad que **solo existe en grid**: significa "una parte del espacio **sobrante**".
 
-| Valor | Significa |
-|---|---|
-| `1fr 1fr 1fr` | 3 columnas **iguales** |
-| `2fr 1fr` | 2 columnas: la primera **el doble** de ancha |
-| `200px 1fr` | Una fija de 200px y otra que se come el resto |
+| Valor            | Significa                                      |
+| ---------------- | ---------------------------------------------- |
+| `1fr 1fr 1fr`    | 3 columnas **iguales**                         |
+| `2fr 1fr`        | 2 columnas: la primera **el doble** de ancha   |
+| `200px 1fr`      | Una fija de 200px y otra que se come el resto  |
 | `repeat(3, 1fr)` | Lo mismo que `1fr 1fr 1fr`, pero sin repetirse |
 
 ## Vamos a verlo
@@ -197,78 +195,181 @@ _./styles.css_
 
 ### Paso 4: el esqueleto de una página con `grid-template-areas`
 
-Esta es la parte más vistosa de grid. Vamos a maquetar una página entera: cabecera, barra lateral, contenido y pie.
+Esta es la parte más vistosa de grid, así que la montamos **desde cero** en un ejemplo aparte. Cread otra carpeta (por ejemplo `20-grid-areas`) con su `index.html` y su `styles.css`.
 
-Añadid esto **debajo** de la galería:
+El objetivo es el esqueleto clásico de una página: cabecera arriba, barra lateral, contenido y pie:
+
+```
+┌───────────────────────────────────┐
+│            Cabecera               │
+├──────────┬────────────────────────┤
+│ Lateral  │      Contenido         │
+├──────────┴────────────────────────┤
+│              Pie                  │
+└───────────────────────────────────┘
+```
 
 _./index.html_
 
-```diff
-+ <div class="pagina">
-+   <header class="zona-cabecera">Cabecera</header>
-+   <nav class="zona-lateral">Lateral</nav>
-+   <main class="zona-principal">Contenido</main>
-+   <footer class="zona-pie">Pie</footer>
-+ </div>
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid: esqueleto de página</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="pagina">
+    <header class="zona-cabecera">Cabecera</header>
+    <nav class="zona-lateral">Lateral</nav>
+    <main class="zona-principal">Contenido</main>
+    <footer class="zona-pie">Pie</footer>
+  </body>
+</html>
 ```
 
 _./styles.css_
 
+```css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Para ver bien las zonas */
+.pagina > * {
+  background-color: #f5f0eb;
+  border: 1px solid #e0d6cc;
+  padding: 1rem;
+}
+```
+
+Ahora mismo las cuatro zonas están **apiladas**, cada una ocupando todo el ancho.
+
+Antes de montar la cuadrícula, dos cosas **nuevas** respecto a la galería:
+
+**1. Aquí sí definimos las filas.** En la galería solo dijimos cuántas columnas había y las filas iban apareciendo solas, según el número de tarjetas. Ahora sabemos **exactamente** qué filas queremos (cabecera, cuerpo y pie), y además queremos que **midan distinto**: la cabecera y el pie, lo que ocupen; el cuerpo, todo lo que sobre. Para eso está `grid-template-rows`.
+
+**2. Vamos a ponerle nombre a cada zona.** Hasta ahora, cada item caía en la siguiente celda libre, en el orden del HTML. Pero aquí la cabecera tiene que ocupar **dos columnas** y el lateral solo una… Podríamos ir colocando cada item a mano con números de línea, pero grid tiene algo mucho más legible: **dar un nombre a cada zona y dibujar la cuadrícula con esos nombres**. Eso son `grid-template-areas` (el dibujo, en el contenedor) y `grid-area` (el nombre, en cada hijo).
+
+Vamos con ello:
+
+_./styles.css_
+
 ```diff
-+ .pagina {
+  body {
+    margin: 0;
+    padding: 1rem;
+    font-family: system-ui, sans-serif;
+    min-height: 100vh;
 +   display: grid;
 +   grid-template-columns: 12rem 1fr;
++   grid-template-rows: auto 1fr auto;
 +   grid-template-areas:
 +     "cabecera cabecera"
 +     "lateral  principal"
 +     "pie      pie";
 +   gap: 1rem;
-+   margin-top: 2rem;
-+ }
+  }
 +
 + .zona-cabecera  { grid-area: cabecera; }
 + .zona-lateral   { grid-area: lateral; }
 + .zona-principal { grid-area: principal; }
 + .zona-pie       { grid-area: pie; }
-+
-+ .pagina > * {
-+   background-color: #f5f0eb;
-+   border: 1px solid #e0d6cc;
-+   padding: 1rem;
-+ }
 ```
 
-Fijaos en `grid-template-areas`: **es un dibujo de la página**. Cada línea entre comillas es una fila, cada palabra es una celda, y repetir el mismo nombre significa "esta zona ocupa esas celdas".
+Y ya está. Esta es la cuadrícula que acabamos de definir, con el nombre de cada zona:
 
 ```
-"cabecera cabecera"     ← la cabecera ocupa las dos columnas
-"lateral  principal"    ← lateral estrecho + contenido ancho
-"pie      pie"          ← el pie, otra vez las dos
+                 12rem            1fr
+              ┌───────────┬────────────────────┐
+         auto │  cabecera        cabecera      │  ← una zona que ocupa 2 celdas
+              ├───────────┼────────────────────┤
+          1fr │  lateral  │     principal      │  ← dos zonas, una por celda
+              ├───────────┼────────────────────┤
+         auto │    pie             pie         │  ← otra vez, 2 celdas
+              └───────────┴────────────────────┘
+                ↑ grid-template-columns: 12rem 1fr
+              ↑ grid-template-rows: auto 1fr auto
 ```
 
-Y lo mejor: **reordenar la página es reescribir el dibujo**. Probad a poner el lateral a la derecha:
+Y el CSS es, literalmente, ese dibujo:
+
+```css
+grid-template-areas:
+  "cabecera cabecera"
+  "lateral  principal"
+  "pie      pie";
+```
+
+Fijaos en lo que hemos escrito:
+
+- **`grid-template-areas` es un dibujo de la página.** Cada línea entre comillas es una **fila**, cada palabra es una **celda**, y repetir el mismo nombre significa "esta zona **ocupa** esas celdas":
+
+  ```
+  "cabecera cabecera"     ← la cabecera ocupa las dos columnas
+  "lateral  principal"    ← lateral estrecho + contenido ancho
+  "pie      pie"          ← el pie, otra vez las dos
+  ```
+
+- **`grid-area`** en cada hijo dice **en qué zona va**. El nombre lo elegimos nosotros.
+- `grid-template-rows: auto 1fr auto` = "cabecera y pie, lo que ocupen; la fila del medio, **todo lo que sobre**". Con el `min-height: 100vh` del `body`, eso hace que **el pie quede abajo del todo** aunque haya poco contenido. Es el clásico *sticky footer*, gratis.
+
+**Y lo mejor: reordenar la página es reescribir el dibujo.** Probad a poner el lateral a la derecha:
 
 ```diff
-  grid-template-areas:
-    "cabecera cabecera"
--   "lateral  principal"
-+   "principal lateral"
-    "pie      pie";
+  body {
+    ...
+-   grid-template-columns: 12rem 1fr;
++   grid-template-columns: 1fr 12rem;
+    grid-template-areas:
+      "cabecera cabecera"
+-     "lateral  principal"
++     "principal lateral"
+      "pie      pie";
 ```
 
-(Y cambiad `grid-template-columns: 12rem 1fr` por `1fr 12rem` para que el lateral siga siendo el estrecho.)
+Sin tocar **una sola línea del HTML**. Comparadlo con lo que costaría esto con `float` o con `position`… 😅
 
-> ⚠️ Cuidado con `order` y con reordenar zonas: el **orden del HTML** sigue siendo el que usan el teclado y los lectores de pantalla. Que se vea distinto de como se lee puede desorientar.
+👉 En DevTools, con la etiqueta **`grid`** activada, veréis los nombres de cada zona dibujados encima de la página.
+
+> ⚠️ Cuidado con reordenar: el **orden del HTML** sigue siendo el que usan el teclado y los lectores de pantalla. Que se vea en un orden y se lea en otro puede desorientar.
+
+> 💡 **Extra para casa**: haced que en móvil todo vaya en una sola columna. Se hace con una media query y **reescribiendo el dibujo**:
+>
+> ```css
+> @media (max-width: 40rem) {
+>   body {
+>     grid-template-columns: 1fr;
+>     grid-template-areas:
+>       "cabecera"
+>       "principal"
+>       "lateral"
+>       "pie";
+>   }
+> }
+> ```
+>
+> (Las media queries no las hemos visto hoy, pero se leen solas: "cuando la ventana mida como mucho 40rem, aplica esto".)
 
 ## Alineación (se parece mucho a flexbox)
 
-Como en flexbox, hay propiedades para alinear, con dos ejes: las columnas (*inline*) y las filas (*block*).
+Como en flexbox, hay propiedades para alinear, con dos ejes: las columnas (_inline_) y las filas (_block_).
 
-| Propiedad | Alinea… |
-|---|---|
-| `justify-items` / `align-items` | El contenido **dentro** de cada celda (horizontal / vertical) |
-| `justify-content` / `align-content` | **Toda la cuadrícula** dentro del contenedor |
-| `justify-self` / `align-self` | Un item concreto dentro de **su** celda |
+| Propiedad                           | Alinea…                                                       |
+| ----------------------------------- | ------------------------------------------------------------- |
+| `justify-items` / `align-items`     | El contenido **dentro** de cada celda (horizontal / vertical) |
+| `justify-content` / `align-content` | **Toda la cuadrícula** dentro del contenedor                  |
+| `justify-self` / `align-self`       | Un item concreto dentro de **su** celda                       |
 
 Y el centrado del 19 también funciona aquí, incluso más corto:
 
