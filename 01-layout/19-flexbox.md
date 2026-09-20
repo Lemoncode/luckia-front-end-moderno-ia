@@ -160,6 +160,10 @@ body {
   color: white;
 }
 
+.logo {
+  font-size: 2rem;
+}
+
 .menu a {
   color: white;
   text-decoration: none;
@@ -188,7 +192,7 @@ body {
 }
 ```
 
-Ahora mismo **todo se apila**: el logo encima del menú, los enlaces pegados unos a otros, las tarjetas una debajo de otra. Vamos a arreglarlo.
+Ahora mismo **todo se apila**: el nombre de la web encima del menú, los enlaces pegados unos a otros, las tarjetas una debajo de otra. Y fijaos en la cabecera: el nombre es grande y el menú pequeño, cada uno pegado a la izquierda y en su propia línea. Vamos a arreglarlo.
 
 ### Paso 1: el menú en fila
 
@@ -250,16 +254,57 @@ _./styles.css_
 +   justify-content: space-between;
 +   align-items: center;
     padding: 1rem;
+    background-color: #3b2412;
 ```
 
 - `justify-content: space-between` → reparte el espacio sobrante **entre** los items: el primero pegado al principio, el último al final.
 - `align-items: center` → los centra en el **otro** eje (el vertical).
 
-Probad a cambiar `space-between` por `center`, `flex-end`, `space-around` y `space-evenly` para ver la diferencia.
+Fijaos en que el nombre es más grande que el menú (`font-size: 2rem` desde el principio). Eso está puesto **a propósito**: si los dos hijos midieran lo mismo de alto, `align-items` no se notaría. Como no es el caso, ahora sí:
+
+- Probad a cambiar `align-items: center` por **`flex-start`** (el menú se va arriba del todo), **`flex-end`** (abajo del todo) y **`stretch`**, que es el valor **por defecto**: el menú se estira para ocupar todo el alto de la cabecera. Con `stretch` no se nota en el texto… pero si al `.menu` le ponéis un `background-color: #b45309` temporal, veréis su caja estirarse y encogerse con cada valor.
+- Y probad a cambiar `space-between` por `center`, `flex-end`, `space-around` y `space-evenly` para ver cómo se reparte el espacio en el otro eje.
 
 ### Paso 3: el famoso centrado vertical
 
-La portada tiene un título arriba a la izquierda. Queremos el título **centrado en los dos ejes**:
+Debajo de la cabecera tenemos la **portada**: una sección alta (le pusimos `min-height: 50vh` en el paso 0, lo del 05) con un único hijo, el título:
+
+```html
+<section class="portada">
+  <h1>El mejor café, en tu casa</h1>
+</section>
+```
+
+Como el `h1` es un bloque, se coloca **arriba a la izquierda** y deja todo el hueco de abajo vacío:
+
+```
+┌─────────────────────────────────────────────────┐
+│ El mejor café, en tu casa                       │
+│                                                 │
+│                                                 │
+│                  (50vh de alto)                 │
+│                                                 │
+│                                                 │
+└─────────────────────────────────────────────────┘
+```
+
+Y lo que queremos es el título **centrado en los dos ejes**, como la portada de cualquier web:
+
+```
+┌─────────────────────────────────────────────────┐
+│                                                 │
+│                                                 │
+│           El mejor café, en tu casa             │  ← centrado en vertical
+│                                                 │
+│                                                 │
+└─────────────────────────────────────────────────┘
+                        ↑
+              y en horizontal
+```
+
+Centrar en horizontal ya sabíamos (con `text-align: center`, o con `margin: 0 auto` del 06). Lo que **no** teníamos forma sencilla de hacer es centrarlo **en vertical**:
+
+Veamos como podemos hacer esto con FlexBox, nos vamos al contenedor de `portada` (clase)
 
 _./styles.css_
 
@@ -276,6 +321,46 @@ Tres líneas. Esto, hace 15 años, era **el** problema de CSS. 😄
 > Truco mental: con `flex-direction: row`, `justify-content` es el **horizontal** y `align-items` el **vertical**. Con `column`, **al revés**. Por eso no se llaman "horizontal" y "vertical", sino "eje principal" y "eje secundario".
 
 ### Paso 4: las tarjetas en fila
+
+La última sección tiene **tres tarjetas de café**, cada una con su título, su descripción y su precio:
+
+```html
+<section class="tarjetas">
+  <article class="tarjeta">…Etiopía…</article>
+  <article class="tarjeta">…Colombia…</article>
+  <article class="tarjeta">…Sumatra…</article>
+</section>
+```
+
+Al ser bloques, van **una debajo de otra**, cada una ocupando todo el ancho:
+
+```
+┌─────────────────────────────────────────────────┐
+│ Etiopía                                         │
+│ Notas florales y afrutadas…            12,90 €  │
+└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│ Colombia                                        │
+│ Chocolate y caramelo, con mucho cuerpo…10,50 €  │
+└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│ Sumatra                                         │
+│ Tueste oscuro y notas terrosas.        11,00 €  │
+└─────────────────────────────────────────────────┘
+```
+
+Las queremos **en fila**, una al lado de otra y separadas entre sí:
+
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ Etiopía      │  │ Colombia     │  │ Sumatra      │
+│ Notas        │  │ Chocolate y  │  │ Tueste       │
+│ florales…    │  │ caramelo…    │  │ oscuro…      │
+│ 12,90 €      │  │ 10,50 €      │  │ 11,00 €      │
+└──────────────┘  └──────────────┘  └──────────────┘
+                ↑                  ↑
+                    gap: 1rem
+```
 
 _./styles.css_
 
@@ -380,6 +465,8 @@ _./styles.css_
     gap: 1rem;
 ```
 
+Y vamos darle un tamaño de partida:
+
 ```diff
   .tarjeta {
 -   flex: 1;
@@ -389,6 +476,27 @@ _./styles.css_
 `flex: 1 1 16rem` = "crece, encoge, y parte de 16rem". Si no caben tres de 16rem, la última **baja** a la línea siguiente; si tampoco caben dos, se ponen en columna.
 
 Cambiad el ancho de la ventana poco a poco: 3 tarjetas → 2 → 1. **Sin una sola media query.**
+
+> 📝 **Ojo**: esos 16rem son el **umbral para saltar de línea**, no un mínimo garantizado. Si la ventana es más estrecha que una sola tarjeta, la tarjeta **encoge** igualmente (tiene `flex-shrink: 1`).
+
+> 💡 **¿Y si no quiero que salten de línea?** Imaginad que tenéis **10 cafés** y los queréis en una sola fila, como los carruseles de Netflix o de cualquier tienda en el móvil: el usuario arrastra de lado y el resto de la página no se mueve. Se consigue con tres piezas:
+>
+> ```css
+> .tarjetas {
+>   display: flex;
+>   flex-wrap: nowrap; /* que NO salten de línea */
+>   gap: 1rem;
+>   overflow-x: auto; /* si no caben, scroll AQUÍ DENTRO */
+> }
+>
+> .tarjeta {
+>   flex: 0 0 16rem; /* ni crecer ni encoger: 16rem de verdad */
+> }
+> ```
+>
+> Aquí sí, los 16rem mandan: como las tarjetas no pueden encoger, aparece la barra de scroll **dentro de la sección**.
+>
+> Diferencia importante: el scroll horizontal **de toda la página** (lo que nos pasó en el 06) es un problema de usabilidad; el scroll **dentro de un contenedor** es un patrón normal y muy usado en móvil. Y si queréis que las tarjetas "encajen" al arrastrar, se añade `scroll-snap-type: x mandatory` al contenedor y `scroll-snap-align: start` a cada tarjeta.
 
 ### Paso 7: alinear los precios abajo
 
@@ -412,13 +520,64 @@ _./styles.css_
     font-weight: bold;
 ```
 
-`margin-top: auto` se come **todo el espacio sobrante** por arriba y empuja el precio al fondo. Es el mismo `auto` del `margin: 0 auto` del 06, pero en vertical.
+Vamos con calma, porque aquí pasan dos cosas.
+
+**1. La tarjeta pasa a ser un contenedor flex en columna.** Sus tres hijos (título, descripción y precio) siguen apilados como antes, pero ahora el que reparte el espacio es flexbox. Y como las tres tarjetas tienen el **mismo alto** (paso 4), a la que tiene menos texto le **sobra** hueco abajo:
+
+```
+Tarjeta con poco texto        Tarjeta con más texto
+┌──────────────┐              ┌──────────────┐
+│ Sumatra      │              │ Colombia     │
+│ Tueste       │              │ Chocolate y  │
+│ oscuro…      │              │ caramelo,    │
+│ 11,00 €      │              │ con cuerpo…  │
+│              │              │ 10,50 €      │
+│  ▓ sobra ▓   │              │              │
+└──────────────┘              └──────────────┘
+      ↑ el precio queda a media altura
+```
+
+**2. `margin-top: auto` en el precio.** Ya vimos en el 06 que `auto` significa "navegador, **reparte tú el espacio que sobra**". Si lo ponemos **solo arriba**, todo el sobrante se va **encima** del precio… y el precio baja al fondo:
+
+```
+┌──────────────┐              ┌──────────────┐
+│ Sumatra      │              │ Colombia     │
+│ Tueste       │              │ Chocolate y  │
+│ oscuro…      │              │ caramelo,    │
+│              │              │ con cuerpo…  │
+│  ▓ margin ▓  │              │  ▓ margin ▓  │
+│ 11,00 €      │              │ 10,50 €      │
+└──────────────┘              └──────────────┘
+      ↑ los dos precios, alineados abajo
+```
+
+Es el mismo truco del `margin: 0 auto` del 06 (que repartía a los lados para centrar), pero aquí en **vertical** y solo por un lado, así que en vez de centrar, **empuja**.
+
+> Probad `margin-top: auto` también en el `h2`: entonces el hueco se va arriba del todo y **toda** la tarjeta queda pegada abajo. Y si lo ponéis en dos sitios, el sobrante se **reparte** entre ellos.
 
 > 👉 Este patrón (un contenedor flex en columna + `margin-top: auto` en lo último) es **la** forma de alinear los botones o los precios de una fila de tarjetas.
 
 ### Paso 8 (propina): empujar un solo item
 
-En la cabecera, imaginad que añadís un enlace de "Entrar" que queréis pegado **al final**, separado del resto del menú:
+En la cabecera, imaginad que añadís un enlace de **"Entrar"**. Si lo ponemos sin más, se queda pegado a los otros tres, al final del grupo:
+
+```
+┌─────────────────────────────────────────────────┐
+│ Café & Código      Inicio  Cafés  Contacto Entrar│
+└─────────────────────────────────────────────────┘
+```
+
+Pero normalmente "Entrar" es otra cosa (no es una sección de la web), y se pone **separado del resto**, en el extremo:
+
+```
+┌─────────────────────────────────────────────────┐
+│ Café & Código   Inicio Cafés Contacto     Entrar│
+└─────────────────────────────────────────────────┘
+                                      ↑
+                   todo el espacio sobrante, aquí
+```
+
+Fijaos en que `justify-content` no nos vale: reparte el espacio **entre todos** los items por igual, y nosotros queremos empujar **solo uno**.
 
 _./index.html_
 
@@ -448,6 +607,30 @@ _./styles.css_
 El `margin: auto` vuelve a la carga: se come el espacio sobrante y empuja ese item (y solo ese) hacia el final.
 
 > ⚠️ Fijaos en que hemos tenido que añadir `flex: 1` al menú. ¿Por qué? Porque `margin-left: auto` reparte el **espacio sobrante**… y si el menú mide justo lo que su contenido, **no sobra nada**. Con `flex: 1` el menú crece y ocupa todo el hueco libre de la cabecera, y entonces sí hay espacio que repartir. Quitad el `flex: 1` y lo veréis: "Entrar" se queda pegado a los demás.
+
+Y ahora, un efecto secundario: al crecer el menú, **se come todo el hueco de la cabecera**, así que `space-between` (paso 2) ya no tiene espacio que repartir y "Inicio" se queda **pegado** al nombre de la web:
+
+```
+┌─────────────────────────────────────────────────┐
+│ Café & CódigoInicio  Cafés  Contacto      Entrar│
+└─────────────────────────────────────────────────┘
+               ↑ pegados
+```
+
+Se arregla dándole a la **cabecera** su propia separación, igual que hicimos con el menú:
+
+_./styles.css_
+
+```diff
+  .cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
++   gap: 2rem;
+    padding: 1rem;
+```
+
+👉 Buen recordatorio: `gap` funciona en **cualquier** contenedor flex, y aquí tenemos dos anidados (la cabecera contiene al menú, que a su vez es otro contenedor flex). Cada uno gestiona la separación **de sus propios hijos**.
 
 ## Lo que os queda por ver
 
