@@ -30,22 +30,22 @@ El navegador se hace estas preguntas **en orden**. En cuanto una desempata, se a
 
 Cada selector tiene una "puntuación" con **tres cifras** `(A, B, C)`:
 
-| Cifra | Cuenta… | Ejemplos |
-|---|---|---|
-| **A** | ids | `#menu` |
+| Cifra | Cuenta…                           | Ejemplos                            |
+| ----- | --------------------------------- | ----------------------------------- |
+| **A** | ids                               | `#menu`                             |
 | **B** | clases, atributos y pseudo-clases | `.nota`, `[type="email"]`, `:hover` |
-| **C** | elementos y pseudo-elementos | `p`, `a`, `::before` |
+| **C** | elementos y pseudo-elementos      | `p`, `a`, `::before`                |
 
 El `*` y los combinadores (espacio, `>`, `+`, `~`) **no suman nada**.
 
-| Selector | Especificidad |
-|---|---|
-| `p` | (0, 0, 1) |
-| `.menu a` | (0, 1, 1) |
-| `.menu > li + li` | (0, 1, 2) |
-| `a[href^="http"]::after` | (0, 1, 2) |
-| `.menu a:hover` | (0, 2, 1) |
-| `#menu a` | (1, 0, 1) |
+| Selector                 | Especificidad |
+| ------------------------ | ------------- |
+| `p`                      | (0, 0, 1)     |
+| `.menu a`                | (0, 1, 1)     |
+| `.menu > li + li`        | (0, 1, 2)     |
+| `a[href^="http"]::after` | (0, 1, 2)     |
+| `.menu a:hover`          | (0, 2, 1)     |
+| `#menu a`                | (1, 0, 1)     |
 
 **Se comparan como los números de versión**: primero la A; si empata, la B; si empata, la C. Así que `(1, 0, 0)` gana a `(0, 25, 0)`: **un solo id gana a cualquier cantidad de clases**. Por eso decíamos en el 04 que los ids para estilos dan problemas.
 
@@ -231,18 +231,43 @@ _./styles.css_
 
 **Normal**, sin negrita. `:where(.menu) .enlace` cuenta como `(0,1,0)`, lo mismo que `.enlace`, así que desempata el orden. Cambiad `:where` por `:is` y recargad: ahora sale **en negrita**, porque `:is(…)` sí suma (`(0,2,0)`). Misma sintaxis, distinto peso:
 
-| | Especificidad |
-|---|---|
-| `:is(A, B)` | la del selector **más específico** de dentro |
-| `:where(A, B)` | **siempre 0** |
+|                | Especificidad                                |
+| -------------- | -------------------------------------------- |
+| `:is(A, B)`    | la del selector **más específico** de dentro |
+| `:where(A, B)` | **siempre 0**                                |
+
+🤔 **¿Y para qué sirve `:is()`?** Con un solo selector dentro, `:is(.menu) .enlace` es **exactamente lo mismo** que `.menu .enlace`. Su gracia está en **agrupar** varios para no repetir:
+
+```css
+/* Sin :is() */
+.menu a,
+.footer a,
+.lateral a {
+  color: #3b2412;
+}
+
+/* Con :is(): "los a que estén dentro de .menu, .footer o .lateral" */
+:is(.menu, .footer, .lateral) a {
+  color: #3b2412;
+}
+```
+
+Hace lo mismo, pero más corto. Dos diferencias con la lista de comas del 10:
+
+- **Especificidad**: `:is()` coge la del selector **más fuerte** de dentro, y la aplica **siempre**. Si dentro hay un id (`:is(#menu, .footer) a`), **todos** los enlaces, también los del footer, pesan como si tuvieran id `(1,0,1)`. Con la lista de comas, `.footer a` seguiría pesando `(0,1,1)`.
+- **Es "tolerante"**: si uno de los selectores de dentro está mal escrito, `:is()` ignora **solo ese** y sigue. Con la lista de comas, ya vimos en el 10 que se perdía **la regla entera**.
+
+Y `:where()` es igual que `:is()` (agrupa y es tolerante)… pero con especificidad **cero**.
 
 > 💡 Muchos resets modernos (y el Preflight de Tailwind) usan `:where()` para que sus estilos pesen lo mínimo y los vuestros ganen siempre.
 
 ## DevTools: vuestro detective
 
+> 🏠 **Para ver y practicar en casa.** Durante la sesión ya hemos ido usando DevTools en cada sección; aquí está todo **junto**, a modo de chuleta. Repasadlo con cualquiera de los ejemplos de la guía: romped un estilo a propósito y seguid estos pasos hasta encontrar por qué.
+
 Cuando "mi estilo no se aplica", el proceso es siempre el mismo:
 
-1. **Seleccionad el elemento** (clic derecho → *Inspeccionar*, o el icono de la flecha).
+1. **Seleccionad el elemento** (clic derecho → _Inspeccionar_, o el icono de la flecha).
 2. **Styles**: todas las reglas que le llegan, **ordenadas de la que gana a la que pierde**.
    - Declaración **tachada** → otra regla la pisa. Buscad cuál está más arriba con esa propiedad.
    - Declaración con un **⚠️** → el valor o la propiedad están mal escritos (03).
