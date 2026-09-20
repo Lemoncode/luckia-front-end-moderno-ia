@@ -312,7 +312,7 @@ Comprobadlo en DevTools: con la caja seleccionada, el dibujo de **Computed** mue
 
 👉 Esta combinación (`max-width` + `margin: 0 auto`) es la forma clásica de hacer el **contenedor principal** de una web: el contenido centrado y con un ancho máximo cómodo de leer.
 
-> 💡 **¿Y flexbox y grid?** Más adelante veremos **flexbox** (y en otras sesiones **CSS grid**), que sirven para colocar **varios elementos** unos respecto a otros: en fila, en columnas, repartidos, centrados también en vertical… Mucha gente tira de flex para todo, incluso para centrar una sola caja. Funciona, pero para **una caja centrada en la página** no hace falta: `max-width` + `margin: 0 auto` es más simple y no obliga a tocar el padre. Regla práctica: **una caja → margin auto; colocar varias → flex o grid.**
+> 💡 **¿Y flexbox y grid?** Más adelante veremos **flexbox** (19) y **CSS grid** (20), que sirven para colocar **varios elementos** unos respecto a otros: en fila, en columnas, repartidos, centrados también en vertical… Mucha gente tira de flex para todo, incluso para centrar una sola caja. Funciona, pero para **una caja centrada en la página** no hace falta: `max-width` + `margin: 0 auto` es más simple y no obliga a tocar el padre. Regla práctica: **una caja → margin auto; colocar varias → flex o grid.**
 >
 > Y en Tailwind lo veréis mucho así: `class="max-w-2xl mx-auto"`. Es exactamente esto (`mx` = margin en el eje x, izquierda y derecha).
 

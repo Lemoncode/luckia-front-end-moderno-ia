@@ -49,7 +49,7 @@ El `h1` y los `p` se **apilan**; el `strong` y el `a` **fluyen** dentro del text
 Y dos más que tienen **capítulo propio**:
 
 - `flex` → **flexbox**, en el 19.
-- `grid` → **CSS grid**, en otras sesiones.
+- `grid` → **CSS grid**, en el 20.
 
 > Cada elemento tiene un `display` por defecto (lo pone el navegador), pero **se puede cambiar**: un `<a>` puede ser `block` y un `<li>` puede ser `inline`. El HTML dice **qué es**; el `display`, **cómo se coloca**.
 

@@ -14,7 +14,7 @@ Llevamos toda la sesión con cajas que se apilan (block) o que van en línea com
 
 **Flexbox** (_flexible box layout_) está pensado justo para eso: colocar un grupo de elementos **en una dirección**, repartiendo el espacio entre ellos.
 
-> **¿Flexbox o grid?** Regla rápida: **una dirección** (una fila **o** una columna) → **flexbox**. **Dos a la vez** (filas **y** columnas alineadas, como una cuadrícula) → **CSS grid**, que veréis en otra sesión.
+> **¿Flexbox o grid?** Regla rápida: **una dirección** (una fila **o** una columna) → **flexbox**. **Dos a la vez** (filas **y** columnas alineadas, como una cuadrícula) → **CSS grid**, que veremos en el 20.
 
 ## Las dos piezas
 
@@ -636,12 +636,23 @@ _./styles.css_
 
 - **`align-self`**: alinear **un** item distinto de sus hermanos.
 - **`order`**: cambiar el orden visual sin tocar el HTML (⚠️ con cuidado: el teclado y los lectores de pantalla siguen el orden del HTML, así que puede desorientar).
-- **CSS grid**: para cuadrículas de verdad, en dos dimensiones. Otra sesión.
+- **CSS grid**: para cuadrículas de verdad, en dos dimensiones. Justo lo que viene ahora, en el 20.
 
 > 💡 **En Tailwind** todo esto son clases directas: `flex`, `flex-col`, `gap-4`, `justify-between`, `items-center`, `flex-wrap`, `flex-1`, `ml-auto`… Si entendéis esta sección, entendéis el 80% del HTML que veréis en un proyecto con Tailwind.
 
 ## Para ampliar
 
-- [CSS-Tricks · A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/): **la** chuleta de flexbox, con dibujos de cada valor (en inglés).
-- [Flexbox Froggy](https://flexboxfroggy.com/#es): un juego para practicar flexbox. Muy recomendable y está en español.
+**Chuletas** (para tener abiertas mientras maquetáis):
+
+- [CSS-Tricks · A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/): **la** chuleta de flexbox. Cada propiedad con un dibujo de lo que hace cada valor. Si solo guardáis un enlace de esta sección, que sea este (en inglés).
+- [Flexbox Cheatsheet (yoksel)](https://yoksel.github.io/flex-cheatsheet/): otra chuleta, con ejemplos que se pueden tocar en la propia página (en inglés).
+
+**Juegos para practicar** (media hora y se os queda):
+
+- 🐸 [Flexbox Froggy](https://flexboxfroggy.com/#es): las ranitas en los nenúfares. 24 niveles, en español. **Empezad por este.**
+- 🏰 [Flexbox Defense](http://www.flexboxdefense.com/): un *tower defense* en el que colocáis las torres con flexbox (en inglés).
+- 🧟 [Flexbox Zombies](https://mastery.games/flexboxzombies/): una historia por capítulos para dominar flexbox a fondo; pide registro (en inglés).
+
+**Documentación:**
+
 - [MDN · Flexbox](https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout/Flexbox)
