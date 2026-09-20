@@ -322,7 +322,7 @@ Fijaos en lo que hemos escrito:
   ```
 
 - **`grid-area`** en cada hijo dice **en qué zona va**. El nombre lo elegimos nosotros.
-- `grid-template-rows: auto 1fr auto` = "cabecera y pie, lo que ocupen; la fila del medio, **todo lo que sobre**". Con el `min-height: 100vh` del `body`, eso hace que **el pie quede abajo del todo** aunque haya poco contenido. Es el clásico *sticky footer*, gratis.
+- `grid-template-rows: auto 1fr auto` = "cabecera y pie, lo que ocupen; la fila del medio, **todo lo que sobre**". Combinado con el `min-height: 100vh` del `body`, resuelve un detalle clásico: **si la página tiene poco contenido, el pie no se queda a media pantalla** con un hueco blanco debajo, sino que baja al final de la ventana.
 
 **Y lo mejor: reordenar la página es reescribir el dibujo.** Probad a poner el lateral a la derecha:
 
@@ -340,26 +340,9 @@ Fijaos en lo que hemos escrito:
 
 Sin tocar **una sola línea del HTML**. Comparadlo con lo que costaría esto con `float` o con `position`… 😅
 
-👉 En DevTools, con la etiqueta **`grid`** activada, veréis los nombres de cada zona dibujados encima de la página.
+👉 En DevTools, con la etiqueta **`grid`** activada, veréis los nombres de cada zona dibujados encima de la página (tenéis que activar en Layout --> Show Area names)
 
 > ⚠️ Cuidado con reordenar: el **orden del HTML** sigue siendo el que usan el teclado y los lectores de pantalla. Que se vea en un orden y se lea en otro puede desorientar.
-
-> 💡 **Extra para casa**: haced que en móvil todo vaya en una sola columna. Se hace con una media query y **reescribiendo el dibujo**:
->
-> ```css
-> @media (max-width: 40rem) {
->   body {
->     grid-template-columns: 1fr;
->     grid-template-areas:
->       "cabecera"
->       "principal"
->       "lateral"
->       "pie";
->   }
-> }
-> ```
->
-> (Las media queries no las hemos visto hoy, pero se leen solas: "cuando la ventana mida como mucho 40rem, aplica esto".)
 
 ## Alineación (se parece mucho a flexbox)
 
