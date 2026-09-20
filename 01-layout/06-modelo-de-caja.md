@@ -454,7 +454,7 @@ El padding **separa** el borde de la cabecera de su primer hijo: ya no se "tocan
 ### 3. Consejo: cuidado con dónde pones el margin
 
 - Un **componente** (una tarjeta, un botón) **no debería llevar margin hacia fuera**. El día que lo reutilices en otro sitio, ese margen molestará.
-- La separación entre elementos es cosa del **contenedor**: con **padding** en el padre o, cuando veamos flexbox (18), con `gap`.
+- La separación entre elementos es cosa del **contenedor**: con **padding** en el padre o, cuando veamos flexbox (19), con `gap`.
 - Si usáis margin, mejor **en una sola dirección** (por ejemplo, solo `margin-bottom`) para no pelearos con el colapso.
 
 ## 🛠️ Práctica
@@ -601,7 +601,7 @@ _./styles.css_
 
 Medid en DevTools la separación entre las dos tarjetas: **32px, no 64px**. El margen de abajo de la primera y el de arriba de la segunda se han **colapsado**.
 
-> Y fijaos que ahora la tarjeta **lleva margen incorporado**: si la usamos en otra página, se lo lleva puesto. Cuando veamos flexbox (18), la separación la pondrá el contenedor con `gap`.
+> Y fijaos que ahora la tarjeta **lleva margen incorporado**: si la usamos en otra página, se lo lleva puesto. Cuando veamos flexbox (19), la separación la pondrá el contenedor con `gap`.
 
 ### 6. Detalles de la tarjeta
 

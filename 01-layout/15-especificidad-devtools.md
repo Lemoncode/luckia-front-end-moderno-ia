@@ -175,6 +175,8 @@ Ahora `.menu a.activo` `(0,2,1)` gana a `.menu a` `(0,1,1)` y "Cafés" sale en r
 
 > 👉 **Ids en el HTML**: sí (enlaces internos, formularios, JavaScript). **Ids en el CSS**: mejor no.
 
+> 🔮 ¿Y si ese id está en un CSS que **no podemos tocar** (una librería, código heredado)? CSS moderno tiene una salida elegante: las **capas de cascada**. Lo vemos en el 16.
+
 ### Paso 4: el estilo inline
 
 _./index.html_
@@ -276,7 +278,7 @@ Cuando "mi estilo no se aplica", el proceso es siempre el mismo:
    - **Checkbox** junto a cada declaración para desactivarla y ver qué pasa.
    - Botón **`:hov`** para forzar `:hover`, `:focus`… (12), y **`.cls`** para añadir o quitar clases al vuelo.
 3. **Computed**: el valor **final** de cada propiedad. Desplegad la flechita para ver **de qué regla sale** (lo vimos en el 08). Si Styles os confunde, Computed manda.
-4. **Layout**: de momento no lo necesitamos, pero guardadlo en la memoria. Cuando veamos **flexbox** (18) y **grid**, desde aquí se activan unas guías que dibujan las filas, columnas y huecos sobre la página. Imprescindible para maquetar.
+4. **Layout**: de momento no lo necesitamos, pero guardadlo en la memoria. Cuando veamos **flexbox** (19) y **grid**, desde aquí se activan unas guías que dibujan las filas, columnas y huecos sobre la página. Imprescindible para maquetar.
 
 > Y recordad que **todo lo que cambiáis en DevTools es temporal**: al recargar se pierde. Cuando encontréis el arreglo, copiadlo a vuestro `styles.css`.
 

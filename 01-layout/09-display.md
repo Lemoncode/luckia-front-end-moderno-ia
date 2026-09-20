@@ -48,7 +48,7 @@ El `h1` y los `p` se **apilan**; el `strong` y el `a` **fluyen** dentro del text
 
 Y dos más que tienen **capítulo propio**:
 
-- `flex` → **flexbox**, en el 18.
+- `flex` → **flexbox**, en el 19.
 - `grid` → **CSS grid**, en otras sesiones.
 
 > Cada elemento tiene un `display` por defecto (lo pone el navegador), pero **se puede cambiar**: un `<a>` puede ser `block` y un `<li>` puede ser `inline`. El HTML dice **qué es**; el `display`, **cómo se coloca**.
@@ -189,7 +189,7 @@ _./styles.css_
 
 Cada enlace pasa a su propia línea y ocupa **todo el ancho**. Pasad el ratón: **toda la franja** es el enlace, no solo la palabra.
 
-¿Y si lo queremos en horizontal? Cambiad `block` por `inline-block`: en fila, cada uno con su padding. (Para menús horizontales "de verdad", con el espacio bien repartido, usaremos **flexbox** en el 18.)
+¿Y si lo queremos en horizontal? Cambiad `block` por `inline-block`: en fila, cada uno con su padding. (Para menús horizontales "de verdad", con el espacio bien repartido, usaremos **flexbox** en el 19.)
 
 ### Paso 4: `display: none` vs `visibility: hidden`
 

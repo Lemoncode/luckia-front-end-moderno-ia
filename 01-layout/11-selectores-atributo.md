@@ -204,7 +204,7 @@ _./styles.css_
 ```
 
 - `sr-only` = *screen reader only* (solo para lectores de pantalla).
-- ¿Por qué no `display: none`? Porque, como vimos en el 09, `display: none` lo oculta **también** al lector de pantalla. Aquí queremos lo contrario: que **no se vea** pero **se lea**. Por eso el truco: una caja de 1px, recortada y sacada del flujo (`position: absolute`, lo vemos en el 16).
+- ¿Por qué no `display: none`? Porque, como vimos en el 09, `display: none` lo oculta **también** al lector de pantalla. Aquí queremos lo contrario: que **no se vea** pero **se lea**. Por eso el truco: una caja de 1px, recortada y sacada del flujo (`position: absolute`, lo vemos en el 17).
 - No hace falta memorizar esa regla: es una receta estándar que se copia. **Tailwind la trae de serie**: la clase `sr-only`.
 
 Lo ideal es **combinar** las dos cosas: la flecha en CSS como **decorativa** (`content: " ↗" / ""`) para quien ve la pantalla, y el `<span class="sr-only">` en el HTML para quien usa lector de pantalla. Cada uno recibe la información por su canal.
