@@ -115,17 +115,32 @@ _./styles.css_
 ```diff
 + .entradilla::first-letter {
 +   float: left;
-+   font-size: 3.5em;
-+   line-height: 1;
++   font-size: 3.2em;
++   line-height: 0.85;
 +   font-weight: bold;
 +   color: #b45309;
 +   margin-right: 0.1em;
 + }
 ```
 
-La "P" de "Preparar" ocupa ahora varias líneas y el texto la rodea.
+La "P" de "Preparar" ocupa ahora **dos líneas** y el texto la rodea.
+
+> 🤔 **¿Por qué esos números?** La letra flotante es una caja, y el texto se aparta de ella **mientras la caja siga ahí**. El párrafo tiene `line-height: 1.7` (cada renglón mide 1.7em). Si la caja de la letra mide un poco más de dos renglones, **se come también el tercero** (el texto se queda sangrado sin motivo). Con `font-size: 3.2em` y `line-height: 0.85`, la caja mide unas 2.7em: cabe en dos renglones (3.4em). Probad a poner `font-size: 3.5em` y `line-height: 1` y veréis el tercer renglón metido hacia dentro.
+>
+> 🔮 CSS moderno tiene una propiedad hecha justo para esto, `initial-letter: 2` ("letra capital de 2 líneas"), que hace el cálculo por vosotros. ¿Se puede usar ya en todos los navegadores? Ya sabéis dónde mirarlo (13).
 
 > `float: left` es una propiedad antigua que hace que el texto **rodee** a un elemento. Hoy casi solo se usa para esto (y para imágenes dentro de un texto); para colocar cajas usaremos flexbox. Aquí es justo lo que queremos.
+
+Si queréis exactamente el efecto de libro antiguo:
+
+```css
+.entradilla::first-letter {
+  initial-letter: 3 2;  /* 3 renglones de alto, hundida 2 → sobresale 1 por arriba */
+  font-weight: bold;
+  color: #b45309;
+  margin-right: 0.1em;
+}
+```
 
 ### Paso 2: `::first-line` — la primera línea
 
