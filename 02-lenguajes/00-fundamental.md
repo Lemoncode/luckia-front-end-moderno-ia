@@ -7,8 +7,7 @@ asociadas a ningún tipo concreto. Por tanto, no tengo que declararlas especific
 Puedo asignar el valor que quiera, del tipo que quiera.
 
 Tenemos varios operadores para declarar variables: `let`, `const` y `var`.
-Actualmente `var` está desaconsejado debido a un concepto llamado "Hoisting" que veremos más
-adelante.
+Actualmente `var` está desaconsejado: permite redeclarar variables y tiene un comportamiento llamado _hoisting_ que veremos más adelante.
 
 Utilizaremos `let` cuando queramos declarar una variable a la que, posteriormente, podamos ser capaces de reasignar su valor
 
@@ -38,7 +37,7 @@ const a = 3;
 a = 14;
 ```
 
-Al igual que las variables `let` y `const` no podemos redeclararlas con el mismo nombre en el mismo ámbito.
+Las variables `let` y `const` no se pueden redeclarar con el mismo nombre en el mismo ámbito.
 
 ```js
 const a = 3;
@@ -46,7 +45,19 @@ const a = 14; // Error! La variable `a` ya ha sido redeclarada
 
 let b = 3;
 let b = 14; // Error! La variable `b` ya ha sido redeclarada
+```
 
+Con `var`, en cambio, sí podemos. El segundo valor pisa al primero sin ningún aviso, y un despiste que debería ser un error pasa desapercibido.
+
+```js
+var d = 3;
+var d = 14; // Sin error
+console.log(d); // 14
+```
+
+Tampoco podemos usar una variable `let` o `const` antes de declararla.
+
+```js
 console.log(c); // Error! La variable `c` todavía no está inicializada.
 let c = 10;
 ```
@@ -172,6 +183,17 @@ const user = {
 };
 
 console.log(typeof user); // object
+
+// Podemos crear un objeto asignándole el valor de una variable
+const name = "John";
+const age = 35;
+const newUser = {
+  name: name,
+  age: age,
+};
+
+// Queda más reducido con la notación shorthand
+const newUser = { name, age };
 ```
 
 CRUD básico con objetos.
@@ -230,60 +252,11 @@ El array es una de las estructuras de datos con más métodos. Tiene métodos pa
 
 ### Funciones
 
-Las funciones son un tipo especial de objeto que permite ser invocada y ejecutar una serie de instrucciones. Pueden declarar entre 0 y n parámetros y opcionalmente un valor de retorno.
+Las funciones también son objetos: un tipo especial que además se puede invocar. Las veremos en detalle en el siguiente apartado. Como curiosidad, `typeof` las distingue del resto de objetos.
 
 ```js
-// Función como declaración
-function applyIva(price) {
-  console.log(price);
-  const iva = 0.21;   // declaración interna
-  return price * iva; // valor de retorno
-}
-
-const result = applyIva(200);
-console.log(result);
-
-// Función anónima como expresión
-const applyIva = function (price) {
-  return price * 0.21;
-};
-
-// Múltiples parámetros
-function doSomething(param1, param2, param3) {
-  console.log(param1);
-  console.log(param2);
-  console.log(param3);
-  console.log(arguments); // sólo existe en funciones `function`.
-}
-
-doSomething("arg 1", "arg 2", "arg3");
-doSomething(); // argumentos undefined
-doSomething("arg1", "arg2", "arg3", "arg4"); // argumentos en exceso
-```
-
-Tenemos otro tipo de función denominadas arrow functions.
-
-```js
-// El ejemplo anterior transformado en arrow function
-const applyIva = (price) => {
-  return price * 0.21;
-};
-
-// Arrow function simplificada.
-// - Si sólo existe un parámetro opcionalmente podemos eliminar los paréntesis
-// - Si sólo tiene una sentencia de retorno podemos eliminar las llaves y el return.
-const applyIva = price => price * 0.21;
-
-// Devolviendo un objeto en base a los parámetros.
-const toObject = (name, surname, age) => {
-  return { name, surname, age };
-};
-
-// Hay que tener cuidado cuando devolvemos objetos sin `return` con arrow functions
-// ya que puede confundirse las llaves de cuerpo de función con las de objeto literal.
-// Para devolver objetos encerraremos la variable entre paréntesis.
-const toObject = (name, surname, age) => ({ name, surname, age });
-
+function greet() {}
+console.log(typeof greet); // function
 ```
 
 ## Operadores
@@ -398,6 +371,7 @@ console.log(nums1 === nums3); // true, misma referencia en memoria
 ```
 
 El hecho de que tengamos dos operadores de igualdad es debido a la naturaleza dinámica del lenguaje. Cuando utilizamos la igualdad débil con dos elementos de distinto tipo son internamente transformados a un tipo en común (type coercion) antes de realizar la comparación por su valor. Se recomienda siempre utilizar la igualdad estricta.
+Puedes ver más detalles en [este enlace](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Equality_comparisons_and_sameness#comparing_equality_methods).
 
 ## Directivas de control de flujo
 
@@ -582,7 +556,7 @@ antes de ejecutar el código. Para visualizarlo de una manera más sencilla, dig
 Esto puede chocar de frente con la intuición: uno espera que una variable no exista hasta la línea donde se declara, pero con `var` ya existe desde
 antes, solo que con el valor `undefined`. Podemos acceder a ella sin que salte un error, y eso esconde bugs que deberían haberse detectado de inmediato.
 
-Hoisting con `function`.
+Hoisting con `function`. Las funciones las veremos en detalle en el siguiente apartado; por ahora basta con saber que se declaran con `function` y se invocan con paréntesis.
 
 ```js
 // Habitualmente, en cualquier lenguaje, seguimos un orden lógico donde declaramos primero funciones
