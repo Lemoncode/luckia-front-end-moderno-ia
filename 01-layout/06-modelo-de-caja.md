@@ -208,6 +208,24 @@ Hay dos cosas nuevas en ese selector:
   }
   ```
 
+  Añadimos una nota, para este ejemplo:
+
+  ```diff
+      <div class="regla">Esto mide 300px</div>
+      <div class="caja">Soy una caja</div>
+      <div class="caja caja-border">Soy una caja con border-box</div>
+  +   <div class="nota">Consejo: Muele el café justo antes de prepararlo.</div>
+  ```
+
+  ```diff
+  + .nota {
+  +   background-color: #fef3c7;
+  +   border-left: 4px solid #d97706;
+  +   padding: 12px;
+  +   margin-top: 16px;
+  + }
+  ```
+
   Eso pinta un 💡 delante del texto de cada `.nota`. Esos "elementos de mentira" también son cajas, pero el `*` **no los incluye**, por eso se añaden a mano. Los veremos a fondo en el 14.
 
 👉 **Lo usa todo el mundo**: prácticamente todos los reset CSS lo incluyen, y Tailwind lo trae de serie. Lo volvemos a ver en el 08.
