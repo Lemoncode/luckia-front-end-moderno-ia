@@ -162,7 +162,7 @@ Escritorio (bien)                  Móvil (mal)
 ┌─────────────────────┐            ┌───────────┐
 │      Cabecera       │            │ Cabecera  │
 ├──────┬──────────────┤            ├──────┬────┤
-│ Lat. │  Contenido   │            │ Late │Cont│
+│ Lat. │  Contenido   │            │ Lat. │Cont│
 ├──────┴──────────────┤            ├──────┴────┤
 │        Pie          │            │    Pie    │
 └─────────────────────┘            └───────────┘
