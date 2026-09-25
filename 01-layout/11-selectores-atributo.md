@@ -176,14 +176,25 @@ Regla práctica:
 
 #### La opción más robusta: el texto en el HTML, oculto a la vista
 
-El texto alternativo en `content` es moderno y no todos los lectores de pantalla lo tratan igual. La forma que funciona **en todas partes** es poner la información en el **HTML**, dentro del enlace, y ocultarla **solo visualmente**:
+El texto alternativo en `content` es moderno y no todos los lectores de pantalla lo tratan igual. Cuando de verdad hay que **decirle algo** al usuario, lo que funciona **en todas partes** es ponerlo en el **HTML** y ocultarlo **solo visualmente**.
+
+Pero antes, una pregunta importante: **¿hay algo que decir?**
+
+> 🗣️ **Ojo, que el lector de pantalla ya habla.** Al llegar a un `<a>` anuncia solo **"enlace, MDN"**. Así que añadirle un "(enlace externo)" es repetir la palabra "enlace" y, sobre todo, contar algo que a quien escucha **no le cambia nada**: pulse donde pulse, va a navegar. La flecha ↗ es una **convención visual**; convertirla en texto suele ser **ruido**, no ayuda.
+>
+> Donde **sí** se recomienda avisar es cuando el enlace **se abre en otra pestaña** (`target="_blank"`): ahí el comportamiento cambia sin previo aviso y el botón "atrás" deja de funcionar. Ese aviso sí aporta.
+
+Así que el ejemplo bueno es este:
 
 _./index.html_
 
-```html
-<a href="https://developer.mozilla.org">
-  MDN <span class="sr-only">(enlace externo)</span>
-</a>
+```diff
+- <li><a href="https://developer.mozilla.org">MDN (externo)</a></li>
++ <li>
++   <a href="https://developer.mozilla.org" target="_blank" rel="noopener">
++     MDN <span class="sr-only">(se abre en una pestaña nueva)</span>
++   </a>
++ </li>
 ```
 
 _./styles.css_
@@ -207,9 +218,15 @@ _./styles.css_
 - ¿Por qué no `display: none`? Porque, como vimos en el 09, `display: none` lo oculta **también** al lector de pantalla. Aquí queremos lo contrario: que **no se vea** pero **se lea**. Por eso el truco: una caja de 1px, recortada y sacada del flujo (`position: absolute`, lo vemos en el 17).
 - No hace falta memorizar esa regla: es una receta estándar que se copia. **Tailwind la trae de serie**: la clase `sr-only`.
 
-Lo ideal es **combinar** las dos cosas: la flecha en CSS como **decorativa** (`content: " ↗" / ""`) para quien ve la pantalla, y el `<span class="sr-only">` en el HTML para quien usa lector de pantalla. Cada uno recibe la información por su canal.
+Resumiendo las dos técnicas del apartado:
 
-> ⚖️ El precio: hay que acordarse de poner el `<span>` en **cada** enlace externo, así que perdemos parte de la magia del selector de atributo ("se aplica solo"). En un proyecto con React, eso se resuelve con un componente `<EnlaceExterno>` que lo añade siempre.
+| Caso | Qué hacer |
+|---|---|
+| Un **icono decorativo** (la flecha ↗, el sobre ✉️) | `content: "↗" / ""` → que el lector **lo ignore** |
+| Un **texto útil** que también se ve (el "(PDF)") | `content: " (PDF)"` → que **lo lea**, sin más |
+| Información que **solo** necesita quien no ve la pantalla (se abre en otra pestaña) | `<span class="sr-only">` en el HTML |
+
+> ⚖️ El precio de la tercera: hay que acordarse de poner el `<span>` en **cada** enlace, así que perdemos la magia del selector de atributo ("se aplica solo"). En un proyecto con React se resuelve con un componente `<EnlaceExterno>` que lo añada siempre.
 
 ### Paso 4: `$=` — enlaces a PDF
 
