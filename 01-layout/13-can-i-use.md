@@ -103,3 +103,4 @@ Can I use y Baseline son vuestro **detector de mentiras** para ambos casos.
 - [web.dev · Baseline](https://web.dev/baseline): qué es y cómo funciona.
 - [Web Platform Status](https://webstatus.dev): el estado Baseline de todas las funcionalidades, con buscador.
 - [MDN · @supports](https://developer.mozilla.org/es/docs/Web/CSS/@supports)
+- [Can I Include](https://caninclude.onrender.com/): el primo de Can I use, pero para **anidar etiquetas HTML** (¿puedo meter un `div` dentro de un `ul`?). Lo vimos en el 01.
