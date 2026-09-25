@@ -92,7 +92,18 @@ Si el texto del botón aumenta, el `padding` también crece proporcionalmente. E
 ### `ch`: el ancho de un carácter
 
 - `1ch` ≈ el ancho del carácter "0" en la fuente actual.
-- Truco de legibilidad: `max-width: 65ch` → líneas de unos 65 caracteres, que es lo cómodo para leer.
+- Resulta útil para limitar el ancho de textos teniendo como referencia una cantidad aproximada de caracteres por línea.
+
+```css
+.article-content {
+  max-width: 65ch;
+}
+```
+
+Con esto tenemos que ese contenido va a tener **«una longitud de línea aproximada y cómoda para textos largos»**, porque con una fuente proporcional `65ch` no equivale necesariamente a 65 caracteres.
+
+- En textos largos, un ancho de entre 45ch y 75ch suele facilitar la lectura. El valor adecuado depende del tipo de contenido, la fuente, el tamaño del texto y el diseño.
+- No es una regla universal: un titular, una tabla o un formulario pueden necesitar anchos diferentes.
 
 ### Resumen: ¿qué uso?
 
