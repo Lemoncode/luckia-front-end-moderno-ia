@@ -20,7 +20,7 @@ Hasta ahora hemos colocado cajas en **dos dimensiones** (arriba/abajo, izquierda
 
 - Es un **número entero**: `z-index: 1`, `10`, `-1`… **Más alto = más cerca de vosotros** (más delante).
 - Su valor por defecto es `auto`, que se comporta como 0.
-- ⚠️ **Solo funciona en elementos posicionados**: si el elemento es `static`, `z-index` **se ignora**. (Excepción: también funciona en los hijos de un flex o un grid, lo veréis en el 19.)
+- ⚠️ **Solo funciona en elementos posicionados**: si el elemento es `static`, `z-index` **se ignora**. (Excepción: también funciona en los hijos de un flex o un grid, que los veremos en el 19 y el 20.)
 - Con el mismo `z-index`, desempata **el orden del HTML**: gana el último.
 
 ## Vamos a verlo
