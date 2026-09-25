@@ -19,11 +19,9 @@ a {
 }
 ```
 
-- Afecta a **casi(*) todos** los `<a>` de la página.
+- Afecta a **todos** los `<a>` de la página.
 - Perfecto para los estilos generales ("así son los enlaces en mi web").
 - El problema: ¿y si solo quiero cambiar **uno** de los párrafos? → clases.
-
-(*) Ya veremos luego detalles.
 
 ## Selector de clase
 
@@ -70,9 +68,11 @@ a {
 }
 ```
 
-- Se aplica a **todo**.
+- Se aplica a **casi todo(\*)**.
 - Se usa poco y para cosas muy generales (lo veremos en el reset CSS).
 - El truco de arriba es **oro para depurar**: dibuja el contorno de cada elemento y veis cómo se reparte la página en cajas. 📦 Spoiler del modelo de caja.
+
+(\*) Ya veremos más adelante que si queremos que aplique a pseudoelementos hay que especificarlos también.
 
 ## 🛠️ Práctica
 
