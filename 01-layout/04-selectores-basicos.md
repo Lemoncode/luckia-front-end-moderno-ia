@@ -19,9 +19,11 @@ a {
 }
 ```
 
-- Afecta a **todos** los `<a>` de la página.
+- Afecta a **casi(*) todos** los `<a>` de la página.
 - Perfecto para los estilos generales ("así son los enlaces en mi web").
 - El problema: ¿y si solo quiero cambiar **uno** de los párrafos? → clases.
+
+(*) Ya veremos luego detalles.
 
 ## Selector de clase
 
