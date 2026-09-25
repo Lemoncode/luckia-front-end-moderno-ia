@@ -26,9 +26,10 @@ color: #333; /* abreviado: #333 = #333333 */
 color: rgb(180 83 9); /* rojo, verde, azul (0 a 255) */
 color: rgb(180 83 9 / 50%); /* …con 50% de transparencia */
 color: hsl(30 90% 37%); /* tono, saturación, luminosidad */
+color: oklch(55% 0.15 55); /* luminosidad, intensidad y tono */
 ```
 
-- En el día a día veréis sobre todo **hex** (lo que os pasa diseño) y **rgb/hsl** cuando hace falta transparencia.
+- En el día a día veréis sobre todo **hex** (lo que os pasa diseño) y **rgb/hsl** cuando hace falta transparencia. También es cada vez más habitual encontrar oklch() en sistemas de diseño modernos.
 - `hsl` es el más "humano": para un tono más claro, subes la luminosidad.
 - **Nota para alumno para jugar después** No hace falta calcular los códigos a mano: DevTools trae un **selector de color**.
   1. F12 → **Elements** → seleccionad un elemento que tenga color (por ejemplo, el `body`).
@@ -37,6 +38,12 @@ color: hsl(30 90% 37%); /* tono, saturación, luminosidad */
   4. **Shift + clic** en el cuadradito cambia el formato: hex → rgb → hsl.
 
   Ojo: los cambios en DevTools son **temporales**. Al recargar se pierden; si os gusta el color, copiad el valor a vuestro `styles.css`.
+
+**Nota para alumno para jugar después**
+
+- `oklch()` se parece conceptualmente a hsl(), pero sus cambios de luminosidad e intensidad son más uniformes para el ojo humano. Por eso resulta especialmente útil para crear paletas, variantes y degradados.
+
+- CSS también incluye funciones como color-mix() y los colores relativos, que permiten obtener colores nuevos a partir de otro color.
 
 ## Unidades de longitud
 
@@ -53,9 +60,24 @@ color: hsl(30 90% 37%); /* tono, saturación, luminosidad */
 
 ### `em`: relativa a la letra del propio elemento
 
-- `1em` = el tamaño de letra **del elemento**… y si la usas en el propio `font-size`, el del **padre**.
-- Útil para cosas que deben **crecer con su texto**: el padding de un botón, el tamaño de un icono junto a un texto.
-- ⚠️ Cuidado en `font-size`: se **multiplica** en elementos anidados (lo veremos en la práctica).
+- En la mayoría de las propiedades, `1em` equivale al tamaño de letra calculado del propio elemento.
+- Cuando se utiliza en `font-size`, se calcula a partir del tamaño de letra del elemento padre.
+- Resulta útil para medidas que deben crecer junto con el texto, como el `padding` de un botón o un icono situado junto a una etiqueta.
+- ⚠️ Usada en `font-size`, puede acumularse en elementos anidados y producir tamaños difíciles de controlar. Para definir tamaños de texto generales suele resultar más predecible usar `rem`.
+- El diseño debe admitir que el texto aumente de tamaño, evitando alturas fijas, espacios demasiado ajustados o textos que no puedan ocupar varias líneas.
+
+Ejemplo:
+
+```css
+button {
+  font-size: 1rem;
+  padding: 0.5em 1em;
+}
+```
+
+Si el texto del botón aumenta, el `padding` también crece proporcionalmente. Eso ayuda a mantener el componente legible y equilibrado.
+
+`em` puede ser interesantes para espacios internos ligados al texto, pero `rem` ouede ser más predecible para tamaños tipográficos.
 
 ### `%`: relativa al padre
 
@@ -346,8 +368,8 @@ _./index.html_
 
 ```html
 <p class="texto">
-  Preparar un buen café no requiere una cafetera de mil euros. Con café
-  recién molido, agua a la temperatura adecuada y un poco de paciencia…
+  Preparar un buen café no requiere una cafetera de mil euros. Con café recién
+  molido, agua a la temperatura adecuada y un poco de paciencia…
 </p>
 ```
 
