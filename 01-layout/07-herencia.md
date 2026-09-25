@@ -189,6 +189,7 @@ _./styles.css_
 + .tarjeta {
 +   font-family: Georgia, serif;
 +   color: #3b2412;
++   margin-top: 16px;
 + }
 ```
 
@@ -210,6 +211,7 @@ _./styles.css_
   .tarjeta {
     font-family: Georgia, serif;
     color: #3b2412;
+    margin-top: 16px;
 +   border: 2px solid #b45309;
 +   padding: 1rem;
 +   max-width: 30rem;
@@ -256,6 +258,7 @@ _./styles.css_
   .tarjeta {
     font-family: Georgia, serif;
     color: #3b2412;
+    margin-top: 16px;
 -   border: 2px solid #b45309;
 +   border: 2px solid var(--color-acento);
     padding: 1rem;
