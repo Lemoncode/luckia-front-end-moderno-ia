@@ -68,9 +68,11 @@ a {
 }
 ```
 
-- Se aplica a **todo**.
+- Se aplica a **casi todo(\*)**.
 - Se usa poco y para cosas muy generales (lo veremos en el reset CSS).
 - El truco de arriba es **oro para depurar**: dibuja el contorno de cada elemento y veis cómo se reparte la página en cajas. 📦 Spoiler del modelo de caja.
+
+(\*) Ya veremos más adelante que si queremos que aplique a pseudoelementos hay que especificarlos también.
 
 ## 🛠️ Práctica
 

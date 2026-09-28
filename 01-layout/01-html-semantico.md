@@ -71,6 +71,23 @@ Entonces, ¿para qué molestarse? Porque **no solo lo leen personas**:
 | `<blockquote>` / `<q>`      | Cita larga / cita en línea                        |                                                        |
 | `<time datetime>`           | Fecha legible por máquinas                        | `<time datetime="2026-09-19">19 de septiembre</time>`  |
 
+## No todo se puede meter dentro de todo
+
+Además de elegir bien la etiqueta, hay otra regla que se salta muchísima gente (y la IA también): **cada etiqueta dice qué puede llevar dentro**. No es una manía de los estándares: cuando se incumple, el navegador "arregla" el HTML a su manera (lo vimos en el 00) y los **lectores de pantalla** se pierden.
+
+Casos típicos:
+
+| ❌ Esto no es válido | Por qué | ✅ En su lugar |
+|---|---|---|
+| `<ul><div>…</div></ul>` | Un `<ul>` **solo** puede tener `<li>` como hijos | Meted el `<div>` **dentro** de un `<li>` |
+| `<a href="#"><button>…</button></a>` | Un enlace no puede contener un botón (son dos cosas interactivas, una dentro de otra) | Elegid **una**: o enlace o botón |
+| `<p><div>…</div></p>` | Un `<p>` solo lleva contenido de texto | Usad un `<div>` (o nada) por fuera |
+| `<button><a href="#">…</a></button>` | Mismo caso que el del enlace con botón | Igual: una sola cosa |
+
+> 🔎 **Herramienta para salir de dudas**: [Can I Include](https://caninclude.onrender.com/). Escribís la etiqueta hija y la madre ("¿puedo meter un `div` dentro de un `ul`?") y os dice si es válido, según el estándar. Es el primo de *Can I use* (que veremos en el 13), pero para **anidar etiquetas** en vez de para compatibilidad.
+>
+> Y si queréis revisar una página entera: el [validador de HTML del W3C](https://validator.w3.org/nu/) os lista todos los errores de este tipo.
+
 ## 🛠️ Práctica 1: un artículo de blog
 
 En `index.html` montad esta estructura (el texto lo inventáis, lorem ipsum vale):
@@ -199,3 +216,5 @@ Detalles para comentar:
 - [MDN · Semántica en HTML](https://developer.mozilla.org/es/docs/Glossary/Semantics#sem%C3%A1ntica_en_html)
 - [MDN · Estructura de documentos y sitios web](https://developer.mozilla.org/es/docs/Learn/HTML/Introduction_to_HTML/Document_and_website_structure)
 - [HTML elements reference (MDN)](https://developer.mozilla.org/es/docs/Web/HTML/Element): la lista completa, para consultar, no para memorizar.
+- [Can I Include](https://caninclude.onrender.com/): ¿puede esta etiqueta ir dentro de esta otra? (en inglés)
+- [Validador de HTML del W3C](https://validator.w3.org/nu/): pegáis vuestro HTML (o una URL) y os dice qué está mal.
