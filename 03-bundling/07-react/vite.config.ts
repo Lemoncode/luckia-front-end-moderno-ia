@@ -4,4 +4,7 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [checker({ typescript: true }), react()],
+  build: {
+    modulePreload: { polyfill: false },
+  },
 });

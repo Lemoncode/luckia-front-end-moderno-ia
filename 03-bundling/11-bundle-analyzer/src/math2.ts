@@ -1,6 +1,6 @@
 import log from "loglevel";
 
-log.warn("*** Executing lazy-loaded math chunk");
+log.warn("*** Executing lazy-loaded math2 chunk");
 
 const randomBetween = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;

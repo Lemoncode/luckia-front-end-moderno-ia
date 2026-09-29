@@ -1,12 +1,11 @@
-import { FC } from "react";
-import config from "./env-config";
+import { ENV } from "./env.constants";
 
-export const HelloComponent: FC = () => {
+export const HelloComponent = () => {
   return (
     <>
       <h2>Hello from React</h2>
-      <p>Api server is {config.API_BASE}</p>
-      <p>Feature A is {config.IS_FEATURE_A_ENABLED ? "enabled" : "disabled"}</p>
+      <p>Api server is {ENV.API_BASE}</p>
+      <p>Feature A is {ENV.IS_FEATURE_A_ENABLED ? "enabled" : "disabled"}</p>
     </>
   );
 };

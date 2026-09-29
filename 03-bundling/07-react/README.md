@@ -43,30 +43,15 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   +   "jsx": "react-jsx",
       "lib": ["ESNext", "DOM"],
       "module": "ESNext",
+      ...
+      "useDefineForClassFields": true,
+  +   "verbatimModuleSyntax": true
+    },
   ```
 
   ⚡ `jsx` is a JavaScript syntax extension that will allow us to write HTML-in-JS and is typically used by React components.
 
-- `vite` already transpiles `jsx` out of the box (via `oxc`), but we will add the official React plugin to get React Fast Refresh (HMR that keeps component state). See the optional HMR section below:
-
-  ```bash
-  npm install @vitejs/plugin-react --save-dev
-  ```
-
-- Finally, let's modify `vite.config.ts` to add the newly installed plugin:
-
-  _vite.config.ts_
-
-  ```diff
-    import { defineConfig } from "vite";
-    import checker from "vite-plugin-checker";
-  + import react from "@vitejs/plugin-react";
-
-    export default defineConfig({
-  -   plugins: [checker({ typescript: true })],
-  +   plugins: [checker({ typescript: true }), react()],
-    });
-  ```
+  ⚡ `verbatimModuleSyntax` forces us to use `import type` when we import something that is only a type. Otherwise TypeScript reports an error. Vite transforms each file on its own, so this makes explicit which imports disappear from the final JavaScript.
 
 - We have `react` ready! Let's create a component called **HelloComponent** in a new `hello.tsx` file:
 
@@ -74,17 +59,32 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
 
   _src/hello.tsx_
 
-  ```ts
-  import { FC } from "react";
+  ```tsx
+  import type { FC } from "react";
 
   export const HelloComponent: FC = () => {
     return <h2>Hello from React</h2>;
   };
   ```
 
+  ℹ️ `FC` (Function Component) is a type, so it's imported with `import type`: it disappears when the code is transformed. With `verbatimModuleSyntax`, TypeScript reports an error if we forget the `type` (try it!).
+
+- You'll find `FC` in a lot of existing code, but nowadays it's usually omitted: TypeScript infers the type of a component by itself. Let's remove it:
+
+  _src/hello.tsx_
+
+  ```diff
+  - import type { FC } from "react";
+  -
+  - export const HelloComponent: FC = () => {
+  + export const HelloComponent = () => {
+      return <h2>Hello from React</h2>;
+    };
+  ```
+
 - In order to render our `react` application, let's create a `div` container in our HTML file that will be used as the root node for the component tree:
 
-  _src/index.html_
+  _index.html_
 
   ```diff
     <body>
@@ -94,8 +94,6 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   ```
 
 - Rename our `src/index.ts` to `src/index.tsx` and update its content to render our `HelloComponent` in `root` node, like this:
-
-  _src/index.ts_
 
   ```bash
   [RENAME] src/index.ts -> src/index.tsx
@@ -116,6 +114,8 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   + root.render(<HelloComponent />);
   ```
 
+  ⚡ The `!` tells TypeScript that `getElementById` won't return `null` here. Without it, strict mode (enabled by default) reports an error.
+
 - Don't forget to update `index.tsx` reference in our HTML entrypoint:
 
   _index.html_
@@ -134,7 +134,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   npm start
   ```
 
-  🔎 First of all, check your `react` application is up and running!
+  🔎 First of all, check your `react` application is up and running! Notice we haven't installed any plugin: `vite` already transpiles `jsx` out of the box (via `oxc`).
 
   🔎 Then, look at the dev-tools `network` tab (refresh if needed) and, apart from the source code ES modules we already know, you will see a couple of `vite` pre-bundled dependencies: `react-dom_client` and `react_jsx-dev-runtime`. Take a look at both requests, they share a few things in common:
   - Look at the request url: these files are coming from `/node_modules/.vite/deps` which is the default storage for your project pre-bundled dependencies.
@@ -147,37 +147,66 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
 
   ⚡ With this approach, development gets amazingly light and fast. All of your heavy dependencies are consumed from your browser cache (except an occasional update) and your source code ES modules are ready in record time, just available for your browser to request them when needed.
 
-## Optional - HMR
+## HMR: keeping the state
 
-- ℹ️ `@vitejs/plugin-react` package also gives support for Fast Refresh, which is the specific HMR system for React. It properly communicates with React internal API (it is not public) to integrate HMR with Vite in an effective and efficient way, allowing to change code live while dev server is running without hard reloads
-
-- ℹ️ It means we can change our app source code live, with the dev server running, and changes will be propagated to our browser without having to reload the page nor loosing the state.
-
-- ⚡ In order to demonstrate this, let's implement a simple counter feature that gets updated automatically every second. This can be done with the following code:
+- ⚡ Let's implement a simple counter feature that gets updated automatically every second:
 
   _src/hello.tsx_
 
   ```diff
-  - import { FC } from "react";
-  + import { FC, useEffect, useState } from "react";
-
-    export const HelloComponent: FC = () => {
-  +   const [counter, setCounter] = useState(0);
-
-  +   useEffect(() => {
+  + import React from "react";
+  +
+    export const HelloComponent = () => {
+  -   return <h2>Hello from React</h2>;
+  +   const [counter, setCounter] = React.useState(0);
+  +
+  +   React.useEffect(() => {
   +     const timer = setInterval(() => {
-  +       setCounter(prev => prev + 1);
+  +       setCounter((prev) => prev + 1);
   +     }, 1_000);
-
+  +
   +     return () => clearInterval(timer);
   +   }, []);
-
-      return (
-        <>
-          <h2>Hello from React</h2>
+  +
+  +   return (
+  +     <>
+  +       <h2>Hello from React</h2>
   +       <p>Counter state: {counter}</p>
-          <a
+  +     </>
+  +   );
+    };
+  ```
 
+  🔎 Wait until the counter reaches 15 or 20, then change the `h2` text and save. The counter goes back to 0: `vite` has reloaded the whole page.
+
+- To avoid it, let's install the official React plugin. It gives support for Fast Refresh, which is the specific HMR system for React. It properly communicates with React internal API (it is not public) to integrate HMR with Vite in an effective and efficient way, allowing to change code live while dev server is running without hard reloads nor losing the state. Stop the server and install it:
+
+  ```bash
+  npm install @vitejs/plugin-react --save-dev
+  ```
+
+- Let's modify `vite.config.ts` to add the newly installed plugin:
+
+  _vite.config.ts_
+
+  ```diff
+    import { defineConfig } from "vite";
+    import checker from "vite-plugin-checker";
+  + import react from "@vitejs/plugin-react";
+
+    export default defineConfig({
+  -   plugins: [checker({ typescript: true })],
+  +   plugins: [checker({ typescript: true }), react()],
+      build: {
+        modulePreload: { polyfill: false },
+      },
+    });
+  ```
+
+- Start the server again:
+
+  ```bash
+  npm start
   ```
 
 - 🔎 Now see the difference:

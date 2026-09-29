@@ -1,15 +1,15 @@
-import { FC, useEffect, useState } from "react";
+import React from "react";
 
-export const HelloComponent: FC = () => {
-  const [counter, setCounter] = useState(0);
+export const HelloComponent = () => {
+  const [counter, setCounter] = React.useState(0);
 
-   useEffect(() => {
-     const timer = setInterval(() => {
-       setCounter(prev => prev + 1);
-     }, 1_000);
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCounter((prev) => prev + 1);
+    }, 1_000);
 
-     return () => clearInterval(timer);
-   }, []);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <>

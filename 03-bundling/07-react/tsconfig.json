@@ -13,7 +13,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "target": "ESNext",
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "verbatimModuleSyntax": true
   },
   "include": ["src"]
 }

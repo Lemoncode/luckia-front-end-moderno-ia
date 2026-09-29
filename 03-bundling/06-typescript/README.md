@@ -26,20 +26,6 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   npm install typescript --save-dev
   ```
 
-- We'll switch to `"type": "module"` in `package.json`.:
-
-  _package.json_
-
-  ```diff
-  {
-    "name": "hello-vite",
-    "private": true,
-  + "type": "module",
-    "version": "0.0.0",
-  ```
-
-  This is for plugins to load dependencies as ESModules. [See this.](https://vite.dev/guide/troubleshooting#vite-cjs-node-api-deprecated)
-
 - We have to setup `typescript`, so let's add a `tsconfig.json` file and populate it with a basic starting configuration:
 
   _tsconfig.json_
@@ -65,7 +51,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   }
   ```
 
-  ⚡ Our compilation target and module format is gonna be ES6, remember `vite` uses native modules (ESM) for development.
+  ⚡ Our compilation target and module format is gonna be `ESNext`, remember `vite` uses native modules (ESM) for development.
 
   ⚡ In the development flow, `vite` only perform transpilation on TS files. It relies on `oxc` (a Rust transformer, much faster than `tsc`) for such a task and once transpiled, it expose them as ES modules. **It does not perform type checking**, it is up to you to take care of that in the build process or rely on you IDE.
 
@@ -87,7 +73,6 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  -     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css" />
         <title>Vite App</title>
       </head>
 
@@ -114,10 +99,8 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
 
 - **Don't forget to rename** our `index.js` file extension to `index.ts`:
 
-  _index.js_
-
   ```bash
-  RENAME index.js -> index.ts
+  RENAME src/index.js -> src/index.ts
   ```
 
 - And now let's add some TS implementation in our `index.ts`, a simple test code like this one:
@@ -125,8 +108,11 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   _src/index.ts_
 
   ```diff
+  - import "bootstrap/dist/css/bootstrap.css";
   - import "./mystyles.scss";
   - import logoImg from "./content/logo_1.png";
+  -
+  - console.log(logoImg);
   -
   - const user = "John Doe";
   -
@@ -144,7 +130,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   + console.log(numberA + numberB);
   ```
 
-  🔎 Notice we didn't need to add module syntax like `export {}` because TS already understands it's a module since we added `"type": "module"` in `package.json` file.
+  🔎 Notice we didn't need to add module syntax like `export {}` because TS already understands it's a module since our `package.json` has `"type": "module"` (we added it in `01-basic`).
 
 - ⚠️ Finally, now that we removed the usage of `SASS`, `bootstrap` and `images` let's delete related files to keep project tidy:
 
@@ -216,18 +202,16 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   🔎 Now you can check how we obtain compilation errors in console:
 
   ```text
-  ERROR(TypeScript)  Type 'number' is not assignable to type 'string'.
-  FILE  /project/src/index.ts:4:7
+  ERROR(TypeScript)  TS2322: Type 'number' is not assignable to type 'string'.
+  FILE  /project/src/index.ts:2:7
 
-      2 |
-      3 | const numberA: number = 2;
-    > 4 | const numberB: string = 3;
+      1 | const numberA: number = 2;
+    > 2 | const numberB: string = 3;
         |       ^^^^^^^
-      5 |
-      6 | console.log(numberA + numberB);
-      7 |
+      3 |
+      4 | console.log(numberA + numberB);
 
-  [TypeScript] Found 1 error. Watching for file changes.
+  [TypeScript] Found 1 error(s)
   ```
 
   🔎 If we take a look at the browser at [http://localhost:5173](http://localhost:5173) you'll notice the overlay with the compilation error too.
@@ -259,3 +243,20 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   ```
 
   🔎 Run now a production build and check how it goes smoothly.
+
+- Let's open the generated JavaScript in `dist/assets`. At the beginning there is some code we didn't write: it's the **modulepreload polyfill**. When our app is split in several chunks, `vite` adds `<link rel="modulepreload">` tags to `index.html` so the browser downloads them in parallel. Old browsers (e.g. Safari < 17) don't support it, so `vite` injects a small polyfill that does the same by hand.
+
+  If our users have modern browsers we can remove it. This is optional: it only saves around 1 KB, and if you need to support old browsers you should keep it.
+
+  _vite.config.ts_
+
+  ```diff
+    export default defineConfig({
+      plugins: [checker({ typescript: true })],
+  +   build: {
+  +     modulePreload: { polyfill: false },
+  +   },
+    });
+  ```
+
+  🔎 Run `npm run build` again and check the generated JavaScript only contains our code.

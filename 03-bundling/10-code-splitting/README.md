@@ -1,6 +1,6 @@
 # Code Splitting
 
-In this example, we are going add TailwindCSS integration.
+In this example, we are going to split our code into chunks that are loaded on demand (code splitting).
 
 📌 We start from sample `09-tailwindcss`.
 
@@ -34,6 +34,33 @@ This means parts of the code are only loaded when needed (e.g. when a user navig
 
 Now we can go the topic: **code splitting**. In this example we're going to use a module that is loaded on demand.
 
+- First, let's bring back the counter from `07-react` (we removed it in `08-env-vars`). We'll use it to see the result of the operation loaded on demand:
+
+  _src/hello.tsx_
+
+  ```diff
+  + import React from "react";
+    import { ENV } from "./env.constants";
+
+    export const HelloComponent = () => {
+  +   const [counter, setCounter] = React.useState(0);
+  +
+  +   React.useEffect(() => {
+  +     const timer = setInterval(() => {
+  +       setCounter((prev) => prev + 1);
+  +     }, 1_000);
+  +
+  +     return () => clearInterval(timer);
+  +   }, []);
+  +
+      return (
+        <>
+          <h2>Hello from React</h2>
+          <p>Api server is {ENV.API_BASE}</p>
+          <p>Feature A is {ENV.IS_FEATURE_A_ENABLED ? "enabled" : "disabled"}</p>
+  +       <p>Counter state: {counter}</p>
+  ```
+
 - Let's add _src/math.ts_ file.
 
   _src/math.ts_
@@ -66,8 +93,8 @@ Now we can go the topic: **code splitting**. In this example we're going to use 
     return (
       <>
         <h2>Hello from React</h2>
-        <p>Api server is {config.API_BASE}</p>
-        <p>Feature A is {config.IS_FEATURE_A_ENABLED ? "enabled" : "disabled"}</p>
+        <p>Api server is {ENV.API_BASE}</p>
+        <p>Feature A is {ENV.IS_FEATURE_A_ENABLED ? "enabled" : "disabled"}</p>
         <p>Counter state: {counter}</p>
   +     <button
   +       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -77,7 +104,7 @@ Now we can go the topic: **code splitting**. In this example we're going to use 
   +     </button>
         <a
           href="#"
-          className="m-2 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+          className="m-2 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100"
         >
   ```
 

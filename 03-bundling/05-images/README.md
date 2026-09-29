@@ -50,8 +50,11 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   _src/index.js_
 
   ```diff
+    import "bootstrap/dist/css/bootstrap.css";
     import "./mystyles.scss";
   + import logoImg from "./content/logo_1.png";
+  +
+  + console.log(logoImg);
 
     const user = "John Doe";
 
@@ -64,7 +67,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   + document.getElementById("imgContainer").appendChild(img);
   ```
 
-  🔎 Check the result in the browser!
+  🔎 Check the result in the browser! Notice in the console that `logoImg` is just a string: the image URL.
 
 - Finally, let's add styles for the image in our sass file:
 
@@ -86,7 +89,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
 
 - Now, what if we embedd the second image directly into an HTML `<img>` tag? Let's add [`logo_2.png`](./src/content/logo_2.png) to our `index.html`:
 
-  _src/index.html_
+  _index.html_
 
   ```diff
     <h1>Check the console log</h1>

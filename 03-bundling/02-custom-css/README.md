@@ -45,13 +45,13 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
 
 - Now we can use our new style classes directly in our html index file, let's update it:
 
-  _src/index.html_
+  _index.html_
 
   ```diff
     <body>
       <h1>Check the console log</h1>
   +   <div class="red-background">RedBackground stuff</div>
-      <script type="module" src="/index.js"></script>
+      <script type="module" src="/src/index.js"></script>
     </body>
   ```
 

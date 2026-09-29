@@ -5,4 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [checker({ typescript: true }), tailwindcss(), react()],
+  build: {
+    modulePreload: { polyfill: false },
+  },
 });

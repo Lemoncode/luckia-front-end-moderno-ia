@@ -26,17 +26,6 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   npm install bootstrap --save
   ```
 
-- And now update our `index.js` to include a link to bootstrap CSS file:
-
-  _src/index.js_
-
-  ```diff
-  + import "bootstrap/dist/css/bootstrap.css";
-    import "./mystyles.scss";
-
-    const user = "John Doe";
-  ```
-
 - Let's modify our `index.html` and include some specific `bootstrap` component:
 
   _index.html_
@@ -66,22 +55,9 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   npm start
   ```
 
-  🔎 Verify `bootstrap` styles work properly and you see the new component.
+  🔎 The card shows up, but unstyled: we haven't linked the library yet.
 
-  > Important: we have not added a dependency (in vite context) yet, even if the css is coming from `node_modules` and it won't change frequently. CSS files are not pre-bundled but treated as source modules, unless we adjust under-the-hood dependency optimizer options and add a plugin for bundling css. See [this issue](https://github.com/vitejs/vite/issues/7719).
-
-- ⚙ As an alternative, we could also import bootstrap from `index.html`. Let's first remove the `import` clause from `index.js`:
-
-  _src/index.js_
-
-  ```diff
-  - import "bootstrap/dist/css/bootstrap.css";
-    import "./mystyles.scss";
-
-    const user = "John Doe";
-  ```
-
-  And link the library in the `index.html` entrypoint:
+- First, let's link the library the classic way, from `index.html`. It lives inside `node_modules`:
 
   _index.html_
 
@@ -94,7 +70,32 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
     </head>
   ```
 
+  🔎 Check in the browser the card is styled.
+
+- ⚙ But, as we did with our own styles, the usual way with a bundler is to import it from JavaScript. Let's remove the `link` from `index.html`:
+
+  _index.html_
+
+  ```diff
+  - <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css" />
+  ```
+
+  And import it in `index.js`, **before** our own styles so ours win in the cascade:
+
+  _src/index.js_
+
+  ```diff
+  + import "bootstrap/dist/css/bootstrap.css";
+    import "./mystyles.scss";
+
+    const user = "John Doe";
+  ```
+
+  ⚡ When an import starts with a package name (no `./`), Vite looks for it in `node_modules`.
+
   🔎 Check in the browser everything keeps unchanged.
+
+  > Important: we have not added a dependency (in vite context) yet, even if the css is coming from `node_modules` and it won't change frequently. CSS files are not pre-bundled but treated as source modules, unless we adjust under-the-hood dependency optimizer options and add a plugin for bundling css. See [this issue](https://github.com/vitejs/vite/issues/7719).
 
 - Let's do a production build now:
 

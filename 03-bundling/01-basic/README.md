@@ -40,6 +40,17 @@ Our goal with these series of exercises is to show, step by step, how to configu
 
   > Ensure your parent folder does not include any space or uppercase (if that's the case you can just run `npm init` and change the project name).
 
+- Let's mark the project as private (it won't be published to npm) and tell Node to use ES modules (`import`/`export`) instead of CommonJS (`require`):
+
+  _package.json_
+
+  ```diff
+    "name": "hello-vite",
+  + "private": true,
+  + "type": "module",
+    "version": "1.0.0",
+  ```
+
 - Let's install vite
 
   ```bash
@@ -173,7 +184,7 @@ Our goal with these series of exercises is to show, step by step, how to configu
 
 - We can access to the dev server at [http://localhost:5173](http://localhost:5173). Notice that, to avoid conflicts, it uses a different port than the production server by default.
 
-  ⚙ The server is started only at `localhost` by default. We could expose our server to the local network by using the `--host` modifier, either in the script:
+  ⚙ The server is started only at `localhost` by default. If you need it (e.g. to open the app from your phone), you could expose our server to the local network by using the `--host` modifier, either in the script:
 
   _package.json_
 
@@ -188,6 +199,8 @@ Our goal with these series of exercises is to show, step by step, how to configu
   ```bash
   npm start -- --host
   ```
+
+  In these examples we'll keep `"start": "vite"`.
 
 - With the dev server running, let's change the `index.js` content to make sure code updates and "hot reloading" is working:
 

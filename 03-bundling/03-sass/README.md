@@ -38,8 +38,8 @@ Install [Node.js and npm](https://nodejs.org/en/) (20.19.0 || >=22.12.0) if they
   _src/index.js_
 
   ```diff
-  - import './mystyles.css';
-  + import './mystyles.scss';
+  - import "./mystyles.css";
+  + import "./mystyles.scss";
 
   const user = "John Doe";
 
