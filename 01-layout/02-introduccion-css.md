@@ -56,9 +56,11 @@ El CSS no se "ejecuta" en ningún servidor: **lo interpreta el navegador** de ca
 
 > 🔮 ¿Cómo sé si puedo usar algo nuevo? Hay una web para eso: lo vemos en el 13 (*Can I use*).
 
+> Ejemplo hay un nuevo tag: selectedContent,permite crear <select> personalizados con iconos, imágenes y contenido enriquecido, manteniendo el comportamiento nativo.
+
 ## 🛠️ Práctica: desnudar una web
 
-Coged cualquier web que uséis a diario (un periódico, la Wikipedia, GitHub…) y **quitadle el CSS**:
+Coged cualquier web que uséis a diario (un periódico, la Wikipedia, GitHub…) y **quitadle el CSS** (por ejemplo fundación luckia):
 
 - Abrid DevTools (F12) → pestaña **Console** y pegad:
 

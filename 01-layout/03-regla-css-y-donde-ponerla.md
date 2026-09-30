@@ -56,7 +56,7 @@ font-family: system-ui, sans-serif;
 
 - `system-ui`: la fuente del sistema operativo (San Francisco en Mac, Segoe UI en Windows, Roboto en Android). Se ve moderna y no hay que descargar nada.
 - `sans-serif`: **familia genérica** de reserva. "Si no tienes ninguna de las anteriores, cualquier fuente sin remates".
-- Genéricas más usadas: `serif` (con remates, como Times), `sans-serif` (sin remates), `monospace` (de ancho fijo, para código).
+- Genéricas más usadas: `serif` (con remates, como Times), `sans-serif` (sin remates), `monospace` (de ancho fijo, para código), `roboto` o `poppins`
 
 ## ¿Dónde pongo el CSS? Tres opciones
 
