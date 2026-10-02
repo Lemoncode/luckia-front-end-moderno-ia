@@ -44,11 +44,14 @@ Se pueden combinar con `and`: `@media (min-width: 48rem) and (max-width: 64rem) 
 
 > 💡 CSS moderno permite escribirlas con **signos de comparación**, que se leen mucho mejor: `@media (width >= 48rem)`. ¿Se puede usar ya? Ya sabéis: Can I use (13).
 
+> En Can I use buscar: [Media Queries: Range Syntax](https://caniuse.com/css-media-range-syntax)
+
 ### `min-width` o `max-width`: _mobile first_
 
 Hay dos formas de plantearlo:
 
 - **Escritorio primero**: escribo el diseño grande y voy **quitando** cosas con `max-width` para las pantallas pequeñas.
+
 - **Móvil primero** (_mobile first_): escribo el diseño **simple** (una columna, que funciona en cualquier sitio) y voy **añadiendo** con `min-width` según hay más espacio.
 
 Se recomienda **móvil primero**, por dos razones:
@@ -291,11 +294,11 @@ Cuatro líneas y la web entera cambia de tema. Ese es el premio por haber usado 
 
 > 💡 **¿Y si lo queréis de verdad, no emulado?** `prefers-color-scheme` lee la preferencia **del sistema operativo**, no del navegador:
 >
-> - **macOS**: Ajustes del Sistema → *Apariencia* → **Oscuro**.
-> - **Windows 11**: Configuración → *Personalización* → *Colores* → "Elige tu modo" → **Oscuro**.
+> - **macOS**: Ajustes del Sistema → _Apariencia_ → **Oscuro**.
+> - **Windows 11**: Configuración → _Personalización_ → _Colores_ → "Elige tu modo" → **Oscuro**.
 > - **Android / iOS**: Ajustes → Pantalla → **Modo oscuro**.
 >
-> Chrome, Edge y Safari siguen lo que diga el sistema. **Firefox** además permite decidirlo solo para las webs: Ajustes → General → *Apariencia del sitio web* → Claro / Oscuro / Automático.
+> Chrome, Edge y Safari siguen lo que diga el sistema. **Firefox** además permite decidirlo solo para las webs: Ajustes → General → _Apariencia del sitio web_ → Claro / Oscuro / Automático.
 >
 > Si cambiáis el sistema a oscuro, veréis que **muchas webs cambian solas**: las que han hecho justo lo que acabamos de hacer.
 
@@ -320,7 +323,7 @@ Un último truco muy agradecido, y en la misma línea de "cuantas menos media qu
 
 ### 1. Un tamaño que depende del ancho de la ventana: `vw`
 
-Recordad el 05: **`vw` = *viewport width*, el ancho de la ventana**. `1vw` es el **1% de ese ancho**.
+Recordad el 05: **`vw` = _viewport width_, el ancho de la ventana**. `1vw` es el **1% de ese ancho**.
 
 Hasta ahora hemos puesto tamaños de letra en `rem`, que son fijos. Pero también podemos decirle al título que mida un **porcentaje de la ventana**:
 
@@ -332,12 +335,12 @@ h1 {
 
 "Mide siempre el **5% del ancho de la ventana**", sea un móvil o un monitor:
 
-| Ancho de la ventana | `5vw` son… |
-|---|---|
-| 320px (móvil pequeño) | 16px |
-| 768px (tablet) | 38px |
-| 1440px (portátil) | 72px |
-| 2560px (monitor grande) | 128px |
+| Ancho de la ventana     | `5vw` son… |
+| ----------------------- | ---------- |
+| 320px (móvil pequeño)   | 16px       |
+| 768px (tablet)          | 38px       |
+| 1440px (portátil)       | 72px       |
+| 2560px (monitor grande) | 128px      |
 
 Y lo mejor: al estrechar la ventana, el tamaño cambia **de forma continua**, sin los saltos de una media query.
 
@@ -366,13 +369,13 @@ El navegador calcula la fórmula del medio y después la **recorta**:
 
 Con los mismos anchos de antes:
 
-| Ancho de la ventana | `5vw` da… | ¿Qué se aplica? |
-|---|---|---|
-| 320px | 16px | Menos que el suelo → **28px** |
-| 560px | 28px | Justo el suelo → **28px** |
-| 768px | 38px | Entre medias → **38px** |
-| 960px | 48px | Justo el techo → **48px** |
-| 2560px | 128px | Más que el techo → **48px** |
+| Ancho de la ventana | `5vw` da… | ¿Qué se aplica?               |
+| ------------------- | --------- | ----------------------------- |
+| 320px               | 16px      | Menos que el suelo → **28px** |
+| 560px               | 28px      | Justo el suelo → **28px**     |
+| 768px               | 38px      | Entre medias → **38px**       |
+| 960px               | 48px      | Justo el techo → **48px**     |
+| 2560px              | 128px     | Más que el techo → **48px**   |
 
 Es decir: entre los 560px y los 960px de ventana, el título **va creciendo poco a poco**; fuera de ese tramo, se queda quieto en su mínimo o en su máximo.
 
