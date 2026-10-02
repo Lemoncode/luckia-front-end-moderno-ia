@@ -321,6 +321,22 @@ Esa segunda es la **sintaxis de rango** de las media queries, que se lee como un
 }
 ```
 
+> ⚠ **Si generáis la build normal, con `npm run build` y sin `--minify false`, veréis otra vez `@media (width>=768px)`.** No es que PostCSS haya fallado. PostCSS sí lo traduce a `min-width`, pero después Vite 8 minifica el CSS con **Lightning CSS**. Lightning CSS mira los navegadores objetivo y, como los actuales ya entienden la sintaxis de rango, la vuelve a escribir en su forma corta. En `npm run dev` y con `--minify false` no pasa, porque no se minifica.
+>
+> Si queremos que el CSS final mantenga `min-width`, le decimos a Vite que el CSS es para navegadores más antiguos. Cread **`vite.config.js`** en la raíz, al lado de `postcss.config.js`:
+>
+> _vite.config.js_
+>
+> ```js
+> export default {
+>   build: {
+>     cssTarget: ['chrome100', 'safari15']
+>   }
+> };
+> ```
+>
+> Con esas versiones, que todavía no soportan la sintaxis de rango, el minificador deja el `min-width`. Ojo: Lightning CSS adaptará también el resto del CSS a esos navegadores. Si solo nos importan los navegadores actuales, podemos dejarlo como está: `width >= 768px` funciona en todos ellos.
+
 El nombre del breakpoint nos lo inventamos: `--bp-md`, `--bp-xl`, `--movil`… Lo habitual es seguir la nomenclatura de tamaños (sm, md, lg, xl). También podéis llevaros las custom media a `variables.css`, o a un `breakpoints.css` aparte.
 
 > Las custom media queries están propuestas en [Media Queries Level 5](https://www.w3.org/TR/mediaqueries-5/), una especificación viva del CSS Working Group. Hoy no las implementa ningún navegador por defecto: Firefox las tiene detrás de un flag. O sea que esto funciona **solo** porque PostCSS nos lo traduce.
