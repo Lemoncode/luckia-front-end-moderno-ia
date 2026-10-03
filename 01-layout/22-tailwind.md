@@ -6,23 +6,21 @@
 
 Ya sabemos dar estilo a una página: cajas, selectores, capas, Flexbox, Grid y media queries. Ahora vamos a escribir ese mismo CSS de otra manera.
 
-**Tailwind ofrece clases pequeñas que combinamos en el HTML para construir un diseño.** A esto se le llama *utility-first*: empezar por utilidades.
+**Tailwind ofrece clases pequeñas que combinamos en el HTML para construir un diseño.** A esto se le llama _utility-first_: empezar por utilidades.
 
 ```html
-<p class="rounded-lg bg-blue-600 p-4 text-white">
-  Hola, Tailwind.
-</p>
+<p class="rounded-lg bg-blue-600 p-4 text-white">Hola, Tailwind.</p>
 ```
 
 Podéis leerlo sin conocer la librería: bordes redondeados, fondo azul, padding y texto blanco. **Debajo sigue habiendo CSS.** Si no entendéis qué hace `display: flex`, escribir `flex` no arregla esa laguna.
 
 ### ¿Y Bootstrap?
 
-| Enfoque | Cómo trabajamos |
-| --- | --- |
-| CSS propio | Inventamos clases y escribimos sus reglas: `.tarjeta`, `.boton`… |
-| Bootstrap | Tenemos componentes con un aspecto inicial, como botones, tarjetas y navegación, además de utilidades. |
-| Tailwind | Componemos el aspecto con utilidades: `flex`, `gap-4`, `rounded-lg`… |
+| Enfoque    | Cómo trabajamos                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| CSS propio | Inventamos clases y escribimos sus reglas: `.tarjeta`, `.boton`…                                       |
+| Bootstrap  | Tenemos componentes con un aspecto inicial, como botones, tarjetas y navegación, además de utilidades. |
+| Tailwind   | Componemos el aspecto con utilidades: `flex`, `gap-4`, `rounded-lg`…                                   |
 
 Con Tailwind avanzamos rápido y compartimos una escala de colores, espacios y tamaños. La contrapartida es que **el HTML se llena de clases** y hace falta aprender sus nombres. Tampoco nos resuelve la semántica ni la accesibilidad.
 
@@ -50,13 +48,13 @@ Abrid **la dirección que muestra el terminal**. Dejad el proceso encendido mien
 
 ### Las piezas, sin meternos todavía en herramientas
 
-| Fichero | Para qué sirve |
-| --- | --- |
-| `index.html` | El HTML que vamos a maquetar. |
-| `src/main.ts` | Entrada que importa el CSS. Hoy no necesitamos programar en TypeScript. |
-| `src/style.css` | Importa Tailwind y contiene nuestras personalizaciones. |
-| `vite.config.ts` | Conecta Vite con el plugin de Tailwind. |
-| `package.json` | Dependencias y comandos como `dev` y `build`. |
+| Fichero          | Para qué sirve                                                          |
+| ---------------- | ----------------------------------------------------------------------- |
+| `index.html`     | El HTML que vamos a maquetar.                                           |
+| `src/main.ts`    | Entrada que importa el CSS. Hoy no necesitamos programar en TypeScript. |
+| `src/style.css`  | Importa Tailwind y contiene nuestras personalizaciones.                 |
+| `vite.config.ts` | Conecta Vite con el plugin de Tailwind.                                 |
+| `package.json`   | Dependencias y comandos como `dev` y `build`.                           |
 
 Comprobad que el proyecto usa Tailwind **4.x** y su plugin de Vite. Su configuración es:
 
@@ -143,11 +141,11 @@ _./index.html_
 + <h1 class="text-4xl font-bold text-blue-600">Por el poder de Tailwind</h1>
 ```
 
-| Clase | Qué aporta |
-| --- | --- |
-| `text-4xl` | Tamaño de letra y altura de línea de la escala de Tailwind. |
-| `font-bold` | Negrita. |
-| `text-blue-600` | Color azul, tono 600 de su paleta. |
+| Clase           | Qué aporta                                                  |
+| --------------- | ----------------------------------------------------------- |
+| `text-4xl`      | Tamaño de letra y altura de línea de la escala de Tailwind. |
+| `font-bold`     | Negrita.                                                    |
+| `text-blue-600` | Color azul, tono 600 de su paleta.                          |
 
 Pasad el ratón por cada clase en VS Code y después buscad sus reglas en **DevTools → Styles**. No hay magia: hay declaraciones CSS.
 
@@ -231,14 +229,14 @@ En los ejemplos siguientes, **sustituid el contenido de `<main id="app">`**. Con
 
 Con la configuración por defecto:
 
-| Prefijo | Se aplica desde… | Equivalencia habitual |
-| --- | --- | --- |
-| Sin prefijo | Cualquier ancho | Estilo base |
-| `sm:` | `40rem` | 640px |
-| `md:` | `48rem` | 768px |
-| `lg:` | `64rem` | 1024px |
-| `xl:` | `80rem` | 1280px |
-| `2xl:` | `96rem` | 1536px |
+| Prefijo     | Se aplica desde… | Equivalencia habitual |
+| ----------- | ---------------- | --------------------- |
+| Sin prefijo | Cualquier ancho  | Estilo base           |
+| `sm:`       | `40rem`          | 640px                 |
+| `md:`       | `48rem`          | 768px                 |
+| `lg:`       | `64rem`          | 1024px                |
+| `xl:`       | `80rem`          | 1280px                |
+| `2xl:`      | `96rem`          | 1536px                |
 
 Las equivalencias suponen 16px. El bloque es rojo en pequeño, verde desde `md` y azul desde `lg`. **`sm:` no significa “solo en móvil”**: significa “desde ese ancho hacia arriba”.
 
@@ -258,30 +256,30 @@ Probad algo más útil:
 </div>
 ```
 
-| Clase | Qué significa con la escala por defecto |
-| --- | --- |
-| `w-full` | `width: 100%` |
-| `w-80` | Ancho de `20rem`, **no 80%** |
-| `w-1/2` | Ancho del 50% |
-| `w-[80%]` | Valor arbitrario: ancho del 80% |
-| `h-48` | Alto de `12rem` |
-| `h-full` | Alto del 100%; depende de cómo esté definida la altura del contenedor |
-| `min-h-screen` | Altura mínima de `100vh` |
-| `max-w-md` | Ancho máximo de `28rem` |
-| `mx-auto` | Márgenes horizontales automáticos |
+| Clase          | Qué significa con la escala por defecto                               |
+| -------------- | --------------------------------------------------------------------- |
+| `w-full`       | `width: 100%`                                                         |
+| `w-80`         | Ancho de `20rem`, **no 80%**                                          |
+| `w-1/2`        | Ancho del 50%                                                         |
+| `w-[80%]`      | Valor arbitrario: ancho del 80%                                       |
+| `h-48`         | Alto de `12rem`                                                       |
+| `h-full`       | Alto del 100%; depende de cómo esté definida la altura del contenedor |
+| `min-h-screen` | Altura mínima de `100vh`                                              |
+| `max-w-md`     | Ancho máximo de `28rem`                                               |
+| `mx-auto`      | Márgenes horizontales automáticos                                     |
 
 👉 Probad `w-80`, `w-1/2` y `w-[80%]`, **una cada vez**. No pongáis dos utilidades que compitan por la misma propiedad para intentar que “gane la última del HTML”: manda el orden del CSS generado.
 
 En la escala de espaciado por defecto, una unidad son `0.25rem`:
 
-| Clase | CSS equivalente |
-| --- | --- |
-| `p-4` | `padding: 1rem` |
-| `px-4` | Padding izquierdo y derecho de `1rem` |
-| `py-2` | Padding superior e inferior de `0.5rem` |
-| `mt-6` | `margin-top: 1.5rem` |
-| `-mt-2` | `margin-top: -0.5rem` |
-| `gap-4` | `gap: 1rem` |
+| Clase   | CSS equivalente                         |
+| ------- | --------------------------------------- |
+| `p-4`   | `padding: 1rem`                         |
+| `px-4`  | Padding izquierdo y derecho de `1rem`   |
+| `py-2`  | Padding superior e inferior de `0.5rem` |
+| `mt-6`  | `margin-top: 1.5rem`                    |
+| `-mt-2` | `margin-top: -0.5rem`                   |
+| `gap-4` | `gap: 1rem`                             |
 
 Son las cajas del 06 y las unidades del 05, con nombres abreviados.
 
@@ -309,7 +307,9 @@ Una columna en pequeño, tres columnas iguales en grande: el Grid del 20. **Tail
 ### Paso 4: texto, colores, bordes y sombras
 
 ```html
-<article class="mx-auto mt-6 max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
+<article
+  class="mx-auto mt-6 max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-lg"
+>
   <h1 class="text-2xl font-bold text-gray-900">Una tarjeta con Tailwind</h1>
   <p class="mt-2 text-gray-600">
     El espacio interior, el borde y la sombra siguen siendo CSS.
@@ -411,10 +411,10 @@ Ahora sustituid el contenido del `<main>` por esta tarjeta:
 
 **`primary` es un token semántico**: nombra el papel del color en la interfaz, no su tonalidad. `primary-hover` nombra el color que hemos elegido para el estado hover.
 
-| Tipo de token | Ejemplo | Qué expresa |
-| --- | --- | --- |
-| De paleta | `blue-400` | Un tono concreto de azul. |
-| Semántico | `primary` | El color principal de nuestra interfaz, sea azul, verde o violeta. |
+| Tipo de token | Ejemplo    | Qué expresa                                                        |
+| ------------- | ---------- | ------------------------------------------------------------------ |
+| De paleta     | `blue-400` | Un tono concreto de azul.                                          |
+| Semántico     | `primary`  | El color principal de nuestra interfaz, sea azul, verde o violeta. |
 
 **Tailwind puro no trae un `primary` predefinido ni componentes que lo usen automáticamente.** Al declararlo en `@theme`, habilitamos utilidades como `bg-primary`; somos nosotros quienes las aplicamos al HTML. `primary-hover` tampoco activa un estado por su nombre: lo aplicamos expresamente con `hover:bg-primary-hover`.
 
@@ -436,11 +436,11 @@ Los elementos con `rounded-lg` tendrán ahora esquinas más redondeadas. El camb
 
 Estos valores compartidos de colores, radios, tipografías o espacios se suelen llamar **tokens de diseño**. Son decisiones que guardamos en un sitio para reutilizarlas.
 
-| Dónde lo defino | Qué consigo |
-| --- | --- |
-| `:root { --color-marca: ...; }` | Una variable CSS normal, utilizable con `var()`. |
-| `@theme { --color-primary: ...; }` | Un valor del tema conectado a utilidades como `bg-primary`. |
-| `@theme { --radius-lg: ...; }` | Personalizar el valor usado por la utilidad existente `rounded-lg`. |
+| Dónde lo defino                    | Qué consigo                                                         |
+| ---------------------------------- | ------------------------------------------------------------------- |
+| `:root { --color-marca: ...; }`    | Una variable CSS normal, utilizable con `var()`.                    |
+| `@theme { --color-primary: ...; }` | Un valor del tema conectado a utilidades como `bg-primary`.         |
+| `@theme { --radius-lg: ...; }`     | Personalizar el valor usado por la utilidad existente `rounded-lg`. |
 
 > 💡 Las variables de `@theme` también se pueden consumir desde CSS propio con `var(--color-primary)`. La diferencia es que además configuran el sistema de utilidades. [Tailwind · Variables del tema](https://tailwindcss.com/docs/theme).
 
@@ -460,36 +460,58 @@ _./index.html_
     <h1 class="text-2xl font-semibold text-gray-900">Formulario de contacto</h1>
 
     <div>
-      <label for="nombre" class="mb-1 block text-sm font-medium text-gray-700">Nombre</label>
+      <label for="nombre" class="mb-1 block text-sm font-medium text-gray-700"
+        >Nombre</label
+      >
       <input
-        id="nombre" name="nombre" type="text" autocomplete="name" required
+        id="nombre"
+        name="nombre"
+        type="text"
+        autocomplete="name"
+        required
         class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Tu nombre"
       />
     </div>
 
     <div>
-      <label for="email" class="mb-1 block text-sm font-medium text-gray-700">Email</label>
+      <label for="email" class="mb-1 block text-sm font-medium text-gray-700"
+        >Email</label
+      >
       <input
-        id="email" name="email" type="email" autocomplete="email" required
+        id="email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        required
         class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="tucorreo@ejemplo.com"
       />
     </div>
 
     <div>
-      <label for="mensaje" class="mb-1 block text-sm font-medium text-gray-700">Mensaje</label>
+      <label for="mensaje" class="mb-1 block text-sm font-medium text-gray-700"
+        >Mensaje</label
+      >
       <textarea
-        id="mensaje" name="mensaje" rows="4" required
+        id="mensaje"
+        name="mensaje"
+        rows="4"
+        required
         class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Tu mensaje…"
       ></textarea>
     </div>
 
-    <button type="submit" class="w-full rounded-md bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">
+    <button
+      type="submit"
+      class="w-full rounded-md bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+    >
       Enviar
     </button>
-    <p class="text-sm text-gray-600">Práctica de maquetación: no envía mensajes.</p>
+    <p class="text-sm text-gray-600">
+      Práctica de maquetación: no envía mensajes.
+    </p>
   </form>
 </main>
 ```
@@ -541,19 +563,19 @@ _./src/style.css_ — añadid después de las dos líneas iniciales:
 
 Ahora **sustituid**, sin añadir un segundo atributo `class`:
 
-| Elemento | Su nuevo atributo |
-| --- | --- |
-| `form` | `class="form-container"` |
-| Cada `label` | `class="form-label"` |
-| Los dos `input` y el `textarea` | `class="form-input"` |
-| Botón de envío | `class="boton-contacto"` |
+| Elemento                        | Su nuevo atributo        |
+| ------------------------------- | ------------------------ |
+| `form`                          | `class="form-container"` |
+| Cada `label`                    | `class="form-label"`     |
+| Los dos `input` y el `textarea` | `class="form-input"`     |
+| Botón de envío                  | `class="boton-contacto"` |
 
 Mantened todos los demás atributos: `for`, `id`, `name`, `required`… El resultado visual debe ser el mismo.
 
 ### Paso 3: una excepción local
 
 ```html
-<form class="form-container max-w-xl">
+<form class="form-container max-w-xl"></form>
 ```
 
 El formulario se ensancha: la utilidad puede sobrescribir el ancho máximo definido en `components`. Es la cascada del 16 aplicada a algo real.
@@ -600,20 +622,40 @@ _./index.html_
 
       <div class="grid gap-1">
         <label for="nombre" class="label">Nombre</label>
-        <input id="nombre" name="nombre" type="text" autocomplete="name"
-          class="input w-full" placeholder="Tu nombre" required />
+        <input
+          id="nombre"
+          name="nombre"
+          type="text"
+          autocomplete="name"
+          class="input w-full"
+          placeholder="Tu nombre"
+          required
+        />
       </div>
 
       <div class="grid gap-1">
         <label for="email" class="label">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email"
-          class="input w-full" placeholder="tucorreo@ejemplo.com" required />
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          class="input w-full"
+          placeholder="tucorreo@ejemplo.com"
+          required
+        />
       </div>
 
       <div class="grid gap-1">
         <label for="mensaje" class="label">Mensaje</label>
-        <textarea id="mensaje" name="mensaje" rows="4"
-          class="textarea w-full" placeholder="Tu mensaje…" required></textarea>
+        <textarea
+          id="mensaje"
+          name="mensaje"
+          rows="4"
+          class="textarea w-full"
+          placeholder="Tu mensaje…"
+          required
+        ></textarea>
       </div>
 
       <button type="submit" class="btn btn-primary w-full">Enviar</button>
@@ -634,12 +676,12 @@ Probemos otro botón:
 + <button type="submit" class="btn btn-secondary w-full">Enviar</button>
 ```
 
-| Nombre | Papel en el diseño |
-| --- | --- |
-| `primary`, `secondary`, `accent` | Colores principales de la marca y acentos. |
-| `base-100`, `base-200`, `base-300` | Superficies y fondos. |
-| `base-content` | Texto sobre las superficies base. |
-| `success`, `warning`, `error`, `info` | Estados y mensajes. |
+| Nombre                                | Papel en el diseño                         |
+| ------------------------------------- | ------------------------------------------ |
+| `primary`, `secondary`, `accent`      | Colores principales de la marca y acentos. |
+| `base-100`, `base-200`, `base-300`    | Superficies y fondos.                      |
+| `base-content`                        | Texto sobre las superficies base.          |
+| `success`, `warning`, `error`, `info` | Estados y mensajes.                        |
 
 También podéis probar `btn-error` para ver su aspecto, pero para “Enviar” recuperad `btn-primary`: el color debería acompañar el significado de la acción.
 
