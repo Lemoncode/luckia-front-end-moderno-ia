@@ -324,8 +324,6 @@ Una columna en pequeño, tres columnas iguales en grande: el Grid del 20. **Tail
 - Bordes y esquinas: `border`, `border-2`, `rounded-lg`, `rounded-full`.
 - Sombras: `shadow-sm`, `shadow-md`, `shadow-lg`.
 
-👉 Cambiad la tarjeta a fondo azul y texto blanco. Acordaos de cambiar también el color explícito del párrafo: la herencia no gana a una regla aplicada directamente (07).
-
 ### Paso 5: estados, transiciones y animaciones
 
 ```html
@@ -351,48 +349,33 @@ También hay animaciones preparadas:
 
 ### Paso 6: colores con significado en Tailwind puro (`@theme`)
 
-Hasta ahora usamos `blue-600`, `gray-100`… ¿Dónde ponemos **el color de nuestra marca**? Vamos a verlo sin DaisyUI ni plugins adicionales.
+Hasta ahora usamos `blue-600`, `gray-100`… ¿Dónde ponemos **el color de nuestra marca**?
 
-#### Primero: una variable CSS normal
+#### 1. Definir los colores del proyecto
 
-Añadid al CSS, después del `@import` y el `@source not`:
+Dejad el CSS con este contenido:
 
 _./src/style.css_
 
 ```css
-:root {
-  --color-marca: #166534;
+@import "tailwindcss";
+@source not "../Readme.md";
+
+@theme {
+  --color-primary: #166534;
+  --color-primary-hover: #14532d;
 }
-```
-
-Sustituid el contenido del `<main id="app">` por:
-
-_./index.html_
-
-```html
-<p class="p-6 text-[var(--color-marca)]">El color de nuestra marca.</p>
-```
-
-Funciona: la utilidad usa el valor de nuestra variable, como en el tema 05. Pero **declararla en `:root` no crea una utilidad llamada `text-marca`**.
-
-#### Ahora: registrar el color en el tema
-
-Sustituid el bloque anterior:
-
-_./src/style.css_
-
-```diff
-- :root {
--   --color-marca: #166534;
-+ @theme {
-+   --color-primary: #166534;
-+   --color-primary-hover: #14532d;
-  }
 ```
 
 `@theme` es una directiva de Tailwind 4: registra valores de diseño para sus utilidades. Se escribe **en el nivel superior del CSS**, fuera de selectores y de bloques `@layer`.
 
-Ahora sustituid el contenido del `<main>` por esta tarjeta:
+Hemos elegido un verde como color principal y otro más oscuro para el estado hover. Los nombres indican su función en la interfaz.
+
+#### 2. Usarlos en una tarjeta
+
+Sustituid el contenido del `<main id="app">` por esta tarjeta. Conservad el resto del documento, incluido el script de entrada.
+
+_./index.html_
 
 ```html
 <section class="m-6 max-w-md rounded-lg border border-primary p-6">
@@ -420,11 +403,13 @@ Ahora sustituid el contenido del `<main>` por esta tarjeta:
 
 No hace falta definir una escala de 50 a 950. Aquí necesitamos dos colores y definimos dos valores. Los colores originales de Tailwind siguen disponibles.
 
+#### 3. Cambiar la marca sin tocar el HTML
+
 👉 Cambiad los dos valores por `#6d28d9` y `#5b21b6`. Al guardar, el título, el borde y el botón pasan a violeta, incluido su estado `hover`, **sin cambiar el HTML**.
 
 Un elemento con `text-blue-400` seguirá usando su azul original: no está conectado a `primary`. Podríamos sobrescribir `--color-blue-400` en `@theme`, pero para expresar nuestra identidad visual es más claro usar un nombre semántico que convertir un token llamado «azul» en verde. Al cambiar un token de color, cambian todas las utilidades que lo consumen: texto, fondo, borde…
 
-#### ¿Y si quiero cambiar un valor que ya existe?
+#### 4. Cambiar un valor que ya existe
 
 También podemos ajustar el tema por defecto. Añadid dentro del mismo `@theme`:
 
@@ -436,13 +421,7 @@ Los elementos con `rounded-lg` tendrán ahora esquinas más redondeadas. El camb
 
 Estos valores compartidos de colores, radios, tipografías o espacios se suelen llamar **tokens de diseño**. Son decisiones que guardamos en un sitio para reutilizarlas.
 
-| Dónde lo defino                    | Qué consigo                                                         |
-| ---------------------------------- | ------------------------------------------------------------------- |
-| `:root { --color-marca: ...; }`    | Una variable CSS normal, utilizable con `var()`.                    |
-| `@theme { --color-primary: ...; }` | Un valor del tema conectado a utilidades como `bg-primary`.         |
-| `@theme { --radius-lg: ...; }`     | Personalizar el valor usado por la utilidad existente `rounded-lg`. |
-
-> 💡 Las variables de `@theme` también se pueden consumir desde CSS propio con `var(--color-primary)`. La diferencia es que además configuran el sistema de utilidades. [Tailwind · Variables del tema](https://tailwindcss.com/docs/theme).
+> 💡 `@theme` define variables que Tailwind conecta con sus utilidades. Para una variable CSS que no necesite generar utilidades, seguimos usando `:root`, como vimos en el tema 05. Las de `@theme` también se pueden usar en CSS propio con `var(--color-primary)`. [Tailwind · Variables del tema](https://tailwindcss.com/docs/theme).
 
 Para continuar con el formulario, quitad este bloque `@theme` y conservad las dos líneas iniciales del CSS. Así la siguiente práctica vuelve a usar la escala por defecto.
 
