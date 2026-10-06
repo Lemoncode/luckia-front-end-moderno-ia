@@ -57,8 +57,10 @@ Hay dos formas de plantearlo:
 Se recomienda **móvil primero**, por dos razones:
 
 1. **El CSS base queda más simple**: una columna no necesita casi nada.
+
 2. **El "por defecto" es el que funciona en todas partes.** Si por lo que sea la media query no se aplica (un navegador que no entiende la condición, una errata, una pantalla con una medida que no habíais previsto), lo que se ve es el CSS base:
    - Con móvil primero, ese base es **una columna**: en un monitor grande se ve ancha, pero es perfectamente usable.
+
    - Con escritorio primero, ese base son **dos columnas con lateral fijo**: en un móvil, justo lo que no cabe.
 
 Es también lo que hacen Tailwind y Bootstrap.
@@ -77,7 +79,7 @@ Las habituales rondan estos valores, pero **no son sagradas**:
 
 > Usad **`rem`** y no `px` también aquí: así las medidas respetan el tamaño de letra del navegador del usuario (05).
 
-> ⚠️ Y acordaos del `<meta name="viewport">` del 00: **sin él, las media queries no funcionan bien en el móvil**, porque el navegador finge que la pantalla mide 980px.
+> ⚠️ Y acordaos del `<meta name="viewport">` que vimos en el 00-estructura-de-fichero.md: **sin él, las media queries no funcionan bien en el móvil**, porque el navegador finge que la pantalla mide 980px.
 
 ## 🛠️ Práctica: un layout de página en el móvil
 
@@ -224,7 +226,7 @@ Cambiad el ancho de la ventana poco a poco: al pasar de 48rem (768px), el diseñ
 
 > **Importante**: la media query va **después** de las reglas base. Como "pesan" lo mismo (15), gana la que está más abajo. Si la pusierais arriba, no haría nada.
 
-👉 **DevTools**: en el modo móvil, en el menú de los tres puntos (arriba a la derecha del panel) tenéis **"Show media queries"**: os dibuja una barra con **vuestras** media queries y podéis saltar de una a otra con un clic.
+👉 **DevTools**: activa el modo móvil y asegúrate de seleccionar **Responsive**, no un dispositivo concreto. Después, en el menú de los tres puntos situado sobre la previsualización, activa **Show media queries**. Verás los breakpoints definidos en el CSS y podrás hacer clic sobre ellos para cambiar el viewport directamente a esa anchura. Por ejemplo, `48rem` equivale normalmente a `768px`.
 
 ### Paso 3: ajustar detalles, no solo el layout
 
@@ -245,7 +247,9 @@ _./styles.css_
 
 ### Paso 4: modo oscuro (`prefers-color-scheme`)
 
-Las media queries no solo preguntan por el **tamaño**. También por las **preferencias** del usuario. Esta es la más agradecida de todas.
+Las media queries no solo preguntan por el **tamaño**. También por las **preferencias** del usuario.
+
+Vamos a jugar con modo claro o oscuro.
 
 Primero pasamos los colores a variables (05), en el CSS base:
 
@@ -292,7 +296,7 @@ Cuatro líneas y la web entera cambia de tema. Ese es el premio por haber usado 
 
 👉 **Probadlo sin tocar el sistema**: en DevTools, menú de los tres puntos → _More tools_ → **Rendering** → `Emulate CSS media feature prefers-color-scheme` → `dark`.
 
-> 💡 **¿Y si lo queréis de verdad, no emulado?** `prefers-color-scheme` lee la preferencia **del sistema operativo**, no del navegador:
+> 💡 **¿Y si lo queréis de verdad, no emulado?** `prefers-color-scheme` lee la preferencia **del sistema operativo**, , aunque algunos navegadores permiten establecer una preferencia propia (Firefox):
 >
 > - **macOS**: Ajustes del Sistema → _Apariencia_ → **Oscuro**.
 > - **Windows 11**: Configuración → _Personalización_ → _Colores_ → "Elige tu modo" → **Oscuro**.
@@ -301,6 +305,258 @@ Cuatro líneas y la web entera cambia de tema. Ese es el premio por haber usado 
 > Chrome, Edge y Safari siguen lo que diga el sistema. **Firefox** además permite decidirlo solo para las webs: Ajustes → General → _Apariencia del sitio web_ → Claro / Oscuro / Automático.
 >
 > Si cambiáis el sistema a oscuro, veréis que **muchas webs cambian solas**: las que han hecho justo lo que acabamos de hacer.
+
+Ojo, con esto que si tenemos el típico botón para cambiar de modo claro a oscuro, tendríamos que añadir una entrada que sobreescribiera y algo de JS para interactuar, vamos a verlo:
+
+> Ver sólo la idea, ejecutarlo depende del tiempo disponible, sino para probar en casa
+
+styles.css
+
+```css
+:root {
+  color-scheme: light;
+
+  --color-fondo: white;
+  --color-texto: #333;
+  --color-zona: #f5f0eb;
+  --color-borde: #e0d6cc;
+  --color-enlace: #075985;
+  --color-boton: white;
+  --color-boton-activo: #333;
+  --color-texto-boton-activo: white;
+}
+
+/* Si no hay una elección manual, utilizamos la del sistema */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --color-fondo: #1c1917;
+    --color-texto: #e7e5e4;
+    --color-zona: #292524;
+    --color-borde: #44403c;
+    --color-enlace: #7dd3fc;
+    --color-boton: #1c1917;
+    --color-boton-activo: #e7e5e4;
+    --color-texto-boton-activo: #1c1917;
+  }
+}
+
+/* La elección manual tiene prioridad sobre el sistema */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-fondo: white;
+  --color-texto: #333;
+  --color-zona: #f5f0eb;
+  --color-borde: #e0d6cc;
+  --color-enlace: #075985;
+  --color-boton: white;
+  --color-boton-activo: #333;
+  --color-texto-boton-activo: white;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-fondo: #1c1917;
+  --color-texto: #e7e5e4;
+  --color-zona: #292524;
+  --color-borde: #44403c;
+  --color-enlace: #7dd3fc;
+  --color-boton: #1c1917;
+  --color-boton-activo: #e7e5e4;
+  --color-texto-boton-activo: #1c1917;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 1rem;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas:
+    "cabecera"
+    "principal"
+    "lateral"
+    "pie";
+  gap: 1rem;
+
+  font-family: system-ui, sans-serif;
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1,
+.zona-pie p {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--color-enlace);
+}
+
+.zona-cabecera {
+  grid-area: cabecera;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.zona-lateral {
+  grid-area: lateral;
+}
+
+.zona-principal {
+  grid-area: principal;
+}
+
+.zona-pie {
+  grid-area: pie;
+}
+
+/* Para ver bien las zonas */
+.pagina > * {
+  padding: 1rem;
+  background-color: var(--color-zona);
+  border: 1px solid var(--color-borde);
+}
+
+.selector-tema {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.selector-tema button {
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  color: var(--color-texto);
+  background-color: var(--color-boton);
+  border: 1px solid var(--color-borde);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.selector-tema button:hover {
+  border-color: currentColor;
+}
+
+.selector-tema button:focus-visible {
+  outline: 3px solid var(--color-enlace);
+  outline-offset: 2px;
+}
+
+@media (min-width: 48rem) {
+  body {
+    padding: 2rem;
+    font-size: 1.5rem;
+
+    grid-template-columns: 12rem 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "cabecera cabecera"
+      "lateral  principal"
+      "pie      pie";
+  }
+}
+```
+
+index.html
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive y modos de color</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+
+  <body class="pagina">
+    <header class="zona-cabecera">
+      <h1>Mi página</h1>
+
+      <div class="selector-tema" aria-label="Seleccionar tema">
+        <button type="button" data-theme-option="light">Claro</button>
+
+        <button type="button" data-theme-option="dark">Oscuro</button>
+
+        <button type="button" data-theme-option="system">Sistema</button>
+      </div>
+    </header>
+
+    <nav class="zona-lateral" aria-label="Navegación principal">
+      <h2>Menú</h2>
+
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Servicios</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <main class="zona-principal">
+      <h2>Contenido</h2>
+
+      <p>
+        Cambia el tamaño de la ventana para probar el diseño responsive y
+        utiliza los botones para seleccionar el modo de color.
+      </p>
+    </main>
+
+    <footer class="zona-pie">
+      <p>Pie de página</p>
+    </footer>
+  </body>
+</html>
+```
+
+scripts.js
+
+```js
+const root = document.documentElement;
+const buttons = document.querySelectorAll("[data-theme-option]");
+
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme) {
+  root.dataset.theme = savedTheme;
+}
+
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const theme = button.dataset.themeOption;
+
+    if (theme === "system") {
+      delete root.dataset.theme;
+      localStorage.removeItem("theme");
+    } else {
+      root.dataset.theme = theme;
+      localStorage.setItem("theme", theme);
+    }
+  });
+});
+```
 
 ### Paso 5 (rápido): respetar a quien no quiere animaciones
 
@@ -463,6 +719,180 @@ Para eso están las **_container queries_**, que preguntan por el tamaño **del 
 ```
 
 Es el siguiente paso natural del responsive y ya funciona en todos los navegadores modernos (comprobadlo en Can I use, 13). No lo vemos hoy, pero que sepáis que existe: con componentes (React, por ejemplo) tiene muchísimo sentido.
+
+Un ejemplo rápido:
+
+_index.html_
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Container queries</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Demo de container queries</h1>
+      <p>La misma tarjeta se adapta al espacio disponible.</p>
+    </header>
+
+    <div class="layout">
+      <aside>
+        <h2>Contenedor estrecho</h2>
+
+        <div class="tarjeta-contenedor">
+          <article class="tarjeta">
+            <div class="tarjeta-imagen">CSS</div>
+
+            <div class="tarjeta-contenido">
+              <h3>Curso de CSS moderno</h3>
+
+              <p>
+                Aprende Grid, media queries y container queries mediante
+                ejemplos prácticos.
+              </p>
+
+              <a href="#">Ver curso</a>
+            </div>
+          </article>
+        </div>
+      </aside>
+
+      <main>
+        <h2>Contenedor ancho</h2>
+
+        <div class="tarjeta-contenedor">
+          <article class="tarjeta">
+            <div class="tarjeta-imagen">CSS</div>
+
+            <div class="tarjeta-contenido">
+              <h3>Curso de CSS moderno</h3>
+
+              <p>
+                Aprende Grid, media queries y container queries mediante
+                ejemplos prácticos.
+              </p>
+
+              <a href="#">Ver curso</a>
+            </div>
+          </article>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+```
+
+_styles.css_
+
+```css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  color: #292524;
+  background-color: #fafaf9;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  gap: 2rem;
+}
+
+aside,
+main {
+  padding: 1rem;
+  background-color: #f5f0eb;
+  border: 1px solid #e0d6cc;
+}
+
+/*
+ * El contenedor queda habilitado para consultar
+ * el espacio disponible en su eje horizontal.
+ */
+.tarjeta-contenedor {
+  container-type: inline-size;
+}
+
+.tarjeta {
+  overflow: hidden;
+  background-color: white;
+  border: 1px solid #d6d3d1;
+  border-radius: 0.5rem;
+}
+
+.tarjeta-imagen {
+  min-height: 10rem;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  background-color: #ea580c;
+}
+
+.tarjeta-contenido {
+  padding: 1rem;
+}
+
+.tarjeta a {
+  color: #c2410c;
+  font-weight: bold;
+}
+
+
+/*
+ * No pregunta por la ventana.
+ * Pregunta por la anchura de .tarjeta-contenedor.
+ */
+
+@container (min-width: 25rem) {
+  .tarjeta {
+    display: grid;
+    grid-template-columns: 12rem 1fr;
+  }
+
+  .tarjeta-imagen {
+    min-height: 100%;
+  }
+}
+
+/*
+ * Esta media query solo permite que la página
+ * que contiene la demo sea usable en móvil.
+ */
+@media (width < 45rem) {
+  body {
+    padding: 1rem;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+```
 
 > 💡 **En Tailwind**: los prefijos `sm:`, `md:`, `lg:`, `xl:` son exactamente media queries de `min-width` (por eso Tailwind es _mobile first_), `dark:` es `prefers-color-scheme: dark`, `motion-reduce:` es `prefers-reduced-motion`, y `@container` tiene su propio prefijo `@sm:`, `@md:`…
 
