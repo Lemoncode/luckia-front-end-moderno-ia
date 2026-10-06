@@ -1,0 +1,11 @@
+---
+import { getCollection } from "astro:content";
+import CocktailMenuComponent from "./cocktail-menu.component.astro";
+import { mapCocktailToMenuLineVm } from "./cocktail-menu.vm";
+
+const lines = (await getCollection("cocktails"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map(mapCocktailToMenuLineVm);
+---
+
+<CocktailMenuComponent lines={lines} />

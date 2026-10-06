@@ -1,0 +1,20 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "#layouts/base.layout.astro";
+import { CocktailDetail } from "#pods/cocktail-detail";
+
+export async function getStaticPaths() {
+  const cocktails = await getCollection("cocktails");
+  return cocktails.map((cocktail) => ({
+    params: { slug: cocktail.id },
+    props: { name: cocktail.data.name },
+  }));
+}
+
+const { slug } = Astro.params;
+const { name } = Astro.props;
+---
+
+<BaseLayout title={`${name} · El Último Trago`}>
+  <CocktailDetail slug={slug} />
+</BaseLayout>
