@@ -1,0 +1,456 @@
+@import "tailwindcss";
+
+/* ───────────── Tokens: synthwave de madrugada ───────────── */
+@theme {
+  /* Superficies derivadas de la noche #0B0A1F */
+  --color-night: oklch(14.5% 0.045 285);
+  --color-surface: oklch(18.5% 0.05 285);
+  --color-surface-2: oklch(23% 0.055 285);
+  --color-surface-3: oklch(28% 0.06 285);
+  --color-line: oklch(32% 0.06 285);
+  /* Pista sin rellenar de progreso/volumen: violeta noche algo más claro y
+     teñido que surface-3 para intuir dónde acaba la barra, sin competir con
+     el relleno (1.56:1 sobre surface; decorativa, no busca 3:1) */
+  --color-track: oklch(34% 0.075 295);
+  /* Barras de scroll: pulgar violeta apagado que cumple WCAG 1.4.11
+     (3.02:1 sobre surface, 3.20:1 sobre night) y se aviva hacia el
+     violeta-magenta al pasar (3.68:1 sobre surface, 3.90:1 sobre night) */
+  --color-scroll-thumb: oklch(50% 0.09 300);
+  --color-scroll-thumb-hover: oklch(55% 0.11 310);
+
+  /* Texto #E9E6FF y su versión secundaria (AA sobre todas las superficies) */
+  --color-ink: oklch(93% 0.035 290);
+  --color-ink-muted: oklch(76% 0.04 290);
+
+  /* Neones: magenta #FF2E88 y cian #22E4FF */
+  --color-magenta: oklch(65.5% 0.245 360);
+  --color-cyan: oklch(84.5% 0.145 207);
+  /* Versiones profundas para fondos con texto encima */
+  --color-magenta-deep: oklch(44% 0.19 360);
+  --color-cyan-deep: oklch(47% 0.1 215);
+
+  --font-display: "Unbounded Variable", ui-sans-serif, sans-serif;
+  --font-sans: "Inter Tight Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Escala tipográfica (~×1.25 respecto a la versión anterior, sin tocar
+     el font-size del html). Saltos claros entre niveles:
+     overline < meta < body < ui < brand < lead < hero */
+  --text-overline: 0.8125rem; /* PLAYLIST, cabeceras de tabla, tiempos, pestañas */
+  --text-overline--line-height: 1.25rem;
+  --text-meta: 0.9375rem; /* artista, álbum, duración, nº de canciones */
+  --text-meta--line-height: 1.375rem;
+  --text-body: 1.0625rem; /* títulos de canción, filas */
+  --text-body--line-height: 1.5rem;
+  --text-ui: 1.125rem; /* navegación, encabezados del lateral, canción en la barra */
+  --text-ui--line-height: 1.625rem;
+  --text-brand: 1.375rem; /* logo */
+  --text-brand--line-height: 1.75rem;
+  --text-lead: clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem); /* descripción de la cabecera */
+  --text-lead--line-height: 1.5;
+  --text-hero: clamp(3rem, 1.75rem + 4.25vw, 6rem); /* nombre de la playlist */
+  --text-hero--line-height: 1;
+
+  /* Medidas de la interfaz (~×1.25) */
+  /* Lateral: 16rem en tablet (como antes, deja sitio al centro) → 22.5rem en escritorio ancho */
+  --spacing-sidebar: clamp(16rem, 25vw, 22.5rem);
+  --spacing-icon: 1.5rem;
+  --spacing-icon-lg: 1.875rem;
+  --spacing-btn: 3rem; /* botón de icono: objetivo táctil de 48 px */
+  --spacing-play: 4.375rem; /* play grande de la cabecera */
+  --spacing-play-sm: 3.5rem; /* play/pausa de la barra inferior */
+  --spacing-cover-row: 3.125rem; /* carátula en la lista de canciones */
+  --spacing-cover-list: 3.75rem; /* carátula en el lateral */
+  --spacing-cover-bar: 4.375rem; /* carátula de la barra inferior (con halo) */
+
+  --radius-panel: 1.125rem;
+  --radius-item: 0.625rem;
+
+  /* Brillos: misma proporción que antes respecto a sus objetos (×1.25) */
+  --shadow-neon-cyan: 0 0 0.78rem oklch(84.5% 0.145 207 / 0.4);
+  --shadow-neon-magenta: 0 0 0.625rem oklch(65.5% 0.245 360 / 0.4);
+  --drop-shadow-neon: 0 0 0.3125rem var(--color-cyan);
+
+  --shadow-row-glow: inset 0.25rem 0 0 var(--color-magenta),
+    0 0 1.875rem oklch(65.5% 0.245 360 / 0.12);
+
+  --animate-breathe: breathe 6s ease-in-out infinite;
+  --animate-eq: eq 0.9s ease-in-out infinite alternate;
+
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1.03);
+    }
+  }
+
+  @keyframes eq {
+    from {
+      transform: scaleY(0.3);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+}
+
+/* ───────────── Base ───────────── */
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-night font-sans text-ink antialiased;
+  }
+
+  /* Barras de scroll de toda la app (html, lateral, lista de canciones…) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scroll-thumb) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 0.1875rem solid transparent;
+    border-radius: 9999px;
+    background-color: var(--color-scroll-thumb);
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-scroll-thumb-hover);
+  }
+}
+
+/* ───────────── Utilidades transversales ───────────── */
+/* Enlace de salto: oculto hasta que recibe el foco */
+@utility skip-link {
+  &:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    border-radius: 0.5rem;
+    background-color: var(--color-cyan);
+    color: var(--color-night);
+    font-weight: 600;
+  }
+}
+
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 2px;
+  }
+}
+
+/* Carátulas generadas con degradados */
+@utility cover-sunset {
+  --halo-color: var(--color-magenta);
+  background-image:
+    linear-gradient(
+      to bottom,
+      transparent 0 56%,
+      var(--color-night) 56% 58%,
+      transparent 58% 63%,
+      var(--color-night) 63% 65.5%,
+      transparent 65.5% 71%,
+      var(--color-night) 71% 74%,
+      transparent 74%
+    ),
+    radial-gradient(circle at 50% 62%, oklch(85% 0.17 75) 0 22%, transparent 23%),
+    linear-gradient(160deg, var(--color-magenta) 10%, oklch(30% 0.14 300) 60%, var(--color-cyan) 120%);
+}
+@utility cover-grid {
+  --halo-color: var(--color-magenta);
+  background-image:
+    repeating-linear-gradient(90deg, oklch(84.5% 0.145 207 / 0.5) 0 1px, transparent 1px 18%),
+    repeating-linear-gradient(0deg, oklch(84.5% 0.145 207 / 0.5) 0 1px, transparent 1px 18%),
+    linear-gradient(to bottom, oklch(25% 0.12 300), var(--color-magenta));
+}
+@utility cover-chrome {
+  --halo-color: var(--color-cyan);
+  background-image: conic-gradient(
+    from 210deg at 30% 70%,
+    var(--color-cyan),
+    oklch(35% 0.12 260),
+    var(--color-ink),
+    oklch(30% 0.1 285),
+    var(--color-cyan)
+  );
+}
+@utility cover-arcade {
+  --halo-color: var(--color-magenta);
+  background-image:
+    radial-gradient(circle at 70% 30%, var(--color-magenta) 0 18%, transparent 19%),
+    radial-gradient(circle at 30% 70%, var(--color-cyan) 0 14%, transparent 15%),
+    linear-gradient(135deg, oklch(25% 0.1 285), oklch(18% 0.06 285));
+}
+@utility cover-rain {
+  --halo-color: var(--color-cyan);
+  background-image:
+    repeating-linear-gradient(100deg, oklch(84.5% 0.145 207 / 0.35) 0 2px, transparent 2px 12px),
+    linear-gradient(to top, oklch(20% 0.08 260), oklch(45% 0.12 230));
+}
+@utility cover-vhs {
+  --halo-color: var(--color-cyan);
+  background-image: linear-gradient(
+    to bottom,
+    oklch(70% 0.2 30) 0 20%,
+    var(--color-magenta) 20% 40%,
+    oklch(50% 0.22 320) 40% 60%,
+    oklch(40% 0.18 290) 60% 80%,
+    var(--color-cyan-deep) 80%
+  );
+}
+
+/* Halo de neón: proyecta el color de la carátula sobre el fondo y "respira" */
+@utility halo {
+  /* El padre debe ser contexto de apilamiento (clase isolate) para que el
+     brillo quede sobre su fondo pero detrás de la carátula */
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    /* Brillo contenido: desborda apenas 2.5px, sombra corta (proporcional
+       a la carátula de 4.375rem) */
+    inset: -0.15625rem;
+    z-index: -1;
+    border-radius: inherit;
+    background-image: inherit;
+    box-shadow: 0 0 0.78rem 0.078rem
+      color-mix(in oklch, var(--halo-color, var(--color-magenta)) 50%, transparent);
+    filter: blur(0.375rem) saturate(1.25);
+    animation: var(--animate-breathe);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::before {
+      animation: none;
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Fondo de la cabecera: degradado magenta → cian que se funde con la noche */
+/* Al pie, rejilla de horizonte synthwave en perspectiva (decorativa y quieta) */
+@utility header-glow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-image:
+    linear-gradient(to bottom, transparent 30%, var(--color-night)),
+    linear-gradient(120deg, var(--color-magenta-deep), oklch(32% 0.12 300) 55%, var(--color-cyan-deep));
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: -50%;
+    bottom: 0;
+    z-index: -1;
+    height: 70%;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 3.75rem 2.5rem;
+    background-position: center bottom;
+    transform: perspective(17.5rem) rotateX(60deg);
+    transform-origin: bottom;
+    mask-image: linear-gradient(to top, black 10%, transparent 85%);
+    --grid-line: color-mix(in oklch, var(--color-cyan) 35%, transparent);
+  }
+}
+
+/* Barra inferior "ahora suena": 2 columnas en móvil, 3 en escritorio.
+   En tablet la columna central se ajusta a los controles para que quepan */
+@utility now-playing {
+  @apply relative isolate col-span-full grid grid-cols-[1fr_auto] items-center overflow-hidden gap-3 p-3
+    md:grid-cols-[1fr_auto_1fr] md:gap-5 md:p-4 lg:grid-cols-3;
+}
+
+/* ───────────── Componentes repetidos ───────────── */
+@layer components {
+  .icon {
+    @apply shrink-0 size-icon fill-current;
+  }
+
+  .panel {
+    @apply rounded-panel bg-surface;
+  }
+
+  /* Si el panel tiene scroll propio (la lista central), la pista empieza y
+     acaba dentro de la curva de sus esquinas. Solo lo aplican los motores que
+     usan ::-webkit-scrollbar (Safari); Chrome y Firefox pintan la barra
+     estándar (scrollbar-color) y ahí lo resuelve la cabecera redondeada */
+  .panel::-webkit-scrollbar-track {
+    margin-block: var(--radius-panel);
+  }
+
+  .btn-icon {
+    @apply focus-ring grid shrink-0 place-items-center size-btn text-ink-muted rounded-full transition
+      hover:bg-ink/10 hover:text-ink hover:drop-shadow-neon
+      motion-reduce:transition-none;
+  }
+
+  .btn-icon[aria-pressed="true"] {
+    @apply text-cyan;
+  }
+
+  .btn-play {
+    @apply focus-ring grid shrink-0 place-items-center size-play bg-cyan text-night rounded-full
+      shadow-neon-cyan transition hover:scale-105 hover:brightness-110
+      motion-reduce:transition-none motion-reduce:hover:scale-100;
+  }
+
+  .nav-link {
+    @apply focus-ring flex items-center gap-5 px-4 py-3 text-ui font-semibold text-ink-muted rounded-item transition
+      hover:text-ink aria-[current=page]:bg-surface-2 aria-[current=page]:text-ink;
+  }
+
+  /* Barra de navegación inferior en móvil: icono encima del texto */
+  .tab-bar .nav-link {
+    @apply flex-col justify-center gap-1 px-2 py-2.5 text-overline;
+  }
+
+  .playlist-link {
+    @apply focus-ring flex items-center gap-4 p-2.5 rounded-item transition
+      hover:bg-surface-2 aria-[current=true]:bg-surface-2;
+  }
+
+  .cover {
+    @apply aspect-square shrink-0 bg-surface-3 rounded-lg;
+  }
+
+  .meta {
+    @apply text-meta text-ink-muted;
+  }
+
+  /* Tabla de canciones: las celdas se estilan desde aquí, no una a una */
+  .tracks {
+    @apply table-fixed border-separate border-spacing-0 w-full text-meta;
+  }
+
+  .tracks th {
+    @apply px-4 pb-3 text-left text-overline font-semibold tracking-widest uppercase text-ink-muted border-b border-line;
+  }
+
+  .tracks td {
+    @apply px-4 py-2.5 first:rounded-l-item last:rounded-r-item;
+  }
+
+  .tracks :is(th, td):first-child,
+  .tracks :is(th, td):last-child {
+    @apply text-right tabular-nums;
+  }
+
+  .tracks :is(th, td):nth-child(3) {
+    @apply hidden truncate lg:table-cell;
+  }
+
+  .col-album {
+    @apply hidden lg:table-column lg:w-1/3;
+  }
+
+  .track-row {
+    @apply text-ink-muted transition hover:bg-ink/5 hover:shadow-row-glow
+      aria-[current=true]:bg-magenta/10 aria-[current=true]:shadow-row-glow
+      motion-reduce:transition-none;
+  }
+
+  .track-info {
+    @apply flex min-w-0 items-center gap-4;
+  }
+
+  .track-title {
+    @apply truncate text-body font-medium text-ink;
+  }
+
+  .track-row[aria-current="true"] .track-title {
+    @apply text-cyan;
+  }
+
+  /* Ecualizador animado de la fila que suena */
+  .eq {
+    @apply inline-flex items-end h-5 gap-0.5;
+  }
+
+  .eq > span {
+    @apply origin-bottom w-1 bg-cyan rounded-full animate-eq motion-reduce:animate-none;
+  }
+
+  .eq > span:nth-child(1) {
+    @apply h-2/3;
+  }
+  .eq > span:nth-child(2) {
+    @apply h-full [animation-delay:-0.3s];
+  }
+  .eq > span:nth-child(3) {
+    @apply h-1/2 [animation-delay:-0.6s];
+  }
+
+  /* Barras deslizantes (progreso y volumen) */
+  .range {
+    --fill: var(--color-ink);
+    @apply focus-ring h-6 w-full appearance-none bg-transparent rounded-full cursor-pointer;
+  }
+
+  .range:hover {
+    --fill: var(--color-magenta);
+  }
+
+  .range::-webkit-slider-runnable-track {
+    @apply h-1.5 rounded-full;
+    background: linear-gradient(to right, var(--fill) var(--value), var(--color-track) var(--value));
+  }
+
+  .range::-moz-range-track {
+    @apply h-1.5 bg-track rounded-full;
+  }
+
+  .range::-moz-range-progress {
+    @apply h-1.5 rounded-full;
+    background: var(--fill);
+  }
+
+  .range::-webkit-slider-thumb {
+    @apply -mt-1.25 size-4 appearance-none bg-ink rounded-full opacity-0 shadow-neon-magenta transition;
+  }
+
+  .range::-moz-range-thumb {
+    @apply size-4 border-0 bg-ink rounded-full opacity-0 transition;
+  }
+
+  .range:hover::-webkit-slider-thumb,
+  .range:focus-visible::-webkit-slider-thumb {
+    @apply opacity-100;
+  }
+
+  .range:hover::-moz-range-thumb,
+  .range:focus-visible::-moz-range-thumb {
+    @apply opacity-100;
+  }
+
+  /* Línea fina de progreso de la barra inferior en móvil (decorativa) */
+  .progress-line {
+    @apply absolute inset-x-3 top-0 h-0.5 rounded-full;
+    background: linear-gradient(to right, var(--color-magenta) var(--value), var(--color-track) var(--value));
+  }
+}

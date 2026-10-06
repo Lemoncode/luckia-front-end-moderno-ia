@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* Cartel de verbena: crema, tomate, tinta y yema (+ lima para los líquidos verdes) */
+@theme {
+  --color-papel: #f3e9d2;
+  --color-tomate: #e63b2e;
+  /* Si cambia, actualiza THEME_COLOR en common/utils/theme.constants.ts */
+  --color-tinta: #1b2a4a;
+  --color-yema: #f5b700;
+  --color-lima: #9cc63b;
+
+  /* Una sola familia para todo; los titulares la llevan al 800 con `titular` */
+  --font-sans: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+
+  --tracking-cartel: -0.06em;
+  --leading-cartel: 0.95;
+  --text-cartel: clamp(3rem, 15vw, 10rem);
+  /* Copa de la cabecera en móvil: crece con el titular y empalma con w-32 en sm */
+  --container-copa-cartel: clamp(4rem, 20vw, 8rem);
+
+  /* Columna compartida: cabecera, carta, detalle y pie alinean al mismo ancho */
+  --container-columna: 64rem;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-papel);
+    color: var(--color-tinta);
+  }
+}
+
+/* Columna centrada con el mismo ancho y margen en todas las secciones */
+@utility columna {
+  max-width: var(--container-columna);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+/* Titular de cartel: Bricolage al máximo de grosor y apretada */
+@utility titular {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: var(--tracking-cartel);
+}
+
+/* Línea de puntos de carta impresa entre nombre y precio */
+@utility leader {
+  flex: 1 1 auto;
+  min-width: 1.5rem;
+  margin-inline: 0.5rem;
+  border-bottom: 3px dotted currentColor;
+  transform: translateY(-0.35em);
+}
+
+/* La copa de la carta se ladea como si brindara al pasar, enfocar o tocar su línea (.group) */
+@utility brindis {
+  transform-origin: bottom;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition-property: rotate;
+    transition-duration: 300ms;
+    transition-timing-function: var(--default-transition-timing-function);
+
+    :where(.group):focus-visible &,
+    :where(.group):active & {
+      rotate: -12deg;
+    }
+
+    @media (hover: hover) {
+      :where(.group):hover & {
+        rotate: -12deg;
+      }
+    }
+  }
+}
+
+@utility focus-ring {
+  outline: 3px solid var(--color-tomate);
+  outline-offset: 4px;
+}
+
+/* El viaje de copa y nombre también se apaga con movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

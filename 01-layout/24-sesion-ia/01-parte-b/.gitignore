@@ -1,0 +1,18 @@
+# Dependencias
+node_modules/
+
+# Builds
+dist/
+.astro/
+
+# Logs
+*.log
+
+# Config local Claude Code
+.claude/settings.local.json
+
+# SO / editores
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/

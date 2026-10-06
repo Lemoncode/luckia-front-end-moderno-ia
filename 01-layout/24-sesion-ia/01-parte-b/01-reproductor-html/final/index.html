@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Neon Drive: synthwave de madrugada para conducir de noche." />
+    <title>Neon Drive · Reproductor</title>
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body class="grid grid-cols-1 grid-rows-[1fr_auto_auto] h-dvh gap-2.5 p-2.5 md:grid-cols-[var(--spacing-sidebar)_1fr] md:grid-rows-[1fr_auto]">
+    <a href="#contenido" class="skip-link focus-ring sr-only">
+      Saltar al contenido
+    </a>
+
+    <!-- Lateral -->
+    <aside class="hidden flex-col min-h-0 gap-2.5 md:flex" aria-label="Biblioteca">
+      <div class="panel flex flex-col gap-2.5 p-4">
+        <a href="#" class="focus-ring flex items-center gap-4 px-4 py-2.5 font-display text-ui font-bold rounded-item xl:text-brand">
+          <svg class="size-10 shrink-0" viewBox="0 0 32 32" aria-hidden="true">
+            <defs>
+              <linearGradient id="logo-gradiente" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" style="stop-color: var(--color-magenta)" />
+                <stop offset="1" style="stop-color: var(--color-cyan)" />
+              </linearGradient>
+            </defs>
+            <path fill="url(#logo-gradiente)" d="M16 3a13 13 0 0 1 13 13H3A13 13 0 0 1 16 3ZM4 19h24v2H4Zm2 4.5h20v1.6H6Zm3 4h14v1.2H9Z" />
+          </svg>
+          Neon Drive
+        </a>
+        <nav aria-label="Principal">
+          <ul>
+            <li><a href="#" class="nav-link" aria-current="page"><svg class="icon" aria-hidden="true"><use href="/icons.svg#home" /></svg> Inicio</a></li>
+            <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search" /></svg> Buscar</a></li>
+            <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="/icons.svg#library" /></svg> Tu biblioteca</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <section class="panel flex flex-1 flex-col min-h-0 gap-2.5 p-4" aria-labelledby="titulo-playlists">
+        <div class="flex items-center justify-between pl-4">
+          <h2 id="titulo-playlists" class="text-ui font-semibold text-ink-muted">Tus playlists</h2>
+          <button type="button" class="btn-icon" aria-label="Crear playlist"><svg class="icon" aria-hidden="true"><use href="/icons.svg#plus" /></svg></button>
+        </div>
+        <ul class="min-h-0 overflow-y-auto">
+          <li>
+            <a href="#" class="playlist-link" aria-current="true">
+              <span class="cover cover-sunset size-cover-list" aria-hidden="true"></span>
+              <span class="min-w-0">
+                <span class="track-title block">Neon Drive</span>
+                <span class="meta block truncate">Playlist · 12 canciones</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="playlist-link">
+              <span class="cover cover-rain size-cover-list" aria-hidden="true"></span>
+              <span class="min-w-0">
+                <span class="track-title block">Lluvia en la ciudad</span>
+                <span class="meta block truncate">Playlist · 24 canciones</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="playlist-link">
+              <span class="cover cover-arcade size-cover-list" aria-hidden="true"></span>
+              <span class="min-w-0">
+                <span class="track-title block">Arcade 1986</span>
+                <span class="meta block truncate">Playlist · 31 canciones</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="playlist-link">
+              <span class="cover cover-grid size-cover-list" aria-hidden="true"></span>
+              <span class="min-w-0">
+                <span class="track-title block">Carretera nocturna</span>
+                <span class="meta block truncate">Playlist · 18 canciones</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="playlist-link">
+              <span class="cover cover-chrome size-cover-list" aria-hidden="true"></span>
+              <span class="min-w-0">
+                <span class="track-title block">Synth para concentrarse</span>
+                <span class="meta block truncate">Playlist · 45 canciones</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="playlist-link">
+              <span class="cover cover-vhs size-cover-list" aria-hidden="true"></span>
+              <span class="min-w-0">
+                <span class="track-title block">Atardecer VHS</span>
+                <span class="meta block truncate">Playlist · 16 canciones</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </aside>
+
+    <!-- Centro -->
+    <main id="contenido" class="panel relative min-h-0 overflow-y-auto">
+      <header class="header-glow flex flex-col gap-5 p-6 pt-10 rounded-t-panel md:gap-8 md:p-8 md:pt-16 lg:flex-row lg:items-end lg:p-10 lg:pt-24">
+        <div class="cover cover-sunset w-40 shadow-2xl md:w-48 lg:w-60 xl:w-70" aria-hidden="true"></div>
+        <div class="flex flex-col min-w-0 gap-3 md:gap-4">
+          <p class="text-overline font-semibold tracking-widest uppercase">Playlist</p>
+          <h1 class="font-display text-hero font-bold">Neon Drive</h1>
+          <p class="max-w-prose text-lead">Autopistas vacías, luces de sodio y sintetizadores hasta que amanezca.</p>
+          <p class="text-body"><strong class="font-semibold">Hecha por ti</strong> · 12 canciones · 49 min</p>
+        </div>
+      </header>
+
+      <div class="flex items-center gap-4 px-6 py-5 md:gap-5 md:px-8 md:py-6 lg:px-10">
+        <button type="button" class="btn-play size-play-sm md:size-play" aria-label="Reproducir Neon Drive"><svg class="icon size-icon-lg" aria-hidden="true"><use href="/icons.svg#play" /></svg></button>
+        <button type="button" class="btn-icon" aria-label="Guardar Neon Drive en tu biblioteca" aria-pressed="true"><svg class="icon size-icon-lg" aria-hidden="true"><use href="/icons.svg#heart" /></svg></button>
+        <button type="button" class="btn-icon" aria-label="Más opciones de Neon Drive"><svg class="icon size-icon-lg" aria-hidden="true"><use href="/icons.svg#more" /></svg></button>
+      </div>
+
+      <section class="px-2 pb-10 md:px-5 lg:px-8" aria-labelledby="titulo-canciones">
+        <h2 id="titulo-canciones" class="sr-only">Canciones de Neon Drive</h2>
+        <table class="tracks">
+          <colgroup>
+            <col class="w-10 md:w-16" />
+            <col />
+            <col class="col-album" />
+            <col class="w-16 md:w-24" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Título</th>
+              <th scope="col">Álbum</th>
+              <th scope="col">
+                <svg class="icon ml-auto size-5" aria-hidden="true"><use href="/icons.svg#clock" /></svg>
+                <span class="sr-only">Duración</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="track-row">
+              <td>1</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-sunset size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Autopista de cristal</p>
+                    <p class="meta truncate">Las Luces de Sodio</p>
+                  </div>
+                </div>
+              </td>
+              <td>Kilómetro Cero</td>
+              <td>3:42</td>
+            </tr>
+            <tr class="track-row">
+              <td>2</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-grid size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Medianoche en la A-6</p>
+                    <p class="meta truncate">Vera Kronos</p>
+                  </div>
+                </div>
+              </td>
+              <td>Horizonte Púrpura</td>
+              <td>4:15</td>
+            </tr>
+            <tr class="track-row">
+              <td>3</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-chrome size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Cromo y lluvia</p>
+                    <p class="meta truncate">Neón Fantasma</p>
+                  </div>
+                </div>
+              </td>
+              <td>Cromo</td>
+              <td>3:58</td>
+            </tr>
+            <tr class="track-row">
+              <td>4</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-arcade size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Faros traseros</p>
+                    <p class="meta truncate">Dúo Arcade</p>
+                  </div>
+                </div>
+              </td>
+              <td>Insert Coin</td>
+              <td>3:21</td>
+            </tr>
+            <tr class="track-row" aria-current="true">
+              <td><span class="eq" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span class="sr-only">Sonando, pista 5</span></td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-grid size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Señal perdida</p>
+                    <p class="meta truncate">Vera Kronos</p>
+                  </div>
+                </div>
+              </td>
+              <td>Horizonte Púrpura</td>
+              <td>4:07</td>
+            </tr>
+            <tr class="track-row">
+              <td>6</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-rain size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Ciudad sin sueño</p>
+                    <p class="meta truncate">Mar de Píxeles</p>
+                  </div>
+                </div>
+              </td>
+              <td>Ciudad sin sueño</td>
+              <td>5:02</td>
+            </tr>
+            <tr class="track-row">
+              <td>7</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-sunset size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Retrovisor</p>
+                    <p class="meta truncate">Las Luces de Sodio</p>
+                  </div>
+                </div>
+              </td>
+              <td>Kilómetro Cero</td>
+              <td>3:36</td>
+            </tr>
+            <tr class="track-row">
+              <td>8</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-vhs size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Gasolinera 24 h</p>
+                    <p class="meta truncate">Turbo Lola</p>
+                  </div>
+                </div>
+              </td>
+              <td>Turbo</td>
+              <td>2:54</td>
+            </tr>
+            <tr class="track-row">
+              <td>9</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-rain size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Línea de horizonte</p>
+                    <p class="meta truncate">Mar de Píxeles</p>
+                  </div>
+                </div>
+              </td>
+              <td>Ciudad sin sueño</td>
+              <td>4:44</td>
+            </tr>
+            <tr class="track-row">
+              <td>10</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-arcade size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Velocidad de crucero</p>
+                    <p class="meta truncate">Dúo Arcade</p>
+                  </div>
+                </div>
+              </td>
+              <td>Insert Coin</td>
+              <td>3:49</td>
+            </tr>
+            <tr class="track-row">
+              <td>11</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-chrome size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Túnel de luz</p>
+                    <p class="meta truncate">Neón Fantasma</p>
+                  </div>
+                </div>
+              </td>
+              <td>Cromo</td>
+              <td>4:21</td>
+            </tr>
+            <tr class="track-row">
+              <td>12</td>
+              <td>
+                <div class="track-info">
+                  <span class="cover cover-vhs size-cover-row" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <p class="track-title">Amanecer en el retrovisor</p>
+                    <p class="meta truncate">Turbo Lola</p>
+                  </div>
+                </div>
+              </td>
+              <td>Turbo</td>
+              <td>5:13</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <!-- Barra inferior: ahora suena -->
+    <section class="panel now-playing" aria-label="Reproduciendo ahora">
+      <div class="progress-line md:hidden" style="--value: 38%" aria-hidden="true"></div>
+      <div class="flex items-center min-w-0 gap-3 md:gap-5">
+        <div class="cover cover-grid halo size-cover-bar" aria-hidden="true"></div>
+        <div class="min-w-0">
+          <p class="track-title text-ui">Señal perdida</p>
+          <p class="meta truncate">Vera Kronos</p>
+        </div>
+        <button type="button" class="btn-icon hidden sm:grid md:hidden lg:grid" aria-label="Me gusta: Señal perdida" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="/icons.svg#heart" /></svg></button>
+      </div>
+
+      <div class="flex flex-col items-center gap-1.5">
+        <div class="flex items-center gap-1 md:gap-2 lg:gap-3">
+          <button type="button" class="btn-icon hidden md:grid" aria-label="Aleatorio" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="/icons.svg#shuffle" /></svg></button>
+          <button type="button" class="btn-icon hidden md:grid" aria-label="Anterior"><svg class="icon" aria-hidden="true"><use href="/icons.svg#prev" /></svg></button>
+          <button type="button" class="btn-play size-play-sm" aria-label="Pausar"><svg class="icon" aria-hidden="true"><use href="/icons.svg#pause" /></svg></button>
+          <button type="button" class="btn-icon" aria-label="Siguiente"><svg class="icon" aria-hidden="true"><use href="/icons.svg#next" /></svg></button>
+          <button type="button" class="btn-icon hidden md:grid" aria-label="Repetir" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="/icons.svg#repeat" /></svg></button>
+        </div>
+        <div class="hidden items-center w-full max-w-2xl gap-3 text-overline tabular-nums text-ink-muted md:flex">
+          <span>1:34</span>
+          <label for="progreso" class="sr-only">Progreso de la canción</label>
+          <input id="progreso" class="range" type="range" min="0" max="247" value="94" style="--value: 38%" aria-valuetext="1:34 de 4:07" />
+          <span>4:07</span>
+        </div>
+      </div>
+
+      <div class="hidden items-center justify-end gap-3 md:flex">
+        <button type="button" class="btn-icon hidden lg:grid" aria-label="Cola de reproducción"><svg class="icon" aria-hidden="true"><use href="/icons.svg#queue" /></svg></button>
+        <button type="button" class="btn-icon" aria-label="Silenciar"><svg class="icon" aria-hidden="true"><use href="/icons.svg#volume" /></svg></button>
+        <label for="volumen" class="sr-only">Volumen</label>
+        <input id="volumen" class="range max-w-36" type="range" min="0" max="100" value="70" style="--value: 70%" />
+      </div>
+    </section>
+
+    <!-- Navegación inferior: solo en móvil, sustituye al lateral -->
+    <nav aria-label="Principal" class="panel tab-bar col-span-full p-1.5 md:hidden">
+      <ul class="grid grid-cols-3">
+        <li><a href="#" class="nav-link" aria-current="page"><svg class="icon" aria-hidden="true"><use href="/icons.svg#home" /></svg> Inicio</a></li>
+        <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="/icons.svg#search" /></svg> Buscar</a></li>
+        <li><a href="#" class="nav-link"><svg class="icon" aria-hidden="true"><use href="/icons.svg#library" /></svg> Tu biblioteca</a></li>
+      </ul>
+    </nav>
+  </body>
+</html>

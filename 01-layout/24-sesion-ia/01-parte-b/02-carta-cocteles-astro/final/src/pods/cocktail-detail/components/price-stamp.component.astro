@@ -1,0 +1,13 @@
+---
+// Sello de precio: pegatina amarilla ladeada sobre la esquina de la copa
+interface Props {
+  price: string;
+}
+
+const { price } = Astro.props;
+---
+
+{/* Solo sobresale por la derecha desde lg, cuando la columna tiene margen de sobra */}
+<p class="absolute -top-5 right-1 grid size-24 rotate-12 place-items-center rounded-full bg-yema font-mono text-xl font-bold sm:size-28 lg:-right-3">
+  <span><span class="sr-only">Precio: </span>{price}&nbsp;€</span>
+</p>
