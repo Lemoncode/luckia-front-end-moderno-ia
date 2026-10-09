@@ -101,4 +101,4 @@ tailwindcss
 
 **Frase de transición:**
 
-> «Vale, ya sabemos dónde se siente cómoda. Vamos a pedirle a ChatGPT que nos monte una web… y a ver en qué acierta y en qué tenemos que ponerla firme.»
+> «Vale, ya sabemos dónde se siente cómoda. Vamos a pedirle a Claude que nos monte una web… y a ver en qué acierta y en qué tenemos que ponerla firme.»
