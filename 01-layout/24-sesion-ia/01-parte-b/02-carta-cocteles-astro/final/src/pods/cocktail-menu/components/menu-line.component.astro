@@ -1,0 +1,35 @@
+---
+import { Glass } from "#common/components";
+import type { MenuLineVm } from "../cocktail-menu.vm";
+
+interface Props {
+  line: MenuLineVm;
+}
+
+const { line } = Astro.props;
+---
+
+<a
+  href={`/cocteles/${line.slug}`}
+  class="group grid grid-cols-[4rem_1fr] items-center gap-4 py-5 focus-visible:focus-ring sm:grid-cols-[5.5rem_1fr] sm:gap-6"
+>
+  <div transition:name={`copa-${line.slug}`}>
+    <Glass
+      type={line.glass}
+      liquid={line.liquid}
+      class="brindis w-full"
+    />
+  </div>
+
+  <div class="min-w-0">
+    <p class="font-mono text-sm font-bold">Nº {line.number}</p>
+    <p class="flex items-end">
+      <span class="titular text-3xl leading-none group-hover:text-tomate group-focus-visible:text-tomate sm:text-5xl">
+        <span transition:name={`nombre-${line.slug}`} class="inline-block">{line.name}</span>
+      </span>
+      <span class="leader" aria-hidden="true"></span>
+      <span class="font-mono text-lg font-bold sm:text-xl">{line.price}<span class="sr-only"> euros</span></span>
+    </p>
+    <p class="mt-2 text-base leading-snug">{line.tagline}</p>
+  </div>
+</a>

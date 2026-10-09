@@ -1,0 +1,43 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource/space-mono/400.css";
+import "@fontsource/space-mono/700.css";
+import { THEME_COLOR } from "#common/utils";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "La carta de El Último Trago: seis clásicos, cero sermones.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {/* THEME_COLOR = --color-tinta de global.css */}
+    <meta name="theme-color" content={THEME_COLOR} />
+    <title>{title}</title>
+    <ClientRouter />
+  </head>
+  {/* ontouchstart vacío: sin él iOS Safari no aplica :active y la copa no brinda al tocar */}
+  <body class="min-h-dvh antialiased" ontouchstart="">
+    {/* Fondo, color de texto y fuente vienen de la base de global.css */}
+    <main id="contenido">
+      <slot />
+    </main>
+    <footer class="columna pt-12 pb-10 text-center font-mono text-sm">
+      <p>
+        <span aria-hidden="true">★</span> Bebe con cabeza: la tuya, no la nuestra <span aria-hidden="true">★</span>
+      </p>
+    </footer>
+  </body>
+</html>

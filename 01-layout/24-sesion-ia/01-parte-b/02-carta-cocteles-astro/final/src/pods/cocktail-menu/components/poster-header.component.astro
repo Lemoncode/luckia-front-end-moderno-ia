@@ -1,0 +1,24 @@
+---
+import { Bunting, Glass, TopStrip } from "#common/components";
+---
+
+<header>
+  <TopStrip>Abierto hasta que nos echen</TopStrip>
+  <Bunting />
+
+  {/* Rejilla (el margen derecho de la copa deja sitio a su giro): en móvil la copa comparte celda con el h1 y se apoya al final de «TRAGO.»; desde sm pasa a su propia columna */}
+  <div class="columna grid items-center gap-x-8 pt-8 sm:grid-cols-[1fr_auto] lg:pt-14">
+    <h1 class="titular col-start-1 row-start-1 text-cartel leading-cartel text-tomate uppercase">
+      El último<br />trago.
+    </h1>
+    <p class="col-start-1 row-start-2 mt-5 max-w-md text-lg leading-snug lg:text-xl">
+      Seis clásicos bien hechos, sin sermones ni pajitas de colores.
+      Pide, brinda y no preguntes la hora.
+    </p>
+    <Glass
+      type="coupe"
+      liquid="tomate"
+      class="col-start-1 row-start-1 mr-2 w-copa-cartel rotate-12 self-end justify-self-end sm:col-start-2 sm:row-span-2 sm:w-32 sm:self-center lg:mr-3 lg:w-52"
+    />
+  </div>
+</header>

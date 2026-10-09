@@ -1,0 +1,36 @@
+---
+import PosterHeader from "./components/poster-header.component.astro";
+import MenuLine from "./components/menu-line.component.astro";
+import type { MenuLineVm } from "./cocktail-menu.vm";
+
+interface Props {
+  lines: MenuLineVm[];
+}
+
+const { lines } = Astro.props;
+---
+
+<PosterHeader />
+
+<section aria-labelledby="carta" class="columna pt-10 lg:pt-16">
+  <header class="flex items-baseline justify-between gap-4 border-b-4 border-tinta pb-3">
+    <h2 id="carta" class="titular text-4xl lg:text-6xl">
+      La carta
+    </h2>
+    <p class="font-mono text-sm">Precios en €</p>
+  </header>
+
+  {
+    lines.length === 0 ? (
+      <p class="py-10 font-mono">Hoy la barra está seca. Vuelve mañana.</p>
+    ) : (
+      <ol class="divide-y-2 divide-dashed divide-tinta">
+        {lines.map((line) => (
+          <li id={line.slug} class="scroll-mt-6">
+            <MenuLine line={line} />
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</section>

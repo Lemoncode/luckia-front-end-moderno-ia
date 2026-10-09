@@ -1,0 +1,17 @@
+---
+import { getEntry } from "astro:content";
+import CocktailDetailComponent from "./cocktail-detail.component.astro";
+import { mapCocktailToDetailVm } from "./cocktail-detail.vm";
+
+interface Props {
+  slug: string;
+}
+
+const entry = await getEntry("cocktails", Astro.props.slug);
+if (!entry) {
+  throw new Error(`No existe el cóctel «${Astro.props.slug}»`);
+}
+const cocktail = mapCocktailToDetailVm(entry);
+---
+
+<CocktailDetailComponent cocktail={cocktail} />

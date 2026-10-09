@@ -1,0 +1,38 @@
+Skills de la clase Tailwind 4 + Astro — NOTICE
+==============================================
+
+Estas skills se incluyen en .claude/skills/ para que quien clone el repo las
+tenga sin instalar nada. Cada carpeta lleva SU PROPIA LICENCIA (LICENSE o
+LICENSE.txt) y un bloque `attribution` en el frontmatter del SKILL.md con el
+origen exacto (repo, autor). Al redistribuir hay que conservar las licencias
+y este aviso.
+
+1) Skills de terceros (copiadas sin cambios, salvo el bloque de atribución)
+
+   - tailwind-design-system   MIT         Copyright (c) 2024 Seth Hobson
+                              https://github.com/wshobson/agents
+                              (plugins/frontend-mobile-development/skills/tailwind-design-system)
+
+   - astro-dev                MIT         Copyright (c) 2026 Sungho Park
+                              https://github.com/gigio1023/astro-dev-skill
+                              (skills/astro-dev)
+
+   - frontend-design          Apache-2.0  Anthropic, PBC
+                              https://github.com/anthropics/skills
+                              (skills/frontend-design)
+
+   - design-critique          Apache-2.0  Anthropic, PBC
+   - accessibility-review     Apache-2.0  Anthropic, PBC
+   - ux-copy                  Apache-2.0  Anthropic, PBC
+                              https://github.com/anthropics/knowledge-work-plugins
+                              (plugin design)
+
+2) Skills propias de Lemoncode — MIT, Copyright (c) 2026 Lemoncode
+
+   - brief-grill              entrevista inicial y brief de diseño.
+                              Deriva de grill-me, MIT, Copyright (c) 2026
+                              Matt Pocock — https://github.com/mattpocock/skills
+                              (su licencia está en brief-grill/LICENSE-grill-me)
+   - tailwind-clases-limpias  reglas anti-"churros" de clases en Tailwind v4
+                              (inspirada en tailwind-design-system, MIT)
+   - astro-pods               arquitectura de pods de Lemoncode aplicada a Astro

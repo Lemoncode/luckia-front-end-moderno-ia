@@ -1,0 +1,81 @@
+---
+import type { GlassType, LiquidColor } from "./glass.model";
+
+interface Props {
+  type: GlassType;
+  liquid: LiquidColor;
+  class?: string;
+}
+
+const { type, liquid, class: className } = Astro.props;
+
+// Clases completas para que Tailwind las detecte
+const liquidFill: Record<LiquidColor, string> = {
+  tomate: "fill-tomate",
+  yema: "fill-yema",
+  lima: "fill-lima",
+  tinta: "fill-tinta",
+};
+const fill = liquidFill[liquid];
+---
+
+<svg
+  viewBox="0 0 100 120"
+  class:list={["overflow-visible", className]}
+  aria-hidden="true"
+  focusable="false"
+>
+  <g
+    class="fill-none stroke-tinta"
+    stroke-width="3.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    {
+      type === "rocks" && (
+        <>
+          <path class:list={[fill, "stroke-none"]} d="M21.5 60 L24.5 106 Q25 110 29 110 L71 110 Q75 110 75.5 106 L78.5 60 Z" />
+          <rect class="fill-papel" x="34" y="48" width="24" height="22" rx="3" transform="rotate(-12 46 59)" />
+          <path class="stroke-papel" d="M30 74 L31.5 98" />
+          <path d="M20 36 L24.5 106 Q25 112 30 112 L70 112 Q75 112 75.5 106 L80 36" />
+          <path class="stroke-yema" d="M62 30 q10 -6 18 2" stroke-width="5" />
+        </>
+      )
+    }
+    {
+      type === "martini" && (
+        <>
+          <path class:list={[fill, "stroke-none"]} d="M22 30 L78 30 L50 66 Z" />
+          <path class="fill-papel stroke-none" d="M22 30 L78 30 L73 36.5 L27 36.5 Z" />
+          <ellipse class="fill-tinta stroke-none" cx="42" cy="31" rx="3.2" ry="2.2" />
+          <ellipse class="fill-tinta stroke-none" cx="50" cy="29" rx="3.2" ry="2.2" />
+          <ellipse class="fill-tinta stroke-none" cx="58" cy="31" rx="3.2" ry="2.2" />
+          <path d="M12 20 L88 20 L50 70 Z M50 70 L50 108 M30 110 L70 110" />
+        </>
+      )
+    }
+    {
+      type === "coupe" && (
+        <>
+          <path class:list={[fill, "stroke-none"]} d="M17 38 Q20 63 50 63 Q80 63 83 38 Z" />
+          <path class="stroke-papel" d="M26 46 Q30 56 40 58" />
+          <circle class="fill-lima" cx="82" cy="27" r="10" />
+          <path class="stroke-papel" d="M82 19 L82 35 M74 27 L90 27" stroke-width="2" />
+          <path d="M12 30 Q12 67 50 67 Q88 67 88 30 Z M50 67 L50 108 M30 110 L70 110" />
+        </>
+      )
+    }
+    {
+      type === "highball" && (
+        <>
+          <path class:list={[fill, "stroke-none"]} d="M30.3 34 L33 108 L67 108 L69.7 34 Z" />
+          <path class="stroke-tomate" d="M58 112 L58 30 L72 4" stroke-width="5" />
+          <path class="fill-lima" d="M38 26 q-12 -10 -4 -20 q10 6 4 20 Z" />
+          <path class="fill-lima" d="M44 26 q4 -16 16 -14 q-2 12 -16 14 Z" />
+          <path class="stroke-papel" d="M36 42 L37.5 96" />
+          <path d="M29 12 L32.5 106 Q33 112 37 112 L63 112 Q67 112 67.5 106 L71 12" />
+        </>
+      )
+    }
+  </g>
+</svg>

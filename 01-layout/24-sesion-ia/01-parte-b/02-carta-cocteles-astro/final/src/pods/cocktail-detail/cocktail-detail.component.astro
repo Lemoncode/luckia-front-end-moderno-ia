@@ -1,0 +1,72 @@
+---
+import { Bunting, Glass, TopStrip } from "#common/components";
+import PriceStamp from "./components/price-stamp.component.astro";
+import RecipeSection from "./components/recipe-section.component.astro";
+import type { CocktailDetailVm } from "./cocktail-detail.vm";
+
+interface Props {
+  cocktail: CocktailDetailVm;
+}
+
+const { cocktail } = Astro.props;
+---
+
+<TopStrip>El Último Trago · Nº {cocktail.number}</TopStrip>
+<Bunting />
+
+<article class="columna pt-6 lg:pt-10">
+  <a href={`/#${cocktail.slug}`} class="inline-block py-2 font-mono font-bold underline decoration-2 underline-offset-4 hover:decoration-tomate focus-visible:focus-ring">
+    ← Volver a la carta
+  </a>
+
+  <div class="mt-6 grid gap-10 md:grid-cols-2 lg:gap-16">
+    <div>
+      <h1 class="titular text-6xl leading-cartel text-tomate sm:text-7xl md:text-6xl lg:text-7xl">
+        <span transition:name={`nombre-${cocktail.slug}`} class="inline-block">{cocktail.name}</span>
+      </h1>
+      <p class="mt-4 text-xl leading-snug font-semibold">{cocktail.tagline}</p>
+      <p class="mt-4 text-lg leading-relaxed">{cocktail.description}</p>
+
+      <RecipeSection title="Lo que lleva">
+        <ul>
+          {cocktail.ingredients.map((ingredient) => (
+            <li class="flex items-end py-1.5 text-lg">
+              <span>{ingredient.name}</span>
+              <span class="leader" aria-hidden="true"></span>
+              <span class="font-mono font-bold">{ingredient.amount}</span>
+            </li>
+          ))}
+        </ul>
+      </RecipeSection>
+
+      <RecipeSection title="Cómo se hace">
+        <ol class="space-y-4">
+          {cocktail.steps.map((step, index) => (
+            <li class="grid grid-cols-[2.5rem_1fr] gap-3 text-lg leading-snug">
+              <span class="font-mono text-2xl font-bold" aria-hidden="true">{index + 1}.</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+      </RecipeSection>
+
+      <RecipeSection title="Cómo se sirve">
+        <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-lg">
+          <dt class="font-mono font-bold">Vaso</dt>
+          <dd>{cocktail.glassName}</dd>
+          <dt class="font-mono font-bold">Guarnición</dt>
+          <dd>{cocktail.garnish}</dd>
+        </dl>
+      </RecipeSection>
+    </div>
+
+    {/* La copa va después del texto en el DOM (se lee nombre antes que precio) y order-first la sube */}
+    <figure class="relative order-first grid place-items-center border-4 border-dashed border-tinta px-6 py-10 md:sticky md:top-8 md:self-start md:pt-16 lg:py-16">
+      <div transition:name={`copa-${cocktail.slug}`} class="w-40 sm:w-52 md:w-40 lg:w-64">
+        <Glass type={cocktail.glass} liquid={cocktail.liquid} class="w-full" />
+      </div>
+      <PriceStamp price={cocktail.price} />
+      <figcaption class="mt-6 font-mono text-sm">{cocktail.glassName}</figcaption>
+    </figure>
+  </div>
+</article>
