@@ -1,0 +1,17 @@
+{
+  "name": "luckia-react",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "01-previous/01-vanilla",
+    "01-previous/02-react",
+    "02-hooks",
+    "03-basic-app",
+    "04-architecture"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces"
+  }
+}
+
