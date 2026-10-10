@@ -1,0 +1,4 @@
+/* Base mínima; los estilos de la aplicación están en app.module.css. */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; }
+button, input { font: inherit; }

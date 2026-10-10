@@ -1,0 +1,27 @@
+.shell {
+  max-width: 48rem;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.shell > * + * { margin-top: 1.25rem; }
+.shell h1 { font-size: 1.875rem; font-weight: 700; }
+.shell h2 { font-size: 1.25rem; font-weight: 600; }
+.shell a { color: #4338ca; text-decoration: underline; }
+.shell button { border: 0; border-radius: .25rem; background: #4338ca; color: white; padding: .5rem 1rem; cursor: pointer; }
+.shell button:hover { background: #3730a3; }
+.shell button:disabled { opacity: .5; }
+.shell input { border: 1px solid #94a3b8; border-radius: .25rem; padding: .5rem; background: white; min-width: 0; }
+.shell :is(a, button, input):focus-visible { outline: 2px solid #4338ca; outline-offset: 2px; }
+.shell .navigation { display: flex; flex-wrap: wrap; gap: 1rem; }
+.shell .list { display: grid; gap: .75rem; list-style: none; padding: 0; }
+.shell .card { background: white; border-radius: .25rem; padding: 1rem; box-shadow: 0 1px 3px #0002; }
+.shell .detail { background: white; border-radius: .25rem; padding: 1.25rem; }
+.shell .detail > * + * { margin-top: .5rem; }
+.shell .form > * + * { margin-top: 1rem; }
+.shell .field { display: grid; gap: .25rem; }
+@media (min-width: 640px) {
+  .shell .list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
