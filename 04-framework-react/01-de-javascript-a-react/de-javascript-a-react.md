@@ -2,23 +2,10 @@
 
 > ⏱️ 2 horas · De actualizar el DOM a describir la interfaz.
 
-| Demo | Momento de la explicación |
-| --- | --- |
-| [01-javascript](./demos/01-javascript) | Datos, DOM y sincronización manual |
-| [02-react](./demos/02-react) | La misma pantalla con componentes y estado |
-
-## Antes de la clase
-
-Partimos de HTML, CSS, JavaScript y de lo aprendido sobre [React con Vite](../../03-bundling/07-react/README.md) y [Tailwind](../../03-bundling/09-tailwindcss/README.md). Usamos Node 22.12 o superior. Cada demo tiene su propia instalación: no instalamos dependencias en la raíz del módulo.
-
-## Recorrido de la sesión · 120 minutos
-
-| Minutos | Explicación |
-| --- | --- |
-| 0–45 | DOM, lista y problema de sincronización |
-| 45–50 | Pausa |
-| 50–100 | JSX, props, estado, eventos y claves |
-| 100–120 | Eliminar personas y recapitulación |
+| Demo                                   | Momento de la explicación                  |
+| -------------------------------------- | ------------------------------------------ |
+| [01-javascript](./demos/01-javascript) | Datos, DOM y sincronización manual         |
+| [02-react](./demos/02-react)           | La misma pantalla con componentes y estado |
 
 ## La página ya no es solo HTML y CSS
 
@@ -30,7 +17,7 @@ Tenemos un campo para escribir un nombre, un botón para añadirlo y un contador
 - El contador aumenta.
 - El campo vuelve a quedar vacío.
 
-Todo eso se puede hacer con JavaScript. La pregunta es **quién se encarga de mantenerlo coordinado** cuando la pantalla empieza a crecer.
+Todo eso se puede hacer con JavaScript. La pregunta es **quién se encarga de mantenerlo coordinado** cuando se pulsa el botón.
 
 ## Vamos a verlo: primero con JavaScript
 
@@ -47,7 +34,7 @@ let members = [
 ];
 ```
 
-En el HTML tenemos un input, un botón, un párrafo para el total y una lista vacía. Guardamos las referencias a esos elementos. Hasta aquí, DOM: lo que ya conocemos.
+En el HTML tenemos un input, un botón, un párrafo para el total y una lista vacía. Guardamos las referencias a esos elementos. Hasta aquí, todo controlado por el DOM lo que ya conocemos.
 
 ### Paso 1: pintar lo que hay en el array
 
@@ -57,18 +44,22 @@ _./demos/01-javascript/src/main.ts_
 function render() {
   total.textContent = `Personas: ${members.length}`;
 
-  list.replaceChildren(...members.map(member => {
-    const item = document.createElement("li");
-    item.className = "rounded bg-white p-3";
-    item.textContent = member.name;
-    return item;
-  }));
+  list.replaceChildren(
+    ...members.map((member) => {
+      const item = document.createElement("li");
+      item.className = "rounded bg-white p-3";
+      item.textContent = member.name;
+      return item;
+    }),
+  );
 }
 
 render();
 ```
 
-La función recorre el array y construye una fila por persona. El total sale de `members.length`. Los nombres entran con `textContent`: son texto, no HTML que queramos interpretar.
+La función recorre el array y construye una fila por persona. El total sale de `members.length`.
+
+Una vez creado el <li>, asignamos el nombre a su propiedad textContent. Esta propiedad sustituye el contenido del elemento por el texto indicado. Usamos texto porque queremos mostrar el nombre tal como se ha escrito, aunque contenga caracteres como < o >
 
 **Los datos están en un sitio y su representación en otro.** Esta función es la que los conecta.
 
@@ -105,13 +96,13 @@ React nos permite describir **cómo debe ser la interfaz con los datos actuales*
 Evento → actualizamos el estado → React calcula la interfaz → actualiza el DOM
 ```
 
-Además, podemos dividir esa descripción en piezas: los **componentes**.
+En React podemos separar la interfaz en componentes. Por ejemplo, un componente para el formulario y otro para la lista de personas. Cada uno contiene el código que define esa parte de la pantalla, y los combinamos para construir la aplicación.
 
-React es una biblioteca de interfaces. El bloque se llama frameworks, pero React por sí solo no incluye las rutas ni una API. Eso lo iremos incorporando cuando lo necesitemos.
+React es una librería para construir interfaces de usuario. No se trata de un framework completo. El bloque se llama frameworks, pero React por sí solo no incluye las rutas ni una API. Eso lo iremos incorporando cuando lo necesitemos.
 
 ## La misma pantalla con React
 
-Pasamos a `demos/02-react`, instalamos con `npm install` en esa carpeta y arrancamos con `npm start`. Conservamos Vite y Tailwind: esa parte ya la vimos en bundling. El archivo `main.tsx` monta `<App />` dentro del elemento raíz.
+Pasamos a `demos/02-react`, instalamos con `npm install` en esa carpeta y arrancamos con `npm start`. Conservamos Vite y Tailwind: esa parte ya la vimos. El archivo `main.tsx` monta `<App />` dentro del elemento raíz.
 
 ### Paso 3: una fila se convierte en un componente
 
@@ -130,13 +121,13 @@ function MemberItem({ member }: { member: Member }) {
 
 Parece HTML, pero es **JSX**: una sintaxis que usamos dentro de JavaScript para describir elementos.
 
-| Lo que vemos | Qué significa |
-| --- | --- |
-| `MemberItem` | Nuestro componente; empieza por mayúscula |
-| `member` | Un dato de entrada: una **prop** |
-| `{member.name}` | Una expresión JavaScript dentro del JSX |
-| `className` | Las clases CSS; aquí seguimos usando Tailwind |
-| `.tsx` | TypeScript con JSX |
+| Lo que vemos    | Qué significa                                 |
+| --------------- | --------------------------------------------- |
+| `MemberItem`    | Nuestro componente; empieza por mayúscula     |
+| `member`        | Un dato de entrada: una **prop**              |
+| `{member.name}` | Una expresión JavaScript dentro del JSX       |
+| `className`     | Las clases CSS; aquí seguimos usando Tailwind |
+| `.tsx`          | TypeScript con JSX                            |
 
 Una prop es una entrada de la función. El componente la recibe y la usa; no modifica la persona que le han pasado.
 
@@ -144,39 +135,98 @@ Para mostrar una fila escribimos `<MemberItem member={member} />`. React se enca
 
 ### Paso 4: una variable que React recuerda
 
-Vamos a guardar lo que escribimos en el campo:
+Seguimos en el formulario de nuestra lista de personas. Queremos que el botón **Añadir** esté desactivado mientras el nombre esté vacío. Así podemos ver si cambiar el nombre también actualiza otra parte de la pantalla.
+
+Primero probamos con una variable local dentro de `App`:
+
+```tsx
+let name = "";
+```
+
+En el JSX del formulario escribimos:
+
+```tsx
+<label htmlFor="name">Nombre</label>
+<input
+  id="name"
+  onChange={(event) => {
+    name = event.target.value;
+    console.log(name);
+  }}
+/>
+<button disabled={!name.trim()}>Añadir</button>
+```
+
+Abrimos la consola y escribimos un nombre.
+
+👉 **El nombre aparece en el input y en la consola. ¿Por qué el botón sigue desactivado?**
+
+El navegador actualiza el contenido del input. Nuestro `onChange` también cambia la variable, pero **esa asignación no solicita un nuevo render**. React calculó `disabled={!name.trim()}` cuando el nombre estaba vacío y no ha vuelto a ejecutar el componente para calcularlo con el nuevo valor.
+
+El input todavía no tiene `value`: su contenido lo gestiona el navegador. Por eso podemos escribir aunque React no esté actualizando la pantalla.
+
+Ahora sustituimos la variable por estado. Añadimos al principio del archivo:
+
+```tsx
+import { useState } from "react";
+```
+
+Dentro de `App`, sustituimos `let name = ""` por:
 
 ```tsx
 const [name, setName] = useState("");
 ```
+
+Y cambiamos solo el manejador del input:
+
+```diff
+<label htmlFor="name">Nombre</label>
+<input
+  id="name"
++ onChange={(event) => setName(event.target.value)}
+/>
+<button disabled={!name.trim()}>Añadir</button>
+```
+
+Volvemos a escribir. **Ahora el botón se activa**. Si borramos el nombre o dejamos solo espacios, se desactiva.
+
+`setName` solicita un nuevo render: React vuelve a ejecutar `App`, recupera el estado actualizado y calcula de nuevo si el botón debe estar desactivado.
 
 Aquí hay dos piezas:
 
 - **`name`**: el valor que tenemos en este render.
 - **`setName`**: la función con la que solicitamos actualizarlo.
 
-`useState` es nuestro primer **hook**. Permite conservar estado entre ejecuciones del componente.
+`useState` es nuestro primer **hook**. Permite conservar estado entre ejecuciones del componente. Una variable local normal no hace ese trabajo: cambiarla no solicita otro render y, al ejecutar de nuevo `App`, `let name = ""` vuelve a inicializarla.
 
-Una variable local normal no hace ese trabajo: cambiarla no solicita otro render y, al ejecutar de nuevo la función, volvemos a declararla.
+Damos un paso más: añadimos `value={name}` para que el estado también determine el contenido del input. El formulario queda así:
 
-Conectamos el estado al input:
-
-```tsx
+```diff
 <label htmlFor="name">Nombre</label>
 <input
   id="name"
-  value={name}
-  onChange={event => setName(event.target.value)}
++ value={name}
+  onChange={(event) => setName(event.target.value)}
 />
+<button disabled={!name.trim()}>Añadir</button>
 ```
 
-Escribimos una letra. Se ejecuta `onChange`, actualizamos el estado y React vuelve a mostrar el input con ese valor. Lo llamamos **input controlado** porque su valor lo decide el estado.
+Lo llamamos **input controlado** porque su valor lo decide el estado. El mismo dato controla ahora el texto del campo y si podemos pulsar Añadir. En el siguiente paso, `setName("")` nos permitirá vaciar el campo después de añadir una persona.
 
 Ojo con otro cambio respecto al HTML: `for` se escribe `htmlFor`.
 
 ### Paso 5: el evento actualiza el estado
 
-La lista también vive en un estado. Para añadir una persona:
+Ahora hacemos lo mismo con la lista. Sustituimos la declaración `const members: Member[] = [...]` por:
+
+```tsx
+const [members, setMembers] = useState<Member[]>([
+  { id: "1", name: "Julia" },
+  { id: "2", name: "Evan" },
+]);
+```
+
+Dentro de `App`, antes del `return`, añadimos la función para dar de alta una persona:
 
 ```tsx
 const addMember = () => {
@@ -184,7 +234,7 @@ const addMember = () => {
   if (!trimmed) return;
 
   const member = { id: crypto.randomUUID(), name: trimmed };
-  setMembers(previous => [...previous, member]);
+  setMembers((previous) => [...previous, member]);
   setName("");
 };
 ```
@@ -194,7 +244,9 @@ Aquí reaparece el spread del bloque de lenguajes: creamos un array nuevo, no ha
 Conectamos el botón:
 
 ```tsx
-<button onClick={addMember}>Añadir</button>
+<button onClick={addMember} disabled={!name.trim()}>
+  Añadir
+</button>
 ```
 
 👉 **¿Por qué no ponemos `addMember()`?** Porque eso ejecutaría la función mientras pintamos el componente. Sin paréntesis pasamos la función para que se ejecute al hacer clic. Es lo mismo que vimos con los callbacks.
@@ -215,7 +267,7 @@ Añadimos una persona: cambian la lista y el contador. **Ya no llamamos nosotros
 
 El total no necesita otro estado. Si ya tenemos el array, podemos calcular su longitud.
 
-La `key` identifica cada fila entre renders. Usamos el identificador de la persona, que se mantiene aunque cambie su posición. El nombre podría repetirse; el índice cambia al borrar; un número aleatorio generado en cada render no conservaría la identidad.
+Al mostrar una lista con `map`, ponemos una `key` en cada elemento para que React pueda reconocerlo entre renders. Usamos member.id, que asignamos al crear la persona y conservamos durante toda su vida en la lista.
 
 ## Vamos a añadir también Eliminar
 
@@ -244,33 +296,36 @@ En `App` definimos la acción y la pasamos a cada fila:
 
 ```tsx
 const removeMember = (id: string) => {
-  setMembers(previous => previous.filter(member => member.id !== id));
+  setMembers((previous) => previous.filter((member) => member.id !== id));
 };
 
 // Dentro del map:
-<MemberItem key={member.id} member={member} onRemove={removeMember} />
+<MemberItem key={member.id} member={member} onRemove={removeMember} />;
 ```
 
-Borramos la primera persona. Desaparece su fila y baja el contador. El hijo no ha necesitado otra copia de la lista.
+Borramos la primera persona. Desaparece su fila y baja el contador.
 
 👉 **Los datos bajan por props; las acciones avisan al dueño del estado.** Este recorrido lo vamos a repetir mucho.
 
-Esta última ampliación la desarrollamos en clase; el proyecto guardado contiene la versión de añadir personas.
+El proyecto guardado contiene el punto de partida con variables. La incorporación del estado, el alta y esta última ampliación de eliminar las desarrollamos juntos en clase.
 
 ## Con qué nos quedamos
 
-| Concepto | En nuestro ejemplo |
-| --- | --- |
-| Componente | Una fila o la aplicación |
-| Props | La persona y la acción de eliminar |
-| Estado | La lista y el nombre que estamos escribiendo |
-| Evento | El clic o el cambio del input |
-| Dato derivado | El total de personas |
+| Concepto      | En nuestro ejemplo                           |
+| ------------- | -------------------------------------------- |
+| Componente    | Una fila o la aplicación                     |
+| Props         | La persona y la acción de eliminar           |
+| Estado        | La lista y el nombre que estamos escribiendo |
+| Evento        | El clic o el cambio del input                |
+| Dato derivado | El total de personas                         |
 
-Terminamos ejecutando `npm run build`. En la siguiente sesión veremos qué ocurre cuando el componente tiene que coordinarse con algo que está fuera de React: un temporizador o una petición.
+## Para ampliar
 
-## Material de partida
+La documentación oficial de React en español incluye explicaciones y ejemplos que podemos modificar en el navegador. Para repasar esta sesión, proponemos este orden:
 
-Adaptamos el ejemplo previo: empezamos con JavaScript para observar la coordinación entre datos y DOM y pasamos después a componentes y estado.
+1. [Inicio rápido](https://es.react.dev/learn): una primera visión de componentes, JSX, eventos y estado.
+2. [Tu primer componente](https://es.react.dev/learn/your-first-component): cómo definir componentes y combinarlos para construir una pantalla.
+3. [El estado: la memoria de un componente](https://es.react.dev/learn/state-a-components-memory): por qué una variable local no basta y qué aporta `useState`.
+4. [Renderizado de listas](https://es.react.dev/learn/rendering-lists): cómo mostrar arrays con `map` y elegir una `key` para cada elemento.
 
-[React en el máster de Lemoncode](https://github.com/Lemoncode/master-frontend-lemoncode/tree/master/04-frameworks/01-react).
+También encontramos más ejemplos en el [bloque de React del máster de Lemoncode](https://github.com/Lemoncode/master-frontend-lemoncode/tree/master/04-frameworks/01-react). Su recorrido es más amplio que el de esta sesión; podemos consultarlo como material complementario.
