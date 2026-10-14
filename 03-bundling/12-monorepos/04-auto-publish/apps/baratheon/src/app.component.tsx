@@ -1,0 +1,16 @@
+import { House, getHouseTitle } from "@<user-name>/house-helpers";
+import { getHouseMotto } from "@<user-name>/motto-helpers";
+import "./app.css";
+import logo from "/logo.png";
+
+function App() {
+  return (
+    <>
+      <img src={logo} className="logo" />
+      <h1>{getHouseTitle(House.baratheon)}</h1>
+      <h2>{getHouseMotto(House.baratheon)}</h2>
+    </>
+  );
+}
+
+export default App;

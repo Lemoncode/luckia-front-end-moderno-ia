@@ -1,0 +1,24 @@
+{
+  "name": "game-of-thrones",
+  "private": true,
+  "workspaces": [
+    "helpers/*",
+    "apps/*"
+  ],
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": "^11.12.1"
+    }
+  },
+  "scripts": {
+    "start": "turbo watch start",
+    "build": "turbo build",
+    "changeset": "changeset",
+    "publish-packages": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.3",
+    "turbo": "^2.11.8"
+  }
+}
