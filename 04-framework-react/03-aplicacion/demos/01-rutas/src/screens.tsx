@@ -14,7 +14,7 @@ export function MemberList() {
       visible.length === 0 ? <p>Sin resultados.</p> :
       <ul className="grid gap-3 sm:grid-cols-2">
         {visible.map(member => <li key={member.id} className="rounded bg-white p-4 shadow-sm">
-          <Link to="/members/$memberId" params={{ memberId: String(member.id) }}>{member.name}</Link>
+          <span>{member.name}</span>
           <p>{member.role}</p>
         </li>)}
       </ul>}

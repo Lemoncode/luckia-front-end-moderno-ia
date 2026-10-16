@@ -10,7 +10,7 @@ Empezamos con una lista hecha con JavaScript para observar qué ocurre cuando te
 | ------ | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1      | [De JavaScript a React](./01-de-javascript-a-react/de-javascript-a-react.md) | Manipulación del DOM, componentes, JSX, props, estado y eventos.                                                                                |
 | 2      | [Hooks](./02-hooks/hooks.md)                                                 | useState, useEffect, custom hooks, useRef, useMemo y useCallback, con una introducción a React Compiler.                                        |
-| 3      | [Aplicación con React](./03-aplicacion/aplicacion-con-react.md)              | Lista y detalle con TanStack Router, extracción de componentes y alta con TanStack Form y Zod. CSS Modules queda como ampliación si hay tiempo. |
+| 3      | [Aplicación con React](./03-aplicacion/aplicacion-con-react.md)              | Lista y detalle con TanStack Router, extracción de componentes, Context y alta con TanStack Form y Zod. CSS Modules queda como ampliación si hay tiempo. |
 | 4      | [Arquitectura](./04-arquitectura/arquitectura.md)                            | Organización en escenas, componentes y pods de directorio y edición, con datos compartidos y persistencia local.                                |
 
 ## Cómo trabajamos

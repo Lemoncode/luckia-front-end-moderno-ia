@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MembersIndexRouteImport } from './routes/members/index'
 import { Route as MembersMemberIdRouteImport } from './routes/members/$memberId'
-import { Route as MembersNewRouteImport } from './routes/members/new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,43 +28,34 @@ const MembersMemberIdRoute = MembersMemberIdRouteImport.update({
   path: '/members/$memberId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MembersNewRoute = MembersNewRouteImport.update({
-  id: '/members/new',
-  path: '/members/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/members/$memberId': typeof MembersMemberIdRoute
-  '/members/new': typeof MembersNewRoute
   '/members/': typeof MembersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/members/$memberId': typeof MembersMemberIdRoute
-  '/members/new': typeof MembersNewRoute
   '/members': typeof MembersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/members/$memberId': typeof MembersMemberIdRoute
-  '/members/new': typeof MembersNewRoute
   '/members/': typeof MembersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/members/$memberId' | '/members/new' | '/members/'
+  fullPaths: '/' | '/members/$memberId' | '/members/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/members/$memberId' | '/members/new' | '/members'
-  id: '__root__' | '/' | '/members/$memberId' | '/members/new' | '/members/'
+  to: '/' | '/members/$memberId' | '/members'
+  id: '__root__' | '/' | '/members/$memberId' | '/members/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MembersMemberIdRoute: typeof MembersMemberIdRoute
-  MembersNewRoute: typeof MembersNewRoute
   MembersIndexRoute: typeof MembersIndexRoute
 }
 
@@ -92,20 +82,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersMemberIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/members/new': {
-      id: '/members/new'
-      path: '/members/new'
-      fullPath: '/members/new'
-      preLoaderRoute: typeof MembersNewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MembersMemberIdRoute: MembersMemberIdRoute,
-  MembersNewRoute: MembersNewRoute,
   MembersIndexRoute: MembersIndexRoute,
 }
 export const routeTree = rootRouteImport
