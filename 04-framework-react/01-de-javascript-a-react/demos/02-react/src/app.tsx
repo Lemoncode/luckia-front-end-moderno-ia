@@ -3,10 +3,6 @@ interface Member {
   name: string;
 }
 
-function MemberItem({ member }: { member: Member }) {
-  return <li className="rounded bg-white p-3">{member.name}</li>;
-}
-
 export function App() {
   const members: Member[] = [
     { id: "1", name: "Julia" },
@@ -22,7 +18,9 @@ export function App() {
       <p aria-live="polite">Personas: {members.length}</p>
       <ul className="space-y-2">
         {members.map((member) => (
-          <MemberItem key={member.id} member={member} />
+          <li key={member.id} className="rounded bg-white p-3">
+            {member.name}
+          </li>
         ))}
       </ul>
     </main>
