@@ -59,7 +59,7 @@ render();
 
 La función recorre el array y construye una fila por persona. El total sale de `members.length`.
 
-Una vez creado el <li>, asignamos el nombre a su propiedad textContent. Esta propiedad sustituye el contenido del elemento por el texto indicado. Usamos texto porque queremos mostrar el nombre tal como se ha escrito, aunque contenga caracteres como < o >
+Una vez creado el `<li>`, asignamos el nombre a su propiedad textContent. Esta propiedad sustituye el contenido del elemento por el texto indicado. Usamos texto porque queremos mostrar el nombre tal como se ha escrito, aunque contenga caracteres como < o >
 
 **Los datos están en un sitio y su representación en otro.** Esta función es la que los conecta.
 
@@ -106,6 +106,10 @@ Pasamos a `demos/02-react`, instalamos con `npm install` en esa carpeta y arranc
 
 ### Paso 3: una fila se convierte en un componente
 
+La demo guardada es el punto de partida: muestra dos personas desde un array, con las filas escritas dentro del `map`. El input permite escribir, pero el botón todavía no hace nada. No hay hooks ni manejadores de eventos.
+
+Primero extraemos una fila. Conservamos la interfaz `Member` que ya está en el archivo y añadimos la función `MemberItem` antes de `App`:
+
 _./demos/02-react/src/app.tsx_
 
 ```tsx
@@ -133,17 +137,27 @@ Una prop es una entrada de la función. El componente la recibe y la usa; no mod
 
 Para mostrar una fila escribimos `<MemberItem member={member} />`. React se encarga de ejecutar el componente.
 
+Dentro del `map` de `App`, sustituimos el `<li>` completo por el componente:
+
+```tsx
+{members.map((member) => (
+  <MemberItem key={member.id} member={member} />
+))}
+```
+
+La pantalla sigue mostrando las mismas personas. Hemos separado una pieza de la interfaz sin cambiar su comportamiento. La `key` se coloca en el elemento que devuelve el `map`, ahora `MemberItem`.
+
 ### Paso 4: una variable que React recuerda
 
 Seguimos en el formulario de nuestra lista de personas. Queremos que el botón **Añadir** esté desactivado mientras el nombre esté vacío. Así podemos ver si cambiar el nombre también actualiza otra parte de la pantalla.
 
-Primero probamos con una variable local dentro de `App`:
+Primero añadimos una variable local dentro de `App`, después del array y antes del `return`:
 
 ```tsx
 let name = "";
 ```
 
-En el JSX del formulario escribimos:
+Sustituimos el label, el input y el botón iniciales por este bloque:
 
 ```tsx
 <label htmlFor="name">Nombre</label>
@@ -253,6 +267,8 @@ Conectamos el botón:
 
 ### Paso 6: lista y contador salen del mismo dato
 
+Este JSX ya está en la aplicación: no añadimos una segunda lista ni otro contador. Observamos cómo responde ahora al estado:
+
 ```tsx
 <p>Personas: {members.length}</p>
 
@@ -307,7 +323,7 @@ Borramos la primera persona. Desaparece su fila y baja el contador.
 
 👉 **Los datos bajan por props; las acciones avisan al dueño del estado.** Este recorrido lo vamos a repetir mucho.
 
-El proyecto guardado contiene el punto de partida con variables. La incorporación del estado, el alta y esta última ampliación de eliminar las desarrollamos juntos en clase.
+El proyecto guardado contiene solo la pantalla inicial con un array y las filas dentro del `map`. La extracción de `MemberItem`, la variable del nombre, el estado, el alta y la eliminación se construyen en clase siguiendo los pasos anteriores.
 
 ## Con qué nos quedamos
 
