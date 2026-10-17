@@ -2,6 +2,12 @@
 
 > ⏱️ 2 horas · Dos funcionalidades que comparten datos sin depender una de la otra.
 
+<!-- Pendiente para la revisión de esta sesión: valorar introducir una API real
+para lectura, alta y edición, sustituyendo members.json + localStorage desde
+src/core/members/api.ts. Mostrar cómo la separación del acceso a datos permite
+cambiar su origen sin rehacer las pantallas. Elegir el servicio y concretar el
+alcance al revisar 04-arquitectura; todavía no está implementado. -->
+
 ## Antes de la clase
 
 Partimos de la aplicación con rutas, componentes y formulario de alta de la sesión anterior. Usamos Node 22.12 o superior; la demo tiene su propia instalación.

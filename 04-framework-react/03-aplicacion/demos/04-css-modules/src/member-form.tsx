@@ -1,4 +1,4 @@
-import styles from "./app.module.css";
+import styles from "./member-form.module.css";
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { memberSchema } from "./member.schema";

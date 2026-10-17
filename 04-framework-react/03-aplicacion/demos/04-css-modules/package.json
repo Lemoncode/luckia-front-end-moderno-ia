@@ -6,8 +6,7 @@
     "start": "vite",
     "build": "vite build && tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview",
-    "start:sin-estilos": "vite --mode sin-estilos"
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.3.0",

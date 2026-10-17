@@ -1,11 +1,30 @@
 @import "tailwindcss" source("./");
+
 @layer base {
-  body { @apply bg-slate-100 text-slate-900; }
-  main { @apply mx-auto max-w-3xl space-y-5 p-6; }
-  h1 { @apply text-3xl font-bold; }
-  h2 { @apply text-xl font-semibold; }
-  button { @apply rounded bg-indigo-700 px-4 py-2 text-white hover:bg-indigo-800 disabled:opacity-50; }
-  input { @apply rounded border border-slate-400 bg-white p-2; }
-  a { @apply text-indigo-700 underline; }
-  button, input, a { @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700; }
+  body { @apply m-0 min-h-screen bg-slate-50 text-slate-800 antialiased; }
+  main { @apply mx-auto max-w-4xl space-y-6 px-5 py-8 sm:px-8 sm:py-12; }
+  nav { @apply mb-8 flex flex-wrap items-center gap-3 border-b border-slate-200 pb-5; }
+  nav a { @apply rounded-lg px-4 py-2 text-sm font-semibold no-underline; }
+  nav a:hover { @apply bg-indigo-50; }
+  nav a[data-status="active"] { @apply bg-indigo-700 text-white; }
+  h1 { @apply text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl; }
+  h2 { @apply text-xl font-semibold tracking-tight text-slate-900; }
+  p { @apply leading-relaxed; }
+  main > p:first-of-type { @apply text-sm text-slate-500; }
+  label { @apply block text-sm font-semibold text-slate-700; }
+  input { @apply w-full min-w-0 rounded-xl border border-slate-300 bg-white px-4 py-3 text-base shadow-sm transition-colors; }
+  input:hover { @apply border-slate-400; }
+  input:focus { @apply border-indigo-600; }
+  input[aria-invalid="true"] { @apply border-rose-500 bg-rose-50; }
+  button { @apply cursor-pointer rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:opacity-50; }
+  button[aria-pressed="true"] { @apply bg-slate-900; }
+  a { @apply font-medium text-indigo-700 underline-offset-4 hover:underline; }
+  button, input, a { @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600; }
+  li > a, li > span { @apply block text-lg font-semibold tracking-tight; }
+  li > p { @apply mt-2 text-sm text-slate-500; }
+  article { @apply border border-slate-200; }
+  article > p { @apply text-slate-600; }
+  form { @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8; }
+  [role="alert"] { @apply rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800; }
+  [role="status"] { @apply rounded-lg bg-indigo-50 px-4 py-3 text-sm text-indigo-800; }
 }

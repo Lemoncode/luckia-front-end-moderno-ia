@@ -1,4 +1,13 @@
-/* Base mínima; los estilos de la aplicación están en app.module.css. */
+/* Base compartida: tipografía, colores y foco. Cada componente tiene su módulo. */
 * { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, sans-serif; }
+body { margin: 0; font-family: system-ui, sans-serif; background: #f8fafc; color: #1e293b; }
 button, input { font: inherit; }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -.035em; color: #020617; }
+h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -.025em; color: #0f172a; }
+p { line-height: 1.65; }
+a { color: #4338ca; font-weight: 500; text-decoration: none; text-underline-offset: .25rem; }
+a:hover { text-decoration: underline; }
+:is(a, button, input):focus-visible { outline: 2px solid #4f46e5; outline-offset: 4px; }
+@media (min-width: 640px) {
+  h1 { font-size: 2.25rem; }
+}

@@ -1,4 +1,4 @@
-import styles from "../app.module.css";
+import styles from "./member-card.module.css";
 import { Link } from "@tanstack/react-router";
 import type { Member } from "../model";
 export function MemberCard({ member }: { member: Member }) {

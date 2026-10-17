@@ -2,38 +2,18 @@
 
 > ⏱️ 2 horas · Una primera aplicación con TanStack Router, preparada para enlazar después con TanStack Start.
 
-## Antes de la clase
-
-Partimos de componentes, estado, efectos y custom hooks. Usamos Node 22.12 o superior y una instalación independiente por demo. Las lecturas usan JSON local servido por Vite; filtramos la lista ya cargada.
-
-## Recorrido de la sesión · 120 minutos
-
-| Minutos | Explicación |
-| --- | --- |
-| 0–10 | URLs y alcance: Router ahora, Start después |
-| 10–30 | Archivos, generación y tipado de las rutas |
-| 30–40 | Lista, detalle y estados de petición preparados |
-| 40–45 | Pausa |
-| 45–60 | Extracción de componentes y Tailwind |
-| 60–80 | Props, Context, provider y useContext |
-| 80–110 | TanStack Form, Zod y alta |
-| 110–115 | Validaciones y persistencia preparada |
-| 115–120 | Recapitulación |
-
-CSS Modules queda preparado **solo si hay tiempo**. No sumamos otra práctica obligatoria a las dos horas: podemos mostrar brevemente la comparación o reservarla para otra ocasión.
-
 ## Cuatro momentos de la misma aplicación
 
 Cada demo es un proyecto independiente. Entramos en su carpeta, ejecutamos `npm install` la primera vez y arrancamos con `npm start`.
 
-| Demo | Qué mostramos |
-| --- | --- |
-| [01-rutas](./demos/01-rutas) | Listado con router preparado; añadimos la ruta de detalle y los enlaces |
-| [02-componentes](./demos/02-componentes) | Rutas completas, sin componentes extraídos ni Context; los construimos en clase |
-| [03-formulario](./demos/03-formulario) | Componentes y Context terminados; construimos el formulario y la ruta de alta |
+| Demo                                     | Qué mostramos                                                                    |
+| ---------------------------------------- | -------------------------------------------------------------------------------- |
+| [01-rutas](./demos/01-rutas)             | Listado con router preparado; añadimos la ruta de detalle y los enlaces          |
+| [02-componentes](./demos/02-componentes) | Rutas completas, sin componentes extraídos ni Context; los construimos en clase  |
+| [03-formulario](./demos/03-formulario)   | Componentes y Context terminados; construimos el formulario y la ruta de alta    |
 | [04-css-modules](./demos/04-css-modules) | Comparación final preparada con CSS Modules, sin la ampliación de vista compacta |
 
-Cada demo parte del bloque anterior completado, pero deja pendiente la novedad que vamos a explicar. Los hooks de lectura, los datos y la persistencia se entregan preparados. La variante CSS Modules es una comparación final opcional, no otro ejercicio obligatorio.
+Cada demo parte del bloque anterior completado, pero deja pendiente la novedad que vamos a explicar. Los hooks de lectura, los datos y la persistencia se entregan preparados. La variante CSS Modules es una comparación final opcional.
 
 ## Hasta ahora solo teníamos una pantalla
 
@@ -66,20 +46,23 @@ export default defineConfig({
 
 El plugin del router va **antes** que el de React. Observa `src/routes` y genera `src/routeTree.gen.ts`. Ese árbol es un resultado generado: no lo escribimos ni lo arreglamos a mano.
 
-Las dependencias ya están incluidas. Al partir de otro proyecto necesitaríamos `@tanstack/react-router` y, para desarrollo, `@tanstack/router-plugin`.
+Las dependencias ya están incluidas. Para agregarlo a un proyecto nuevo necesitaríamos instalar `@tanstack/react-router` y, para desarrollo, `@tanstack/router-plugin`.
 
 ### Paso 1 · Rutas por archivos: añadir el detalle
 
 La demo arranca con el listado y el router configurados, pero sin la ruta de detalle ni enlaces desde las tarjetas. La configuración y los hooks de lectura se entregan preparados para centrarnos en la navegación. Creamos src/routes/members/$memberId.tsx con este contenido; MemberDetail ya está preparado en screens.tsx:
-~~~tsx
+
+```tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { MemberDetail } from "../../screens";
-export const Route = createFileRoute("/members/$memberId")({ component: DetailPage });
+export const Route = createFileRoute("/members/$memberId")({
+  component: DetailPage,
+});
 function DetailPage() {
   const { memberId } = Route.useParams();
   return <MemberDetail key={memberId} id={memberId} />;
 }
-~~~
+```
 
 Con Vite arrancado, el plugin genera el árbol. La estructura resultante será:
 
@@ -92,12 +75,12 @@ src/routes/
     $memberId.tsx
 ```
 
-| Archivo | Papel |
-| --- | --- |
-| `__root.tsx` | Marco común y hueco de la pantalla |
-| `index.tsx` | Entrada `/`, que redirige al listado |
-| `members/index.tsx` | Listado `/members` |
-| `members/$memberId.tsx` | Detalle `/members/1`, `/members/2`… |
+| Archivo                 | Papel                                |
+| ----------------------- | ------------------------------------ |
+| `__root.tsx`            | Marco común y hueco de la pantalla   |
+| `index.tsx`             | Entrada `/`, que redirige al listado |
+| `members/index.tsx`     | Listado `/members`                   |
+| `members/$memberId.tsx` | Detalle `/members/1`, `/members/2`…  |
 
 `$` señala un parámetro dinámico. El nombre `memberId` será también el nombre que TypeScript espera al construir el enlace.
 
@@ -141,10 +124,7 @@ En la raíz tenemos `Link`, la navegación y un `Outlet`. Ese es el hueco donde 
 En src/screens.tsx, dentro del listado, sustituimos el span que muestra el nombre por este enlace. Link ya está importado porque el detalle lo usa para volver:
 
 ```tsx
-<Link
-  to="/members/$memberId"
-  params={{ memberId: String(member.id) }}
->
+<Link to="/members/$memberId" params={{ memberId: String(member.id) }}>
   {member.name}
 </Link>
 ```
@@ -166,27 +146,70 @@ function DetailPage() {
 }
 ```
 
-`Route.useParams()` conoce los parámetros de ese archivo. La `key` reinicia el estado de la pantalla cuando cambia la persona para no mostrar momentáneamente el detalle anterior.
+Abrimos `/members/2`. El archivo `$memberId.tsx` define el nombre del parámetro y `Route.useParams()` nos entrega su valor: `memberId` es el texto `"2"`.
 
-Dentro de `MemberDetail` usamos `useMember(id)`, que ya sigue el patrón de estado, efecto y limpieza de la sesión de hooks.
+`DetailPage` pasa ese identificador a `MemberDetail` mediante la prop `id`. Hasta aquí solo hemos leído la dirección: **el router no ha buscado a la persona**.
 
-**TanStack Router también dispone de loaders y otras herramientas de carga.** Aquí conservamos los hooks para introducir una sola novedad: navegación y tipado. La integración de cargas, caché y servidor queda para Start.
+### Del identificador a los datos de la persona
 
-## Datos y estados de la pantalla
-
-La lista inicial sale de `public/members.json`. Las funciones de `api.ts` la leen por HTTP y buscan el detalle por identificador. Es una simplificación local, no una API de producción.
-
-El listado filtra en memoria:
+Seguimos el recorrido abriendo `src/screens.tsx`. Al principio de `MemberDetail` encontramos:
 
 ```tsx
-const visible = members.filter(member =>
-  member.name.toLowerCase().includes(filter.toLowerCase())
+const { member, loading, error } = useMember(id);
+```
+
+El componente pide los datos de la persona cuyo identificador acaba de recibir. `useMember` es un custom hook que ya viene preparado con el patrón de la sesión anterior: estado, efecto y limpieza.
+
+Abrimos `src/hooks.ts` y localizamos `useMember`. Su efecto llama a `getMember(id, controller.signal)`. Mientras espera, mantiene `loading` a `true`; cuando llega la respuesta, guarda la persona y termina la carga. Si falla, guarda un mensaje en `error`.
+
+Por último, abrimos `src/api.ts`. `getMember` lee la lista mediante `getMembers` y busca la persona por su identificador:
+
+```tsx
+const members = await getMembers(signal);
+return members.find((member) => member.id === Number(id)) ?? null;
+```
+
+En esta demo, `getMembers` hace un `fetch` a `/members.json`, el archivo que Vite sirve desde `public/members.json`. No tenemos un servidor que consulte una base de datos: descargamos la lista y buscamos en ella. Convertimos `id` a número porque llega como texto desde la URL, mientras que el JSON contiene identificadores numéricos.
+
+El recorrido completo es:
+
+```text
+/members/2
+  → DetailPage lee "2" de la URL
+  → MemberDetail recibe id="2"
+  → useMember("2") gestiona la carga
+  → getMember busca en los datos de members.json
+  → MemberDetail muestra el resultado
+```
+
+### Qué mostramos mientras esperamos y cuando termina
+
+Volvemos al JSX de `MemberDetail`, en `src/screens.tsx`, y localizamos sus condiciones:
+
+- Si `loading` es `true`, mostramos «Cargando…».
+- Si hay `error`, mostramos el mensaje del fallo.
+- Si la lectura termina sin error pero no hay `member`, mostramos «Persona no encontrada».
+- Si tenemos la persona, mostramos su nombre, puesto y correo.
+
+Probamos `/members/999`. La dirección encaja con la ruta, pero no existe esa persona en el JSON. Por eso vemos «Persona no encontrada» y no un error de navegación.
+
+Nos queda un detalle de la llamada inicial: `key={memberId}`. Al pasar de una persona a otra, esa clave cambia y React monta una nueva instancia de `MemberDetail`, con su estado inicial de carga. Así no conservamos en pantalla los datos de la persona anterior mientras empieza la nueva lectura.
+
+## Volvemos al listado: filtrar los datos ya cargados
+
+Entramos en `/members` y abrimos `MemberList`, también en `src/screens.tsx`. Aquí usamos `useMembers()` para cargar la lista completa. Una vez recibida, el campo de búsqueda filtra ese array:
+
+```tsx
+const visible = members.filter((member) =>
+  member.name.toLowerCase().includes(filter.toLowerCase()),
 );
 ```
 
 No necesitamos otro estado ni un efecto para `visible`. Con Network abierto, cambiar el filtro no provoca otra petición.
 
-Mostramos carga, error, vacío y resultados. `/members/999` muestra «Persona no encontrada»: el patrón de ruta existe, pero ese dato no.
+Probamos un nombre que exista y después `zzzz`. En el segundo caso mostramos «Sin resultados»: tenemos datos, pero ninguno coincide con el filtro. El listado también contempla la carga y los errores de la petición inicial.
+
+> TanStack Router ofrece otras formas de cargar datos, como los loaders. En esta sesión mantenemos los hooks que ya conocemos para centrarnos en las rutas. Retomaremos esas alternativas al trabajar con TanStack Start.
 
 Hasta aquí, la aplicación funciona. **Ahora tiene sentido decidir qué partes merecen un componente.**
 
@@ -197,16 +220,14 @@ Pasamos a demos/02-componentes. Contiene el resultado de rutas, pero las tarjeta
 ### Paso 5: la tarjeta se lleva su estructura y sus clases
 
 Creamos src/components/member-card.tsx. Añadimos los imports de Link y Member y movemos el contenido de la tarjeta:
-~~~tsx
-import { Link } from "@tanstack/react-router";
-import type { Member } from "../model";
-~~~
-
 
 ```tsx
+import { Link } from "@tanstack/react-router";
+import type { Member } from "../model";
+
 export function MemberCard({ member }: { member: Member }) {
   return (
-    <li className="rounded bg-white p-4 shadow-sm">
+    <li className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <Link to="/members/$memberId" params={{ memberId: String(member.id) }}>
         {member.name}
       </Link>
@@ -218,10 +239,10 @@ export function MemberCard({ member }: { member: Member }) {
 
 En src/pages/screens.tsx importamos MemberCard desde ../components/member-card y sustituimos todo el li del map. El listado queda así:
 
-```tsx
-{visible.map(member => (
-  <MemberCard key={member.id} member={member} />
-))}
+```diff
+{
+  visible.map((member) => <MemberCard key={member.id} member={member} />)
+}
 ```
 
 Cambiamos `p-4` por `p-6` en la tarjeta. Todas las filas cambian a la vez.
@@ -231,18 +252,21 @@ Cambiamos `p-4` por `p-6` en la tarjeta. Todas las filas cambian a la vez.
 La cuadrícula sigue en el listado: decide cómo se distribuyen las tarjetas, no cómo es una tarjeta por dentro. También extraemos los mensajes de carga y error porque aparecen en ambas pantallas.
 
 Creamos también src/components/request-status.tsx:
-~~~tsx
-export function Loading() { return <p role="status">Cargando…</p>; }
-export function ErrorMessage({ message }: { message: string }) { return <p role="alert">{message}</p>; }
-~~~
+
+```tsx
+export function Loading() {
+  return <p role="status">Cargando…</p>;
+}
+export function ErrorMessage({ message }: { message: string }) {
+  return <p role="alert">{message}</p>;
+}
+```
 
 En src/pages/screens.tsx importamos Loading y ErrorMessage desde ../components/request-status. En ambas pantallas sustituimos el párrafo de carga por `<Loading />` y el de error por `<ErrorMessage message={error} />`.
 
 No extraemos cada `div`. Buscamos piezas con un nombre y una responsabilidad reconocibles.
 
 ## Context y `useContext`: compartir una preferencia de vista
-
-> ⏱️ 15–20 minutos. Seguimos en `demos/02-componentes`, sobre los componentes que acabamos de extraer.
 
 ### Paso 5A · Props: pasar la preferencia por el listado
 
@@ -255,7 +279,10 @@ const [compact, setCompact] = useState(false);
 Después del título del listado añadimos:
 
 ```tsx
-<button onClick={() => setCompact((previous) => !previous)} aria-pressed={compact}>
+<button
+  onClick={() => setCompact((previous) => !previous)}
+  aria-pressed={compact}
+>
   Vista compacta
 </button>
 ```
@@ -266,9 +293,21 @@ En `src/components/member-card.tsx`, añadimos la prop `compact` y la usamos par
 import { Link } from "@tanstack/react-router";
 import type { Member } from "../model";
 
-export function MemberCard({ member, compact }: { member: Member; compact: boolean }) {
+export function MemberCard({
+  member,
+  compact,
+}: {
+  member: Member;
+  compact: boolean;
+}) {
   return (
-    <li className={compact ? "rounded bg-white p-2 shadow-sm" : "rounded bg-white p-4 shadow-sm"}>
+    <li
+      className={
+        compact
+          ? "rounded-2xl border border-slate-200 bg-white p-2 shadow-sm"
+          : "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+      }
+    >
       <Link to="/members/$memberId" params={{ memberId: String(member.id) }}>
         {member.name}
       </Link>
@@ -284,7 +323,13 @@ Creamos `src/components/member-grid.tsx` para extraer la cuadrícula:
 import type { Member } from "../model";
 import { MemberCard } from "./member-card";
 
-export function MemberGrid({ members, compact }: { members: Member[]; compact: boolean }) {
+export function MemberGrid({
+  members,
+  compact,
+}: {
+  members: Member[];
+  compact: boolean;
+}) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
       {members.map((member) => (
@@ -314,22 +359,48 @@ Creamos `src/compact-context.ts`:
 ```tsx
 import { createContext } from "react";
 
-export const CompactContext = createContext(false);
+interface ViewContextValue {
+  compact: boolean;
+  toggleCompact: () => void;
+}
+
+export const ViewContext = createContext<ViewContextValue | null>(null);
 ```
 
-`createContext` crea el contexto. `false` es el valor de respaldo para un componente que lo lea sin tener un provider por encima; no crea un estado.
+`ViewContextValue` define el contrato: compartimos un objeto con la preferencia `compact` y una función `toggleCompact` para cambiarla. TypeScript comprueba tanto el valor que ofrece el provider como lo que leen los consumidores.
 
-En `src/pages/screens.tsx`, importamos `CompactContext` desde `../compact-context`. Solo en `MemberList`, sustituimos el fragmento exterior `<>...</>` por:
+El respaldo `null` indica que falta un provider. Al consumir el contexto comprobaremos ese caso antes de acceder al objeto. No ponemos una función vacía de respaldo: podría ocultar que hemos colocado el componente fuera del provider.
+
+Creamos también `src/view-provider.tsx`. Aquí dejamos el estado y la acción, separados de la pantalla:
 
 ```tsx
-return (
-  <CompactContext.Provider value={compact}>
-    {/* Aquí mantenemos el título, el botón, el filtro y los resultados. */}
-  </CompactContext.Provider>
-);
+import { useState, type ReactNode } from "react";
+import { ViewContext } from "./compact-context";
+
+interface ViewProviderProps {
+  children: ReactNode;
+}
+
+export function ViewProvider({ children }: ViewProviderProps) {
+  const [compact, setCompact] = useState(false);
+
+  function toggleCompact() {
+    setCompact((previous) => !previous);
+  }
+
+  return (
+    <ViewContext.Provider value={{ compact, toggleCompact }}>
+      {children}
+    </ViewContext.Provider>
+  );
+}
 ```
 
-El comentario indica dónde conservar el JSX existente, no sustituirlo. El provider ofrece `compact` a sus descendientes sin añadir una etiqueta al DOM. Usamos la escritura explícita `.Provider` para reconocer el concepto; React 19 también permite `<CompactContext value={compact}>`.
+`children` representa el contenido que envolvemos. `ViewProvider` conserva el estado y ofrece el objeto tipado a ese contenido. Declaramos este componente fuera de `MemberList`, en su propio archivo.
+
+Usamos `.Provider` para reconocer el concepto. El contexto define qué compartimos; `ViewProvider` gestiona el estado y lo ofrece mediante `value`. React 19 también permite escribir `<ViewContext value={...}>`.
+
+En los pasos 5C y 5D adaptamos los consumidores y conectamos este provider en `MemberList`. Completamos esos cambios antes de probar la vista compacta, para no mezclar el estado anterior con el nuevo.
 
 ### Paso 5C · `useContext`: leer el valor en la tarjeta
 
@@ -339,12 +410,21 @@ Sustituimos `src/components/member-card.tsx` por:
 import { useContext } from "react";
 import { Link } from "@tanstack/react-router";
 import type { Member } from "../model";
-import { CompactContext } from "../compact-context";
+import { ViewContext } from "../compact-context";
 
 export function MemberCard({ member }: { member: Member }) {
-  const compact = useContext(CompactContext);
+  const view = useContext(ViewContext);
+  if (view === null)
+    throw new Error("MemberCard necesita un ViewContext.Provider.");
+  const { compact } = view;
   return (
-    <li className={compact ? "rounded bg-white p-2 shadow-sm" : "rounded bg-white p-4 shadow-sm"}>
+    <li
+      className={
+        compact
+          ? "rounded-2xl border border-slate-200 bg-white p-2 shadow-sm"
+          : "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+      }
+    >
       <Link to="/members/$memberId" params={{ memberId: String(member.id) }}>
         {member.name}
       </Link>
@@ -363,17 +443,87 @@ import { MemberCard } from "./member-card";
 export function MemberGrid({ members }: { members: Member[] }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
-      {members.map((member) => <MemberCard key={member.id} member={member} />)}
+      {members.map((member) => (
+        <MemberCard key={member.id} member={member} />
+      ))}
     </ul>
   );
 }
 ```
 
-En `MemberList`, la llamada queda `<MemberGrid members={visible} />`. Conservamos su estado `compact`, el botón y el provider.
+En `MemberList`, la llamada queda `<MemberGrid members={visible} />`. A continuación adaptamos el botón y conectamos `ViewProvider`.
 
-Volvemos a pulsar: el resultado es el mismo, pero la cuadrícula ya no transporta esa preferencia. `useContext` lee el valor del provider más cercano por encima del componente. Cuando cambia ese valor, React actualiza los componentes que lo consumen; `memo` no bloquea esa actualización.
+### Paso 5D · Context: un consumidor que cambia la preferencia
 
-👉 **¿Dónde sigue estando el estado?** En el `useState` de `MemberList`. Context distribuye el valor, no sustituye al estado ni guarda datos en `localStorage`.
+La tarjeta solo necesita leer `compact`. Ahora extraemos el botón a `src/components/view-toggle.tsx` para que otro componente utilice también la acción:
+
+```tsx
+import { useContext } from "react";
+import { ViewContext } from "../compact-context";
+
+export function ViewToggle() {
+  const view = useContext(ViewContext);
+  if (view === null)
+    throw new Error("ViewToggle necesita un ViewContext.Provider.");
+  const { compact, toggleCompact } = view;
+
+  return (
+    <button onClick={toggleCompact} aria-pressed={compact}>
+      Vista compacta
+    </button>
+  );
+}
+```
+
+En `src/pages/screens.tsx` importamos `ViewToggle` desde `../components/view-toggle`. Sustituimos el botón por `<ViewToggle />`. Lo envolveremos con el provider al completar este paso. Ya no le pasamos props: obtiene del contexto el valor y la acción.
+
+La comprobación de `null` permite detectar un provider ausente y que TypeScript sepa que, a partir de ahí, tenemos un `ViewContextValue`. `useContext` debe seguir llamándose antes de cualquier retorno condicional.
+
+Para conectar el provider que creamos en el paso 5B, añadimos este import en `src/pages/screens.tsx`:
+
+```tsx
+import { ViewProvider } from "../view-provider";
+```
+
+Quitamos de `MemberList` el estado `compact` del paso 5A y sustituimos su fragmento exterior `<>...</>` por `<ViewProvider>...</ViewProvider>`. Conservamos el estado del filtro y los hooks de lectura; `useState` sigue siendo necesario en este archivo. Su JSX queda:
+
+```tsx
+return (
+  <ViewProvider>
+    <h1>Equipo</h1>
+    <ViewToggle />
+    <label htmlFor="filter">Buscar por nombre</label>
+    <input
+      id="filter"
+      value={filter}
+      onChange={(event) => setFilter(event.target.value)}
+    />
+    {loading ? (
+      <Loading />
+    ) : error ? (
+      <ErrorMessage message={error} />
+    ) : visible.length === 0 ? (
+      <p>Sin resultados.</p>
+    ) : (
+      <MemberGrid members={visible} />
+    )}
+  </ViewProvider>
+);
+```
+
+Volvemos a pulsar: el resultado es el mismo, pero la cuadrícula ya no transporta esa preferencia. `useContext` lee el valor del provider más cercano por encima del componente. Cuando cambia ese valor, React actualiza los componentes que lo consumen.
+
+Solo usamos `ViewProvider` en el listado. `ViewToggle` y `MemberCard` siguen consumiendo el mismo contexto sin cambios; el detalle queda fuera de este provider.
+
+```text
+MemberList
+└── ViewProvider (estado y acción)
+    ├── ViewToggle (lee el valor y ejecuta la acción)
+    └── MemberGrid
+        └── MemberCard (lee el valor)
+```
+
+👉 **¿Dónde está ahora el estado?** En el `useState` de `ViewProvider`. Context distribuye el valor, no sustituye al estado ni guarda datos en `localStorage`.
 
 Al salir del listado y volver, se monta otra instancia y la preferencia vuelve a su valor inicial. Para conservarla durante la navegación tendríamos que situar el estado y el provider en un antecesor que permanezca montado, por ejemplo el layout.
 
@@ -400,7 +550,10 @@ import { z } from "zod";
 
 export const memberSchema = z.object({
   name: z.string().trim().min(2, "El nombre necesita al menos dos caracteres."),
-  role: z.string().trim().min(2, "Indica un puesto de al menos dos caracteres."),
+  role: z
+    .string()
+    .trim()
+    .min(2, "Indica un puesto de al menos dos caracteres."),
   email: z.email("Introduce un correo válido."),
 });
 ```
@@ -409,74 +562,26 @@ export const memberSchema = z.object({
 
 ### Paso 7: conectar Form y Zod
 
-_./src/member-form.tsx_
+Vamos a crear el componente, conectarlo con la ruta y añadir sus campos. Trabajamos en `demos/03-formulario`.
+
+#### 7A · Crear `MemberForm`: imports, props y envío
+
+Creamos **`src/member-form.tsx`** con este contenido inicial. Todavía no tiene inputs: los añadiremos en el punto 7C, dentro del `<form>`.
+
+`onSave` es una **prop que recibe una función**. El formulario le entregará los datos cuando sean válidos. En el siguiente punto escribiremos la pantalla que proporciona esa función y decide cómo guardar y adónde navegar.
+
+`MemberInput` ya está definido en `src/model.ts`: contiene `name`, `role` y `email`, sin el identificador. `initialValues` permite recibir valores iniciales; para añadir una persona usamos los valores vacíos por defecto.
 
 ```tsx
-const form = useForm({
-  defaultValues: { name: "", role: "", email: "" },
-  validators: {
-    onChange: memberSchema,
-    onSubmit: memberSchema,
-  },
-  onSubmit: async ({ value }) => {
-    // En el proyecto: limpiamos el error, guardamos y capturamos fallos.
-    await onSave(value);
-  },
-});
-```
-
-El formulario que vamos a construir usa `useForm` para mostrar el mecanismo directamente. Zod se integra mediante Standard Schema; no añadimos un adaptador.
-
-Dentro de `form.Field` conectamos un campo:
-
-```tsx
-<form.Field name="name">
-  {field => (
-    <>
-      <label htmlFor={field.name}>Nombre</label>
-      <input
-        id={field.name}
-        name={field.name}
-        value={field.state.value}
-        onBlur={field.handleBlur}
-        onChange={event => field.handleChange(event.target.value)}
-      />
-    </>
-  )}
-</form.Field>
-```
-
-Mostramos primero un campo y repetimos el patrón para puesto y correo. La solución usa una pequeña lista de configuración para no copiar tres bloques iguales.
-
-`onBlur` marca el campo como tocado. El formulario mostrará sus errores cuando procede y los enlaza al input con `aria-describedby` y `aria-invalid`. Los errores de Zod son objetos: mostramos su `message`.
-
-El `form` HTML lleva `noValidate` para que en esta demostración podamos observar los mensajes de Zod. Conservamos los tipos de input y las etiquetas.
-
-### Paso 8: enviar sin recargar y sin duplicar
-
-```tsx
-<form noValidate onSubmit={event => {
-  event.preventDefault();
-  event.stopPropagation();
-  void form.handleSubmit();
-}}>
-```
-
-El envío pasa por las validaciones. Un `form.Subscribe` observa `isSubmitting` y desactiva el botón mientras se guarda. No copiamos ese estado a otro `useState`.
-
-Creamos src/member-form.tsx con la versión completa que reúne los fragmentos anteriores. Podemos empezar por el campo nombre y añadir los otros dos después:
-~~~tsx
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { memberSchema } from "./member.schema";
 import type { MemberInput } from "./model";
-interface Props { initialValues?: MemberInput; onSave: (values: MemberInput) => Promise<void> }
+interface Props {
+  initialValues?: MemberInput;
+  onSave: (values: MemberInput) => Promise<void>;
+}
 const emptyValues: MemberInput = { name: "", role: "", email: "" };
-const fields = [
-  { name: "name", label: "Nombre", type: "text" },
-  { name: "role", label: "Puesto", type: "text" },
-  { name: "email", label: "Correo", type: "email" },
-] as const;
 export function MemberForm({ initialValues = emptyValues, onSave }: Props) {
   const [saveError, setSaveError] = useState("");
   const form = useForm({
@@ -484,75 +589,187 @@ export function MemberForm({ initialValues = emptyValues, onSave }: Props) {
     validators: { onChange: memberSchema, onSubmit: memberSchema },
     onSubmit: async ({ value }) => {
       setSaveError("");
-      try { await onSave(value); }
-      catch { setSaveError("No se ha podido guardar. Los datos siguen en el formulario."); }
+      try {
+        await onSave(value);
+      } catch {
+        setSaveError(
+          "No se ha podido guardar. Los datos siguen en el formulario.",
+        );
+      }
     },
   });
-  return <form className="space-y-4" noValidate onSubmit={event => {
-    event.preventDefault();
-    event.stopPropagation();
-    void form.handleSubmit();
-  }}>
-    {fields.map(config => <form.Field key={config.name} name={config.name}>
-      {field => {
-        const invalid = field.state.meta.isTouched && !field.state.meta.isValid;
-        return <div className="grid gap-1">
-          <label htmlFor={field.name}>{config.label}</label>
-          <input id={field.name} name={field.name} type={config.type}
-            value={field.state.value} onBlur={field.handleBlur}
-            onChange={event => field.handleChange(event.target.value)}
-            aria-invalid={invalid} aria-describedby={invalid ? `${field.name}-error` : undefined} />
-          {invalid && <p id={`${field.name}-error`} role="alert">
-            {field.state.meta.errors.map(error => error?.message).join(" ")}
-          </p>}
-        </div>;
+  return (
+    <form
+      className="space-y-4"
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        void form.handleSubmit();
       }}
-    </form.Field>)}
-    {saveError && <p role="alert">{saveError}</p>}
-    <form.Subscribe selector={state => state.isSubmitting}>
-      {isSubmitting => <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Guardando…" : "Guardar persona"}
-      </button>}
-    </form.Subscribe>
-  </form>;
+    >
+      {/* Aquí añadiremos los campos. */}
+      {saveError && <p role="alert">{saveError}</p>}
+      <button type="submit">Guardar persona</button>
+    </form>
+  );
 }
-~~~
+```
 
-Creamos ahora src/routes/members/new.tsx:
-~~~tsx
+`useForm` organiza los valores y el envío. En `validators` conectamos el esquema del paso 6: validamos al cambiar los datos y al enviar. Zod se integra directamente mediante Standard Schema, sin añadir un adaptador.
+
+Tenemos dos `onSubmit` con responsabilidades distintas:
+
+- El del `<form>` HTML evita la recarga con `preventDefault()` y llama a `form.handleSubmit()`.
+- El de `useForm` se ejecuta si la validación permite el envío. Recibe los valores y llama a la prop `onSave`. Si guardar falla, mostramos `saveError` y conservamos los datos.
+
+El atributo `noValidate` desactiva la validación nativa del navegador para poder mostrar los mensajes de Zod.
+
+#### 7B · Crear la ruta que proporciona `onSave`
+
+Creamos **`src/routes/members/new.tsx`** con este contenido:
+
+```tsx
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { MemberForm } from "../../member-form";
 import { saveMember } from "../../api";
 export const Route = createFileRoute("/members/new")({ component: NewMember });
 function NewMember() {
   const navigate = useNavigate();
-  return <>
-    <h1>Añadir persona</h1>
-    <Link to="/members">Cancelar</Link>
-    <MemberForm onSave={async values => {
-      const member = await saveMember(values);
-      await navigate({ to: "/members/$memberId", params: { memberId: String(member.id) } });
-    }} />
-  </>;
+  return (
+    <>
+      <h1>Añadir persona</h1>
+      <Link to="/members">Cancelar</Link>
+      <MemberForm
+        onSave={async (values) => {
+          const member = await saveMember(values);
+          await navigate({
+            to: "/members/$memberId",
+            params: { memberId: String(member.id) },
+          });
+        }}
+      />
+    </>
+  );
 }
-~~~
-
-En src/routes/__root.tsx, dentro de nav, añadimos el enlace:
-~~~tsx
-<Link to="/members/new">Añadir persona</Link>
-~~~
-
-Vite regenera las rutas. La ruta decide adónde navegar después:
-
-```tsx
-const member = await saveMember(values);
-await navigate({
-  to: "/members/$memberId",
-  params: { memberId: String(member.id) },
-});
 ```
 
-Probamos nombre vacío, espacios y correo incorrecto. No navegamos ni añadimos una fila. Después introducimos datos válidos: aparece el nuevo detalle y la persona está en el listado.
+Aquí vemos de dónde sale `onSave`: pasamos una función que llama a `saveMember`, ya disponible en `src/api.ts`, y después navega al detalle de la persona creada. `MemberForm` no necesita conocer la API ni las rutas.
+
+En **`src/routes/__root.tsx`**, dentro del `<nav>` existente, añadimos:
+
+```tsx
+<Link to="/members/new">Añadir persona</Link>
+```
+
+Con Vite en marcha se regenera el árbol de rutas. Entramos en «Añadir persona»: veremos el título, «Cancelar» y el botón de guardar. Aún faltan los campos, así que todavía no probamos el alta.
+
+#### 7C · Añadir el primer `form.Field` dentro del formulario
+
+Volvemos a **`src/member-form.tsx`**. Dentro del `return`, sustituimos **solo** el comentario `{/* Aquí añadiremos los campos. */}` por este bloque. Queda dentro del `<form>`, antes de `saveError` y del botón:
+
+```tsx
+<form.Field name="name">
+  {(field) => (
+    <div className="grid gap-1">
+      <label htmlFor={field.name}>Nombre</label>
+      <input
+        id={field.name}
+        name={field.name}
+        value={field.state.value}
+        onBlur={field.handleBlur}
+        onChange={(event) => field.handleChange(event.target.value)}
+      />
+    </div>
+  )}
+</form.Field>
+```
+
+`form.Field` pertenece al formulario creado con `useForm`. Su `name="name"` lo conecta con la propiedad `name` de `defaultValues`.
+
+Dentro escribimos una función que recibe `field` y devuelve el JSX del campo. `field.state.value` es su valor actual; `field.handleChange` lo actualiza y `field.handleBlur` registra que hemos salido del input.
+
+Comprobamos que podemos escribir en Nombre. Todavía no podemos completar el alta: el esquema también exige puesto y correo, y aún no mostramos los errores.
+
+#### 7D · Añadir puesto, correo y mensajes de validación
+
+Seguimos en **`src/member-form.tsx`**. Los tres campos comparten estructura, así que vamos a describir sus diferencias en una lista.
+
+Añadimos esta constante **fuera del componente**, después de `emptyValues` y antes de `export function MemberForm`:
+
+```tsx
+const fields = [
+  { name: "name", label: "Nombre", type: "text" },
+  { name: "role", label: "Puesto", type: "text" },
+  { name: "email", label: "Correo", type: "email" },
+] as const;
+```
+
+`as const` conserva los nombres literales (`"name"`, `"role"` y `"email"`), para que TypeScript compruebe que son campos del formulario.
+
+Ahora **sustituimos el bloque `<form.Field name="name">...</form.Field>` del punto 7C** por este `map`. No añadimos otro `<form>`: seguimos dentro del que ya tenemos, antes de `saveError` y del botón.
+
+```tsx
+{
+  fields.map((config) => (
+    <form.Field key={config.name} name={config.name}>
+      {(field) => {
+        const invalid = field.state.meta.isTouched && !field.state.meta.isValid;
+        return (
+          <div className="grid gap-1">
+            <label htmlFor={field.name}>{config.label}</label>
+            <input
+              id={field.name}
+              name={field.name}
+              type={config.type}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(event) => field.handleChange(event.target.value)}
+              aria-invalid={invalid}
+              aria-describedby={invalid ? `${field.name}-error` : undefined}
+            />
+            {invalid && (
+              <p id={`${field.name}-error`} role="alert">
+                {field.state.meta.errors
+                  .map((error) => error?.message)
+                  .join(" ")}
+              </p>
+            )}
+          </div>
+        );
+      }}
+    </form.Field>
+  ));
+}
+```
+
+Cada `form.Field` controla uno de los tres valores. Mostramos el error cuando el campo está tocado y no es válido. Los errores de Zod son objetos: usamos su propiedad `message` para mostrar el texto.
+
+`aria-invalid` indica que el valor es incorrecto y `aria-describedby` relaciona el input con su mensaje de error.
+
+Probamos a escribir un nombre de una letra y salir del campo: aparece su error. Al corregirlo, desaparece. Repetimos con un correo incorrecto.
+
+### Paso 8: desactivar el botón mientras guardamos
+
+El envío ya está conectado en el punto 7A. Ahora evitamos que se vuelva a pulsar el botón mientras `onSave` está pendiente.
+
+En **`src/member-form.tsx`**, sustituimos únicamente `<button type="submit">Guardar persona</button>` por:
+
+```tsx
+<form.Subscribe selector={(state) => state.isSubmitting}>
+  {(isSubmitting) => (
+    <button type="submit" disabled={isSubmitting}>
+      {isSubmitting ? "Guardando…" : "Guardar persona"}
+    </button>
+  )}
+</form.Subscribe>
+```
+
+`form.Subscribe` observa `isSubmitting` y actualiza el botón cuando cambia. No necesitamos copiar ese dato a otro `useState`. Como el `onSubmit` de `useForm` espera a `onSave`, el estado de envío dura hasta que termina esa operación. En esta demo el guardado local puede ser tan rápido que apenas veamos «Guardando…».
+
+El orden final dentro del `<form>` es: los tres campos generados por `fields.map`, el mensaje `saveError` y el botón dentro de `form.Subscribe`.
+
+Probamos nombre vacío, espacios y correo incorrecto: no navegamos ni añadimos una fila. Después introducimos datos válidos: aparece el nuevo detalle y la persona está en el listado.
 
 ### ¿Dónde estamos guardando?
 
@@ -566,62 +783,99 @@ Si falla la lectura inicial o el almacenamiento, mostramos el error y conservamo
 
 ## Solo si hay tiempo: la misma aplicación con CSS Modules
 
-Tenemos preparada `demos/04-css-modules`, con las mismas rutas, el mismo formulario y las mismas validaciones. No depende de Tailwind.
+Tenemos preparada `demos/04-css-modules`, con las mismas rutas, el mismo formulario y las mismas validaciones. No depende de Tailwind. Cada componente importa su propio archivo `.module.css`.
 
-Arrancamos primero:
-
-```bash
-npm run start:sin-estilos
-```
-
-Mostramos la aplicación en el navegador. Ese modo quita la clase raíz que activa los estilos del módulo; solo queda la base mínima de tipografía. La lógica del formulario sigue funcionando.
-
-Detenemos Vite y arrancamos normalmente:
+Desde la carpeta de esta demo ejecutamos `npm install` si todavía no hemos instalado sus dependencias y arrancamos:
 
 ```bash
 npm start
 ```
 
-### Las clases son locales al módulo
+### Paso 1 · Relacionar el componente con su archivo de estilos
 
-_./src/components/member-card.tsx_
+Empezamos por la tarjeta. Abrimos juntos estos dos archivos:
+
+- `src/components/member-card.tsx`: el JSX de la tarjeta.
+- `src/components/member-card.module.css`: sus estilos.
+
+En `member-card.tsx` encontramos:
 
 ```tsx
-import styles from "../app.module.css";
+import styles from "./member-card.module.css";
+import { Link } from "@tanstack/react-router";
+import type { Member } from "../model";
 
-// En la tarjeta:
-<li className={styles.card}>...</li>
-```
-
-_./src/app.module.css_
-
-```css
-.shell .card {
-  background: white;
-  border-radius: .25rem;
-  padding: 1rem;
-  box-shadow: 0 1px 3px #0002;
+export function MemberCard({ member }: { member: Member }) {
+  return (
+    <li className={styles.card}>
+      <Link to="/members/$memberId" params={{ memberId: String(member.id) }}>
+        {member.name}
+      </Link>
+      <p>{member.role}</p>
+    </li>
+  );
 }
 ```
 
-Vite reconoce `.module.css` sin otro plugin. El import devuelve el mapa de nombres que usamos en JSX. En DevTools vemos el nombre generado: una `card` de otro módulo puede coexistir sin compartir esa clase.
+En `member-card.module.css`, la clase empieza así:
 
-Los selectores de esta demo cuelgan de `.shell` para poder apagar el estilo completo en el primer arranque. Ese alcance es una decisión nuestra; CSS Modules no requiere un selector raíz ni usa Shadow DOM.
+```css
+.card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px #0000000d;
+}
+```
 
-Cambiamos el padding y observamos todas las tarjetas. Con Tailwind editábamos las utilidades en el componente; aquí editamos una regla del módulo. Ambos enfoques permiten reutilizar el componente.
+El nombre `.module.css` indica a Vite que ese archivo es un módulo CSS. Al importarlo, `styles` contiene un mapa de nombres: `styles.card` devuelve el nombre de clase generado para nuestra `.card`. Ese es el valor que ponemos en `className`.
 
-## Cerramos el recorrido
+No necesitamos una clase contenedora para activar el módulo ni instalar otro plugin.
 
-Comprobamos entrada directa a detalle, Atrás/Adelante, filtro vacío, persona inexistente, alta válida e inválida y un fallo de lectura bloqueando `members.json` en Network. Ejecutamos `npm run build`.
+### Paso 2 · Ver qué aporta la clase en el navegador
 
-El plugin genera las rutas antes de la comprobación de tipos del script de build. El hosting de una SPA debe servir `index.html` para direcciones como `/members/2`; Vite ya resuelve esa parte durante la clase.
+La demo está terminada para poder compararla con Tailwind. Para mostrar cómo se aplica el estilo, quitamos temporalmente `className={styles.card}` del `<li>` y observamos el resultado. La tarjeta pierde su fondo, borde y espaciado; la lista y la navegación conservan sus estilos.
 
-La siguiente sesión separa responsabilidades y añade un pod de edición. La de TanStack Start podrá partir de este conocimiento de rutas, parámetros y formularios.
+Volvemos a poner `className={styles.card}`. Después cambiamos el `padding` de `.card` a `1.5rem`: todas las tarjetas cambian porque todas usan `MemberCard`.
 
-Referencias: [Router con Vite](https://tanstack.com/router/latest/docs/installation/with-vite), [rutas por archivos](https://tanstack.com/router/latest/docs/routing/file-based-routing), [TanStack Form](https://tanstack.com/form/latest/docs/framework/react/quick-start), [validación](https://tanstack.com/form/latest/docs/framework/react/guides/validation) y [CSS Modules en Vite](https://vite.dev/guide/features#css-modules).
+Inspeccionamos una tarjeta en DevTools. La clase del HTML tiene un nombre generado, en lugar de llamarse simplemente `card`. Otro archivo `.module.css` puede definir su propia `.card` sin compartir esta clase.
+
+Los selectores `.card > a` y `.card > p` del mismo archivo dan estilo al enlace y al texto de la tarjeta. CSS Modules hace locales los nombres de clase.
+
+### Paso 3 · Localizar los estilos de cada componente
+
+Seguimos la misma organización en el resto de la demo:
+
+| Componente                                | Archivo de estilos situado a su lado |
+| ----------------------------------------- | ------------------------------------ |
+| `components/member-card.tsx`              | `member-card.module.css`             |
+| `components/request-status.tsx`           | `request-status.module.css`          |
+| `pages/member-list.tsx`                   | `member-list.module.css`             |
+| `pages/member-detail.tsx`                 | `member-detail.module.css`           |
+| `member-form.tsx`                         | `member-form.module.css`             |
+| `routes/__root.tsx` (componente `Layout`) | `layout.module.css`                  |
+
+Abrimos `member-form.tsx`: importa `./member-form.module.css` y aplica `styles.form` al formulario y `styles.field` al contenedor de cada campo. Sus reglas de inputs y botones están dentro de `.form`, de modo que no afectan al filtro del listado.
+
+`layout.module.css` organiza el ancho de la página y la navegación. Su clase `container` es solo un nombre elegido para ese contenedor; no activa los estilos de los otros componentes.
+
+En `styles.css` dejamos la base compartida: tipografía, fondo, títulos, enlaces y foco visible. Los estilos de tarjetas, campos, mensajes y pantallas están en sus respectivos módulos.
+
+Con Tailwind cambiábamos las utilidades en el JSX. Aquí cambiamos reglas CSS en el archivo del componente. En ambos casos, reutilizar `MemberCard` permite mantener todas las tarjetas con la misma apariencia.
 
 ## Para ampliar
 
-- [Compartir datos con Context](https://react.dev/learn/passing-data-deeply-with-context): props, providers y consumo de valores desde componentes descendientes.
+Para repasar la sesión, podemos consultar estos recursos de la documentación oficial siguiendo el recorrido de la aplicación. La documentación de React está en español; la de TanStack, Zod y Vite, en inglés.
 
-[React en el máster de Lemoncode](https://github.com/Lemoncode/master-frontend-lemoncode/tree/master/04-frameworks/01-react).
+1. [Rutas por archivos en TanStack Router](https://tanstack.com/router/latest/docs/routing/file-based-routing): cómo se relacionan las carpetas y los archivos con las direcciones de la aplicación. Útil para repasar el listado, el detalle y la ruta de alta.
+2. [Navegación en TanStack Router](https://tanstack.com/router/latest/docs/guide/navigation): cómo navegar con `Link` y desde código, como hacemos después de guardar una persona.
+3. [Pasar datos en profundidad con Context](https://es.react.dev/learn/passing-data-deeply-with-context): cuándo tiene sentido compartir información sin pasarla por cada componente intermedio. Podemos relacionarlo con la preferencia de vista compacta y su provider.
+4. [Inicio de TanStack Form](https://tanstack.com/form/latest/docs/framework/react/quick-start): repaso de `useForm`, los campos y el envío. Un punto de apoyo para reconstruir el formulario paso a paso.
+5. [Validación en TanStack Form](https://tanstack.com/form/latest/docs/framework/react/guides/validation): cuándo validar y cómo mostrar los errores. Para profundizar en las opciones `onChange` y `onSubmit` que usamos en clase.
+6. [Primeros pasos con Zod](https://zod.dev/basics): cómo definir un esquema y comprobar datos con `parse` y `safeParse`. Ayuda a distinguir el tipado de TypeScript de la validación durante la ejecución.
+7. [CSS Modules en Vite](https://vite.dev/guide/features#css-modules): cómo importar un archivo `.module.css` y utilizar sus clases en un componente. Para repasar la alternativa a Tailwind de la última demo.
+
+Si queremos montar las rutas desde un proyecto Vite nuevo, podemos seguir también la [instalación de TanStack Router con Vite](https://tanstack.com/router/latest/docs/installation/with-vite). En nuestras demos esa configuración ya estaba preparada.
+
+También encontramos más ejemplos en el [bloque de React del máster de Lemoncode](https://github.com/Lemoncode/master-frontend-lemoncode/tree/master/04-frameworks/01-react). Su recorrido es más amplio que el de esta sesión; podemos consultarlo como material complementario.

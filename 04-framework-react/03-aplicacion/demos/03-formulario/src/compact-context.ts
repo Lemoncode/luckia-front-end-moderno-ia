@@ -1,3 +1,8 @@
 import { createContext } from "react";
 
-export const CompactContext = createContext(false);
+interface ViewContextValue {
+  compact: boolean;
+  toggleCompact: () => void;
+}
+
+export const ViewContext = createContext<ViewContextValue | null>(null);

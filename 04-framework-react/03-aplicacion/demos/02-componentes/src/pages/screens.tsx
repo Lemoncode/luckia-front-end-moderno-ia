@@ -13,7 +13,7 @@ export function MemberList() {
     {loading ? <p role="status">Cargando…</p> : error ? <p role="alert">{error}</p> :
       visible.length === 0 ? <p>Sin resultados.</p> :
       <ul className="grid gap-3 sm:grid-cols-2">
-        {visible.map(member => <li key={member.id} className="rounded bg-white p-4 shadow-sm">
+        {visible.map(member => <li key={member.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <Link to="/members/$memberId" params={{ memberId: String(member.id) }}>{member.name}</Link>
           <p>{member.role}</p>
         </li>)}
@@ -27,7 +27,7 @@ export function MemberDetail({ id }: { id: string }) {
     <Link to="/members">Volver al listado</Link>
     {loading ? <p role="status">Cargando…</p> : error ? <p role="alert">{error}</p> :
       !member ? <p>Persona no encontrada.</p> :
-      <article className="space-y-2 rounded bg-white p-5">
+      <article className="space-y-3 rounded-2xl bg-white p-6 shadow-sm">
         <h2>{member.name}</h2><p>{member.role}</p><p>{member.email}</p>
       </article>}
   </>;
