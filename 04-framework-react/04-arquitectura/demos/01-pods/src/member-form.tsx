@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { memberSchema } from "../../core/members/member.schema";
-import type { MemberInput } from "../../core/members/model";
+import { memberSchema } from "./member.schema";
+import type { MemberInput } from "./model";
 interface Props { initialValues?: MemberInput; onSave: (values: MemberInput) => Promise<void> }
 const emptyValues: MemberInput = { name: "", role: "", email: "" };
 const fields = [
@@ -9,7 +9,7 @@ const fields = [
   { name: "role", label: "Puesto", type: "text" },
   { name: "email", label: "Correo", type: "email" },
 ] as const;
-export function EdicionComponent({ initialValues = emptyValues, onSave }: Props) {
+export function MemberForm({ initialValues = emptyValues, onSave }: Props) {
   const [saveError, setSaveError] = useState("");
   const form = useForm({
     defaultValues: initialValues,

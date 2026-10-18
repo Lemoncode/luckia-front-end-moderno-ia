@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MembersIndexRouteImport } from './routes/members/index'
 import { Route as MembersNewRouteImport } from './routes/members/new'
 import { Route as MembersMemberIdIndexRouteImport } from './routes/members/$memberId/index'
-import { Route as MembersMemberIdEditRouteImport } from './routes/members/$memberId/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,24 +34,17 @@ const MembersMemberIdIndexRoute = MembersMemberIdIndexRouteImport.update({
   path: '/members/$memberId/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MembersMemberIdEditRoute = MembersMemberIdEditRouteImport.update({
-  id: '/members/$memberId/edit',
-  path: '/members/$memberId/edit',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/members/new': typeof MembersNewRoute
   '/members/': typeof MembersIndexRoute
-  '/members/$memberId/edit': typeof MembersMemberIdEditRoute
   '/members/$memberId/': typeof MembersMemberIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/members/new': typeof MembersNewRoute
   '/members': typeof MembersIndexRoute
-  '/members/$memberId/edit': typeof MembersMemberIdEditRoute
   '/members/$memberId': typeof MembersMemberIdIndexRoute
 }
 export interface FileRoutesById {
@@ -60,38 +52,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/members/new': typeof MembersNewRoute
   '/members/': typeof MembersIndexRoute
-  '/members/$memberId/edit': typeof MembersMemberIdEditRoute
   '/members/$memberId/': typeof MembersMemberIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/members/new'
-    | '/members/'
-    | '/members/$memberId/edit'
-    | '/members/$memberId/'
+  fullPaths: '/' | '/members/new' | '/members/' | '/members/$memberId/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/members/new'
-    | '/members'
-    | '/members/$memberId/edit'
-    | '/members/$memberId'
-  id:
-    | '__root__'
-    | '/'
-    | '/members/new'
-    | '/members/'
-    | '/members/$memberId/edit'
-    | '/members/$memberId/'
+  to: '/' | '/members/new' | '/members' | '/members/$memberId'
+  id: '__root__' | '/' | '/members/new' | '/members/' | '/members/$memberId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MembersNewRoute: typeof MembersNewRoute
   MembersIndexRoute: typeof MembersIndexRoute
-  MembersMemberIdEditRoute: typeof MembersMemberIdEditRoute
   MembersMemberIdIndexRoute: typeof MembersMemberIdIndexRoute
 }
 
@@ -125,13 +99,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersMemberIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/members/$memberId/edit': {
-      id: '/members/$memberId/edit'
-      path: '/members/$memberId/edit'
-      fullPath: '/members/$memberId/edit'
-      preLoaderRoute: typeof MembersMemberIdEditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -139,7 +106,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MembersNewRoute: MembersNewRoute,
   MembersIndexRoute: MembersIndexRoute,
-  MembersMemberIdEditRoute: MembersMemberIdEditRoute,
   MembersMemberIdIndexRoute: MembersMemberIdIndexRoute,
 }
 export const routeTree = rootRouteImport

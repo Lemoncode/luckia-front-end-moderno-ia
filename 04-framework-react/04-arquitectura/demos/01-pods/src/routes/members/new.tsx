@@ -1,3 +1,3 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { EdicionScene } from "../../scenes/edicion.scene";
-export const Route = createFileRoute("/members/new")({ component: () => <EdicionScene /> });
+import { NewMember } from "../../screens";
+export const Route = createFileRoute("/members/new")({ component: NewMember });

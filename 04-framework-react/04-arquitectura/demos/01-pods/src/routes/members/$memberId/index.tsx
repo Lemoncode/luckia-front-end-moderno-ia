@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DetalleScene } from "../../../scenes/detalle.scene";
+import { MemberDetail } from "../../../screens";
 export const Route = createFileRoute("/members/$memberId/")({ component: DetailPage });
 function DetailPage() {
   const { memberId } = Route.useParams();
-  return <DetalleScene id={memberId} />;
+  return <MemberDetail key={memberId} id={memberId} />;
 }
