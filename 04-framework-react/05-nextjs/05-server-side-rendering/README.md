@@ -1,0 +1,151 @@
+# 05 Server side rendering
+
+Let's works with Nextjs using server side rendering.
+
+We will start from `04-static-site-generation`.
+
+# Steps to build it
+
+`npm install` to install previous sample packages:
+
+```bash
+npm install
+cd api-server
+npm install
+cd ..
+```
+
+# Server Side Rendering
+
+If we can't pre-render a page ahead of a user's request but we need SEO. For example: search bar, shopping cart.
+
+- The page is generated on each request.
+- Only available on Server Components.
+- [More about dynamic data fetching](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching#dynamic-data-fetching)
+
+Let's migrate `car list` page to SSR:
+
+_./app/cars/page.tsx_
+
+```diff
+...
+const CarListPage = async () => {
+  // cache: 'force-cache' is the default
+- const carList = await api.getCarList({ next: { revalidate: 10 } }); // In seconds
++ const carList = await api.getCarList({ cache: 'no-store' });
+  console.log('Car list at build time:', { carList });
+
+  return <CarList carList={mapCarListFromApiToVm(carList)} />;
+};
+
+export default CarListPage;
+
+```
+
+- Run:
+
+```bash
+npm run start:api-server
+npm run build
+npm run start:prod
+```
+
+> Check `.next` folder, it doesn't have `cars.html` file
+>
+> Checks that first time it renders the page on `server side` but after navigate and come back it will never renders again (because it's a server component).
+>
+> Press F5 and check that it renders again.
+
+We can migrate and use it on `car details` too:
+
+_./app/cars/\[carId\]/page.tsx_
+
+```diff
+...
+
+- export async function generateStaticParams() {
+-   return [{ carId: '1' }, { carId: '2' }, { carId: '3' }];
+- }
+
+const CarPage = async (props: Props) => {
+...
+```
+
+Run:
+
+```bash
+npm run start:api-server
+npm run build
+npm run start:prod
+```
+
+> Check first load
+>
+> Check navigation
+
+We could add `options` property in the API method:
+
+_./pods/car/api/car.api.ts_
+
+```diff
+import { envConstants } from '@/_core/constants';
+import { Car } from './car.api-model';
+
+const url = `${envConstants.BASE_API_URL}/cars`;
+
+export const getCar = async (
+  id: string,
++ options?: RequestInit
+): Promise<Car> => {
+- return await fetch(`${url}/${id}`).then((response) =>
++ return await fetch(`${url}/${id}`, options).then((response) =>
+    response.json()
+  );
+};
+
+...
+
+```
+
+_./app/cars/\[carId\]/page.tsx_
+
+```diff
+import React from 'react';
+import { Metadata } from 'next';
+import { Car, api, mapCarFromApiToVm } from '#pods/car';
+
+interface Props {
+  params: { carId: string };
+}
+
+export const generateMetadata = async (props: Props): Promise<Metadata> => {
+  const params = await props.params;
+- const car = await api.getCar(params.carId);
++ const car = await api.getCar(params.carId, { cache: 'no-store' }); // Check 'force-cache' too
+  return {
+    title: `Rent a car - Car ${car.name} details`,
+  };
+};
+
+const CarPage = async (props: Props) => {
+  const params = await props.params;
+- const car = await api.getCar(params.carId);
++ const car = await api.getCar(params.carId, { cache: 'no-store' }); // Check 'force-cache' too
+  console.log('Car page', car);
+
+  return <Car car={mapCarFromApiToVm(car)} />;
+};
+
+export default CarPage;
+
+```
+
+> All options will re-render the component on each refresh (F5)
+>
+> `cache: 'force-cache'`: will fetch data only once.
+>
+> `cache: 'no-store'`: will fetch data on each refresh (F5).
+>
+> `next: { revalidate: 10 },`: will fetch data on each refresh (F5) after revalidate seconds.
+>
+> An advanced option is to use [Cache Components or also named Partial Prerendering](https://nextjs.org/docs/app/getting-started/cache-components)
