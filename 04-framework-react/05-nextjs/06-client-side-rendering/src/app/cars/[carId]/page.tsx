@@ -7,7 +7,7 @@ interface Props {
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const params = await props.params;
-  const car = await api.getCar(params.carId, { cache: 'no-store' }); // Check 'force-cache' too
+  const car = await api.getCar(params.carId);
   return {
     title: `Rent a car - Car ${car.name} details`,
   };
@@ -15,7 +15,7 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 
 const CarPage = async (props: Props) => {
   const params = await props.params;
-  const car = await api.getCar(params.carId, { cache: 'no-store' }); // Check 'force-cache' too
+  const car = await api.getCar(params.carId);
   console.log('Car page', car);
 
   return <Car car={mapCarFromApiToVm(car)} />;

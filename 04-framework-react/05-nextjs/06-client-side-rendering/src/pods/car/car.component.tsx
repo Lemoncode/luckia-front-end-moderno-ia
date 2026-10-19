@@ -1,12 +1,11 @@
 'use client';
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { routeConstants } from '#core/constants';
-import * as api from './api';
-import * as viewModel from './car.vm';
-import { mapCarFromVmToApi } from './car.mappers';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { toggleBooking } from './car.actions';
 import classes from './car.module.css';
+import * as viewModel from './car.vm';
 
 interface Props {
   car: viewModel.Car;
@@ -18,8 +17,7 @@ export const Car: React.FC<Props> = (props) => {
 
   const handleBook = async () => {
     try {
-      const apiCar = mapCarFromVmToApi({ ...car, isBooked: !car.isBooked });
-      await api.bookCar(apiCar);
+      await toggleBooking(car);
       router.push(routeConstants.carList);
     } catch (error) {
       console.error({ error });

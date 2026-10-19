@@ -24,88 +24,35 @@ If we don't need to pre-render the data and frequently updating data.
 - You cannot use Server Components inside a client-side component but you can use Server Components as children of a client-side component.
 - [More info about Client Components](https://nextjs.org/docs/app/building-your-application/rendering/client-components)
 
-Let's look up the api method to book a car:
-
-_./src/pods/car/api/car.api.ts_
-
-```javascript
-...
-
-export const bookCar = async (car: Car): Promise<boolean> => {
-  await fetch(`${url}/${car.id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(car),
-  });
-  return true;
-};
-
-```
-
-And how are we using it:
+We already have a Client Component: the car details.
 
 _./src/pods/car/car.component.tsx_
 
-```javascript
+```tsx
 'use client';
-import React from 'react';
 ...
-
-const handleBook = async () => {
+import { toggleBooking } from './car.actions';
+...
+  const handleBook = async () => {
     try {
-      const apiCar = mapCarFromVmToApi({ ...car, isBooked: !car.isBooked });
-      await api.bookCar(apiCar);
+      await toggleBooking(car);
       router.push(routeConstants.carList);
     } catch (error) {
       console.error({ error });
     }
   };
 ...
-
 ```
 
-Run:
-
-```bash
-npm run start:api-server
-npm run build
-npm run start:prod
-```
-
-> Check 404 on request `http://localhost:8080/cars/undefined/cars/1`
+> It needs `'use client'` because it uses `onClick` and `useRouter`.
 >
-> The `image url` is working because we are using the `mapper` in a Server Component.
+> It's a leaf of the tree: the page `src/app/cars/[carId]/page.tsx` is still a Server Component that fetches the car and passes it as a prop.
+>
+> It calls `toggleBooking`, a Server Function (`'use server'`) that we added in `04-static-site-generation`: the click happens in the browser, but the request to the API is sent by the Next server.
 
-Why it doesn't work? Because we are using `use client` directive and the environment variable is only available on server side:
+Environment variables without prefix only exist on the server. That's why `BASE_API_URL` works inside the Server Function, but it would be `undefined` if we called `api.bookCar` directly from the Client Component.
 
-_./.env.local_
-
-```diff
-- BASE_API_URL=http://localhost:3001/api
-+ NEXT_PUBLIC_BASE_API_URL=http://localhost:3001/api
-BASE_PICTURES_URL=http://localhost:3001
-IMAGES_DOMAIN=localhost
-
-```
-
-_./src/core/constants/env.constants.ts_
-
-```diff
-export const ENV = {
-- BASE_API_URL: process.env.BASE_API_URL,
-+ BASE_API_URL: process.env.NEXT_PUBLIC_BASE_API_URL,
-  BASE_PICTURES_URL: process.env.BASE_PICTURES_URL,
-};
-
-```
-
-Run again:
-
-```bash
-npm run start:api-server
-npm run build
-npm run start:prod
-```
+> If a Client Component really needs a value, the variable must start with [NEXT_PUBLIC_](https://nextjs.org/docs/app/guides/environment-variables#bundling-environment-variables-for-the-browser). Its value is written into the browser bundle at build time (like `VITE_` in Vite), so use it only for public values.
 
 On the other hand, we cannot use client-side interactivity in a Server Component but how can we implement a global `React context`?:
 
