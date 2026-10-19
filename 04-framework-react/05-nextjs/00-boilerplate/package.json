@@ -1,0 +1,20 @@
+{
+  "name": "nextjs-examples",
+  "version": "1.0.0",
+  "description": "Nextjs examples",
+  "type": "module",
+  "scripts": {
+    "start:api-server": "cd api-server && npm run mock-server"
+  },
+  "author": "Lemoncode",
+  "license": "MIT",
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "7.0.2"
+  }
+}
