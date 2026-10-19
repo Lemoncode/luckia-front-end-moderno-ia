@@ -1,0 +1,437 @@
+# 04 Static sites
+
+Let's works with Nextjs using pages generated at build time.
+
+We will start from `03-boilerplate`.
+
+## Steps to build it
+
+`npm install` to install previous sample packages:
+
+```bash
+npm install
+cd api-server
+npm install
+cd ..
+```
+
+## Rendering modes
+
+We can render Nextjs pages in 3 modes:
+
+- Static Site Generation
+- Server Side Rendering
+- Client Side Rendering
+
+> We can combine them
+
+## Static Site Generation
+
+Pages are generated at build time, it means that it will fetch all necessary data from backend at build time.
+
+- Recommended whenever possible because it's much faster than having server render the page on every request.
+- The build time will be larger than SSR mode.
+- Only available on `Server Components`.
+- [More about SSG](https://nextjs.org/docs/app/api-reference/file-conventions/route#static-generation-with-generatestaticparams)
+
+We will fetch data from an API (`api-server`), so let's start this server on `start` command:
+
+_./package.json_
+
+```diff
+  "scripts": {
+-   "start": "next dev",
++   "start": "run-p -l start:dev start:api-server",
++   "start:dev": "next dev",
+    ...
+  },
+```
+
+Take a look `src/pods/car-list/api/car-list.api.ts`, it's using a env variable.
+
+Let's create it:
+
+_./.env.local_
+
+```
+BASE_API_URL=http://localhost:3001/api
+
+```
+
+> [Env variables in Nextjs](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
+
+Update `.gitignore`:
+
+_./.gitignore_
+
+```diff
+node_modules
+dist
+coverage
+.awcache
+test-report.*
+junit.xml
+*.log
+*.orig
+.cache
+.env
+.next
+.swc
++ .env.local
+```
+
+Now, we will use this method to load car list on build time:
+
+_./src/app/cars/page.tsx_
+
+```diff
+- 'use client';
+import React from 'react';
+- import { useRouter } from 'next/navigation';
++ import { Metadata } from 'next';
++ import { CarList, api, mapCarListFromApiToVm } from '#pods/car-list';
+
++ export const metadata: Metadata = {
++   title: 'Rent a car - Car list',
++ };
+
+- const CarListPage = () => {
++ const CarListPage = async () => {
+-   const router = useRouter();
+-   const onNavigateBack = () => {
+-     router.push('/'); // or router.back()
+-   };
++   const carList = await api.getCarList();
++   console.log('Car list at build time:', { carList });
+
+-   return (
+-     <>
+-       <h2>Car list page</h2>
+-       <ul>
+-         <li>Audi Q8</li>
+-         <li>BMW X7</li>
+-       </ul>
+-       <button onClick={onNavigateBack}>Navigate to home</button>
+-     </>
+-   );
++   return <CarList carList={mapCarListFromApiToVm(carList)} />;
+  };
+
+export default CarListPage;
+
+```
+
+Run in `prod` mode (two terminals):
+
+```bash
+npm run start:api-server
+
+npm run build
+```
+
+Stop `api-server` and run:
+
+```bash
+npm run start:prod
+```
+
+> Open browser on `http://localhost:8080/cars`.
+>
+> Check `.next/server/app/cars.html` file.
+>
+> Pending to fix images issue.
+
+In dev mode it's working as `server side rendering`. How we can use breakpoints if it's executing on server side? We need add a VSCode debug config or run it with `Javascript Debug Terminal`:
+
+```bash
+npm start
+
+```
+
+> Open browser on `http://localhost:3000/cars`.
+>
+> [Debugging docs](https://nextjs.org/docs/advanced-features/debugging)
+
+Now, if we want fix the image issue, we needs to create the `BASE_PICTURES_URL` env variable (check `src/pods/car-list/car-list.mappers.ts`)
+
+_./.env.local_
+
+```diff
+  BASE_API_URL=http://localhost:3001/api
++ BASE_PICTURES_URL=http://localhost:3001
+
+```
+
+Stop app and run again:
+
+```bash
+npm start
+```
+
+> It looks great even if we navigate to another page and back to car list page.
+>
+> Same behaviour on prod mode (build + start:prod)
+>
+> [Client side env](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables#bundling-environment-variables-for-the-browser) for example using `'use client'`.
+
+## Generate Static Params
+
+If we need to define a list of pages to get availables at build time (like each `car details`), we can use [generateStaticParams](https://nextjs.org/docs/app/api-reference/functions/generate-static-params).
+
+Update car `page`:
+
+_./src/app/cars/\[carId\]/page.tsx_
+
+```diff
+import React from 'react';
+import { Metadata } from 'next';
++ import { Car, api, mapCarFromApiToVm } from '#pods/car';
+
+...
+
+export const generateMetadata = async (props: Props): Promise<Metadata> => {
+  const params = await props.params;
++ const car = await api.getCar(params.carId);
+  return {
+-   title: `Rent a car - Car ${params.carId} details`,
++   title: `Rent a car - Car ${car.name} details`,
+  };
+};
+
+const CarPage = async (props: Props) => {
+  const params = await props.params;
++ const car = await api.getCar(params.carId);
++ console.log('Car page', car);
+
+- return (
+-   <>
+-     <h2>Car detail page</h2>
+-     <p>{params.carId}</p>
+-   </>
+- );
++ return <Car car={mapCarFromApiToVm(car)} />;
+};
+
+export default CarPage;
+
+```
+
+> It will fetch the car details data only once.
+>
+> [Automatic fetch request deduping](https://nextjs.org/docs/app/getting-started/fetching-data#deduplicate-requests-and-cache-data)
+
+If we open `http://localhost:8080/cars/1` in `prod` mode, we notice that by default the car detail page is running on `SSR` mode.
+
+```bash
+npm run start:api-server
+
+npm run build
+
+npm run start:prod
+```
+
+> Check `.next/server/app/cars/[carId]`.
+>
+> Each time we refresh the page (F5) it will fetch the car details data.
+>
+> It will cache on routing navigation.
+
+But if we want to run this code at build time, we need to use [generateStaticParams](https://nextjs.org/docs/app/api-reference/functions/generate-static-params) too:
+
+_./src/app/cars/\[carId\]/page.tsx_
+
+```diff
+...
+
+export const generateMetadata = async (props: Props): Promise<Metadata> => {
+...
+};
+
++ export async function generateStaticParams() {
++   return [{ carId: '1' }, { carId: '2' }, { carId: '3' }];
++ }
+
+...
+```
+
+Disable `prefetch` for demo purposes:
+
+_./src/pods/car-list/components/car-item.component.tsx_
+
+```diff
+...
+  return (
+    <Link
++     prefetch={false}
+      href={routeConstants.car(car.id)}
+      className={classes.root}
+    >
+    ...
+```
+
+Run again:
+
+```bash
+npm run start:api-server
+
+npm run build
+
+npm run start:prod
+```
+
+> Check `.next/server/app/cars/[carId]` and `.next/server/route-cache`.
+>
+> It will render the HTML for each car detail page.
+
+Enable `prefetch` again:
+
+_./src/pods/car-list/components/car-item.component.tsx_
+
+```diff
+...
+  return (
+    <Link
+-     prefetch={false}
+      href={routeConstants.car(car.id)}
+      className={classes.root}
+    >
+    ...
+```
+
+Run again:
+
+```bash
+npm run start:api-server
+npm run build
+npm run start:prod
+```
+
+What's if `api-server` has new data, let's use [Incremental Static Regeneration or Revalidating Data](https://nextjs.org/docs/app/guides/incremental-static-regeneration):
+
+_./src/pods/car-list/api/car-list.api.ts_
+
+```diff
+import { envConstants } from '#core/constants';
+import { Car } from './car-list.api-model';
+
+const url = `${envConstants.BASE_API_URL}/cars`;
+
+- export const getCarList = async (): Promise<Car[]> => {
++ export const getCarList = async (options?: RequestInit): Promise<Car[]> => {
+-   return await fetch(url).then((response) => response.json());
++   return await fetch(url, options).then((response) => response.json());
+  };
+
+```
+
+_./src/app/cars/page.tsx_
+
+```diff
+import React from 'react';
+import { Metadata } from 'next';
+import { CarList, api, mapCarListFromApiToVm } from '#pods/car-list';
+
+export const metadata: Metadata = {
+  title: 'Rent a car - Car list',
+};
+
+const CarListPage = async () => {
+- const carList = await api.getCarList();
++ // cache: 'force-cache' is the default value
++ const carList = await api.getCarList({ next: { revalidate: 10 } }); // In seconds
+  console.log('Car list at build time:', { carList });
+
+  return <CarList carList={mapCarListFromApiToVm(carList)} />;
+};
+
+export default CarListPage;
+
+```
+
+> It also have other [on-demand revalidation](https://nextjs.org/docs/app/building-your-application/data-fetching/incremental-static-regeneration#time-based-revalidation) options
+
+Run again:
+
+```bash
+npm run start:api-server
+npm run build
+npm run start:prod
+```
+
+Open browser at `http://localhost:8080/cars` and then add a new car:
+
+_./api-server/src/mock-data.ts_
+
+```diff
+...
++ {
++   id: '10',
++   name: 'New car',
++   imageUrl: '/audi-q8.png',
++   features: [],
++   isBooked: false,
++ },
+```
+
+While we navigate to car details:(`/cars/1`, `/cars/2`,...`/cars/4`) it doesn't update the car list.
+
+If we refresh the `/cars` page again (F5) it pre-renders the `car page again` and show the new version (navigate to details and back again).
+
+> It will works with Car Details too.
+
+Remove data:
+
+_./api-server/src/mock-data.ts_
+
+```diff
+...
+- {
+-   id: '10',
+-   name: 'New car',
+-   imageUrl: '/audi-q8.png',
+-   features: [],
+-   isBooked: false,
+- },
+```
+
+For fix `images` on car details, we nee to add a `domain` to 'optimize images with `next/image` hosted in external service:
+
+_./.env.local_
+
+```diff
+BASE_API_URL=http://localhost:3001/api
+BASE_PICTURES_URL=http://localhost:3001
++ IMAGES_DOMAIN=localhost
+
+```
+
+_./next.config.ts_
+
+```javascript
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  images: {
+    dangerouslyAllowLocalIP: true, // only for local development
+    remotePatterns: [
+      {
+        hostname: process.env.IMAGES_DOMAIN,
+      },
+    ],
+  },
+};
+
+export default nextConfig;
+```
+
+> [Remote Images](https://nextjs.org/docs/app/building-your-application/optimizing/images#remote-images)
+>
+> [Next config file](https://nextjs.org/docs/app/api-reference/next-config-js)
+
+Run app prod mode:
+
+```bash
+npm run start:api-server
+npm run build
+npm run start:prod
+```
