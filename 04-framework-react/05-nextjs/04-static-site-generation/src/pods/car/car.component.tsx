@@ -3,9 +3,8 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { routeConstants } from '#core/constants';
-import * as api from './api';
 import * as viewModel from './car.vm';
-import { mapCarFromVmToApi } from './car.mappers';
+import { toggleBooking } from './car.actions';
 import classes from './car.module.css';
 
 interface Props {
@@ -18,8 +17,7 @@ export const Car: React.FC<Props> = (props) => {
 
   const handleBook = async () => {
     try {
-      const apiCar = mapCarFromVmToApi({ ...car, isBooked: !car.isBooked });
-      await api.bookCar(apiCar);
+      await toggleBooking(car);
       router.push(routeConstants.carList);
     } catch (error) {
       console.error({ error });

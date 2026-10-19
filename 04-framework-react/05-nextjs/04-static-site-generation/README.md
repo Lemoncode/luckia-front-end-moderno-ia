@@ -337,7 +337,6 @@ export const metadata: Metadata = {
 
 const CarListPage = async () => {
 - const carList = await api.getCarList();
-+ // cache: 'force-cache' is the default value
 + const carList = await api.getCarList({ next: { revalidate: 10 } }); // In seconds
   console.log('Car list at build time:', { carList });
 
@@ -348,6 +347,8 @@ export default CarListPage;
 
 ```
 
+> Since Next 15, `fetch` is **not** cached by default. The `/cars` route was static before this change because it doesn't use request data (`cookies`, `headers`, `searchParams`), so Next prerenders it at build time.
+>
 > It also have other [on-demand revalidation](https://nextjs.org/docs/app/building-your-application/data-fetching/incremental-static-regeneration#time-based-revalidation) options
 
 Run again:
@@ -435,3 +436,70 @@ npm run start:api-server
 npm run build
 npm run start:prod
 ```
+
+## On-demand revalidation with a Server Function
+
+Open `http://localhost:8080/cars/1` and click on `Reservar`. It fails: the request goes to `http://localhost:8080/cars/undefined/cars/1`.
+
+`car.component.tsx` is a Client Component, so `api.bookCar` runs in the browser, and `BASE_API_URL` only exists on the server.
+
+Instead of exposing the API url to the browser, let's move the booking to a [Server Function](https://nextjs.org/docs/app/getting-started/updating-data). It's called like a normal JavaScript function, but it runs on the server:
+
+_./src/pods/car/car.actions.ts_
+
+```ts
+'use server';
+import { revalidatePath } from 'next/cache';
+import { routeConstants } from '#core/constants';
+import * as api from './api';
+import * as viewModel from './car.vm';
+import { mapCarFromVmToApi } from './car.mappers';
+
+export const toggleBooking = async (car: viewModel.Car) => {
+  await api.bookCar(mapCarFromVmToApi({ ...car, isBooked: !car.isBooked }));
+  revalidatePath(routeConstants.carList, 'layout');
+};
+```
+
+> [revalidatePath](https://nextjs.org/docs/app/api-reference/functions/revalidatePath) with `'layout'` regenerates `/cars` and every page below it (`/cars/1`, `/cars/2`...).
+>
+> Why `'layout'`? `revalidatePath('/cars')` only regenerates the car list. The car details were generated at build time with `generateStaticParams` and never expire, so `/cars/1` would still show `Reservar` after booking it.
+>
+> A more precise alternative is to regenerate only the pages that changed:
+>
+> ```ts
+> revalidatePath(routeConstants.carList);
+> revalidatePath(routeConstants.car(car.id));
+> ```
+
+_./src/pods/car/car.component.tsx_
+
+```diff
+...
+import { routeConstants } from '#core/constants';
+- import * as api from './api';
+import * as viewModel from './car.vm';
+- import { mapCarFromVmToApi } from './car.mappers';
++ import { toggleBooking } from './car.actions';
+import classes from './car.module.css';
+...
+  const handleBook = async () => {
+    try {
+-     const apiCar = mapCarFromVmToApi({ ...car, isBooked: !car.isBooked });
+-     await api.bookCar(apiCar);
++     await toggleBooking(car);
+      router.push(routeConstants.carList);
+...
+```
+
+Run again:
+
+```bash
+npm run start:api-server
+npm run build
+npm run start:prod
+```
+
+> Book a car: the `PATCH` request is sent by the Next server, not by the browser.
+>
+> `/cars` (ISR) and `/cars/1` (SSG) show the booking immediately, without waiting `revalidate` seconds and without a new build: time-based ISR vs on-demand revalidation.
