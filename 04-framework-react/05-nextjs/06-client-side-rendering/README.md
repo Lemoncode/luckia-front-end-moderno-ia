@@ -15,6 +15,12 @@ npm install
 cd ..
 ```
 
+Create the environment variables file from the example (`.env.local` is not committed):
+
+```bash
+cp .env.example .env.local
+```
+
 # Client Side Rendering
 
 If we don't need to pre-render the data and frequently updating data.

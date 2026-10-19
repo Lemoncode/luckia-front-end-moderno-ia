@@ -59,6 +59,8 @@ BASE_API_URL=http://localhost:3001/api
 ```
 
 > [Env variables in Nextjs](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
+>
+> `.env.local` is not committed. This demo includes a `.env.example` with the final values: `cp .env.example .env.local`.
 
 Update `.gitignore`:
 
@@ -311,10 +313,10 @@ What's if `api-server` has new data, let's use [Incremental Static Regeneration 
 _./src/pods/car-list/api/car-list.api.ts_
 
 ```diff
-import { envConstants } from '#core/constants';
+import { ENV } from '#core/constants';
 import { Car } from './car-list.api-model';
 
-const url = `${envConstants.BASE_API_URL}/cars`;
+const url = `${ENV.BASE_API_URL}/cars`;
 
 - export const getCarList = async (): Promise<Car[]> => {
 + export const getCarList = async (options?: RequestInit): Promise<Car[]> => {

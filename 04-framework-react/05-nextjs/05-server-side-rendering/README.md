@@ -15,6 +15,12 @@ npm install
 cd ..
 ```
 
+Create the environment variables file from the example (`.env.local` is not committed):
+
+```bash
+cp .env.example .env.local
+```
+
 # Server Side Rendering
 
 If we can't pre-render a page ahead of a user's request but we need SEO. For example: search results, shopping cart.
