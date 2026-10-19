@@ -1,284 +1,286 @@
-# 02 · Routing: rutas, navegación y layout
+# 03 · CarList
 
 ## 1. Que vamos a hacer
 
-Partimos del proyecto vacío funcionando.
+Vamos a mostrar el listado de coches, para ello accederemos a base de datos desde una función de servidor y cargaremos los datos.
 
-Ahora:
+También vamos a ver como estructurar la aplicación.
 
-- Vamos a añadir rutas de navegación:
-  - Home (`/`) que tendrá un listado de coche (de momento un placeholder).
-  - `/cars/$carId` que mostrará el detalle de un coche.
-- Un **layout común** (una cabecera con navegación) que envuelve a todas las
-  páginas, definido sobre `__root.tsx`.
-- **Navegación tipo SPA** entre páginas con el componente `<Link>`: cambiar de
-  página **no recarga** el navegador entero.
+## 2. Estructurando en pods
 
-Al terminar esta guía tendrás, en tu proyecto **compra-coches**, el **esqueleto de
-navegación** de la aplicación montado con el **enrutado por ficheros** de TanStack
-Start/Router:
+Estructurar una aplicación web siempre puede traer quebraderos de cabeza, más cuando un mapeo uno a uno con backend puedeo no resultar bien.
 
----
+En Lemoncode, empezamos a usar una aproximación que fue popular en el framework Ember hace tiempo, y que es parecida a Vertical Slicing, la llamamos "Estructura de PODS", y varios clientes grandes nos pidieron implantarla como estándar en sus proyectos.
 
-## 2. Punto de partida
+Esta aproximación la empezamos a usar en 2020, y en 2022 dedicimos documentarla: https://github.com/Lemoncode/lemon-front-estructura/tree/main
 
-Esta guía parte del proyecto semilla, ojo también tendrás que copiar de la guía del paso anterior el contenido para el fichero .env.
+La hemos usando tanto en proyectos React com Astro.
 
-Antes de empezar, asegúrate de que el proyecto arranca en su estado actual:
+Para no manchar la carpeta de rutas con un montón de ficheros vamos a crearnos una carpeta para almacenar funcionlidad rica, la llamaremos `pods`.
 
-```bash
-pnpm install
-pnpm dev   # debe servir http://localhost:3000 con la home de la semilla
+Un pod engloba una funcionalidad rica y una página puede usar un pod o varios.
+
+Vamos a por el pod de la lista de coches:
+
+Creamos la carpeta principal `pods`
+
+y debajo creamos la carpeta `car-list`.
+
+Lo primero vamos a definir el modelo de datos que vamos a consumir desde la vista ¿Que informacíon nos hace falta?
+
+_./src/pods/car-list/car-list.model.ts_
+
+```ts
+// View-model del pod `car-list`: lo MÍNIMO que necesita una tarjeta del listado.
+//
+// No es el coche completo (eso es cosa del pod `car-detail`): la tarjeta solo pinta
+// una foto, la marca/modelo, año, km y el precio. Modelar solo lo que la UI usa
+// mantiene el pod enfocado y desacoplado de la forma de la fuente de datos.
+export interface CarSummary {
+  id: string;
+  make: string;
+  model: string;
+  price: number;
+  year: number;
+  km: number;
+  photo: string; // una sola foto para la tarjeta (la primera del coche)
+}
 ```
 
----
+Y ahora que tenemos la estructura, vamos a meter datos harcodeados de momento para mostrarlos (fijate que en la firma lo ponemos como asíncrono así nos valdrá para más adelante cuando leamos de BBDD)
 
-## 3. Concepto
+_./src/pods/car-list/car-list.repository.ts_
 
-### Enrutado **por ficheros** (file-based routing)
+```ts
+import type { CarSummary } from "./car-list.model";
 
-En TanStack Start las rutas **no se declaran en un array**: se deducen de los
-**ficheros** que colocas dentro de `src/routes/`. Cada fichero exporta una `Route`
-y su **ubicación y nombre** determinan la URL:
-
-| Fichero                      | URL que genera |
-| ---------------------------- | -------------- |
-| `src/routes/index.tsx`       | `/`            |
-| `src/routes/cars/$carId.tsx` | `/cars/:carId` |
-| `src/routes/__root.tsx`      | (layout raíz)  |
-
-Reglas que usaremos:
-
-- **`index.tsx`** es la ruta "índice" de su carpeta (la home, en la raíz).
-- Una **carpeta** (`cars/`) añade un **segmento** a la URL (`/cars/...`).
-- El prefijo **`$`** en el nombre del fichero marca un **parámetro dinámico**:
-  `cars/$carId.tsx` captura cualquier valor en esa posición (`/cars/123`,
-  `/cars/abc`, …) y te lo entrega como `carId`.
-- **`__root.tsx`** es la ruta **raíz**: envuelve a todas las demás. Es el sitio
-  natural para el **layout común** (cabecera, navegación, pie…).
-
----
-
-## 4. Pasos
-
-### Paso 0
-
-Arranca el proyecto (le va hacer falta a TanStack Start para ir regenerando las rutas cuando añadamos ficheros).
-
-```bash
-pnpm dev
-```
-
-### Paso 1 — Añadir el layout común en `__root.tsx`
-
-Queremos una cabecer con navegación visibl en todas las páginas (puede que a futuro querramos poner un footer), para ello definimos un layout, en el mundo aspx lo llamaban un "master page".
-
-Antes de ponernos a crear esto, vamos a entender que trae ahora ese _root.tsx y para que sirve
-
-_root.tsx define la ruta raíz de la aplicación y el documento HTML que envuelve las páginas. Es el lugar común para configurar metadatos, estilos globales y herramientas compartidas.
-
-Abrimos el archivo y podemos ver:
-
-- head define los metadatos de la página y carga styles.css.
-
-- shellComponent establece la estructura del documento (<html>, <head> y <body>).
-
-- <HeadContent /> inserta en el <head> los metadatos y enlaces definidos en head.
-
-- {children} muestra el contenido de las rutas; TanStack Start lo proporciona dentro del documento.
-
-- TanStackDevtools añade herramientas de desarrollo, incluido el panel de TanStack Router.
-
-- <Scripts /> carga los scripts necesarios para que la aplicación funcione en el navegador.
-
-¿Y ahora como encaja nuestro layout?
-
-- Importamos el component _Outlet_ que sirve para mostra el contenido dentro del layout.
-
-_./src/_root.tsx_
-
-```diff
-import {
-  HeadContent,
-  Scripts,
-  createRootRoute,
-+ Outlet,
-} from '@tanstack/react-router'
-```
-
-- Creamos un componente que podemos llamar _AppLayout_ (podría ir en otro fichero), y ahí pintamos la cabecera y el pie de páginas, y dentro invocamos al outlet para pintar el resto de contenido (la página actual que se esté mostrando).
-
-```diff
-+ function AppLayout() {
-+  return (
-+    <>
-+      <header>SOY EL HEADER</header>
-+      <main>
-+        <Outlet />
-+      </main>
-+      <footer>SOY EL FOOTER</footer>
-+    </>
-+  )
-+ }
-
-function RootDocument({ children }: { children: React.ReactNode }) {
-```
-
-- Y donde invocamos el `createRootRoute`, además del shellComponent que pinta el HTML principal, añadimos una sección `component` donde pintamos nuestro layout.
-
-```diff
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      //(...)
-    ],
-    links: [
+export const carListRepository = {
+  getCarList(): Promise<CarSummary[]> {
+    return [
       {
-        rel: 'stylesheet',
-        href: appCss,
+        id: "seat-leon",
+        make: "Seat",
+        model: "León 1.5 TSI",
+        price: 18900,
+        year: 2021,
+        km: 42000,
+        photo: "http://localhost:9000/car-photos/seat-leon.jpg",
       },
-    ],
-  }),
-+ component: AppLayout,
-  shellComponent: RootDocument,
-})
+      {
+        id: "volkswagen-golf",
+        make: "Volkswagen",
+        model: "Golf 2.0 TDI",
+        price: 21500,
+        year: 2020,
+        km: 68000,
+        photo: "http://localhost:9000/car-photos/volkswagen-golf.jpg",
+      },
+      {
+        id: "toyota-corolla",
+        make: "Toyota",
+        model: "Corolla Hybrid",
+        price: 23900,
+        year: 2022,
+        km: 31000,
+        photo: "http://localhost:9000/car-photos/toyota-corolla.webp",
+      },
+      {
+        id: "tesla-model-3",
+        make: "Tesla",
+        model: "Model 3 Standard Range",
+        price: 34900,
+        year: 2021,
+        km: 55000,
+        photo: "http://localhost:9000/car-photos/tesla-model-3.jpg",
+      },
+      {
+        id: "renault-clio",
+        make: "Renault",
+        model: "Clio 1.0 TCe",
+        price: 13500,
+        year: 2020,
+        km: 49000,
+        photo: "http://localhost:9000/car-photos/renault-clio.jpg",
+      },
+      {
+        id: "bmw-serie-3",
+        make: "BMW",
+        model: "Serie 3 320d",
+        price: 29900,
+        year: 2019,
+        km: 82000,
+        photo: "http://localhost:9000/car-photos/bmw-serie-3.jpg",
+      },
+    ];
+  },
+};
 ```
 
-Vamos a comprobar que aparece el texto de header y footer.
+Eso lo consumiremos desde el _loader_ de la página, punto inicial donde se cargan datos, ¿Qué ventajas tiene?
 
-Nos vamos al navegador y vemos el resultado.
+- No dependemos de _useEffect_ y los problemas que trae.
+- Se puede cachear (incluso integrar con React Query).
+- Se puede hacer streaming, unos elementos del loader los procesamos en la carga otros podemos diferir su procesado (streaming).
+- Se pueden hacer cargas predictivas, por ejemplo si pongo el ratón encima de un coche de la lista puedo ejecutar el loader en background de la página de ese coche.
 
-Vamos ahora a darle un poco de estilo a esa cabecera:
+Vamos ahora a poner un componente simple que muestre al listado de coches, para ello definimos lo que llamamos el _pod_ principal:
 
-_./src/_root.tsx_
+_./src/pods/car-list/car-list.pod.ts_
 
-```diff
-import {
-  HeadContent,
-  Scripts,
-  createRootRoute,
-  Outlet,
-+  Link,
-} from "@tanstack/react-router";
-```
+```ts
+import type { CarSummary } from "#/pods/car-list/car-list.model";
 
-```diff
-function AppLayout() {
+export function CarListPod({ cars }: { cars: CarSummary[] }) {
   return (
-    <>
--      <header>SOY EL HEADER</header>
-+      <header className="border-b bg-white/70 backdrop-blur">
-+        <nav className="mx-auto flex max-w-5xl items-center gap-6 px-6 py-4">
-+          <Link to="/" className="text-lg font-bold">
-+            Compra Coches
-+          </Link>
-+          <div className="flex items-center gap-4 text-sm">
-+            <Link
-+              to="/"
-+              activeOptions={{ exact: true }}
-+              className="hover:underline"
-+              activeProps={{ className: "font-semibold underline" }}
-+            >
-+              Inicio
-+            </Link>
-+            <Link
-+              to="/cars/$carId"
-+              params={{ carId: "demo" }}
-+              className="hover:underline"
-+              activeProps={{ className: "font-semibold underline" }}
-+            >
-+              Ficha demo
-+            </Link>
-+          </div>
-+        </nav>
-+      </header>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h1 className="display-title text-4xl font-bold text-foreground">
+          Coches en venta
+        </h1>
+        <p className="text-muted-foreground">
+          {cars.length} coches disponibles ahora mismo.
+        </p>
+      </div>
 
-      <main>
-        <Outlet />
-      </main>
-      <footer>SOY EL FOOTER</footer>
-    </>
+      <ul>
+        {cars.map((car) => (
+          <li key={car.id}>
+            <p>{car.make} {car.model}<p/>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 ```
 
-Fijate que aquí nos un error en la ruta y parametros
+Creamos un barrel para exponer tanto el pod como el repository
 
-```
-  to="/cars/$carId"
-  params={{ carId: "demo" }}
-```
+_./src/pods/car-list/index.ts_
 
-Esto es porque TanStack Router tipa las rutas de forma automática y ve que no existe en el arbol.
-
-Lo primero en la página `home` vamos a cambiar el contenido:
-
-_./src/index.tsx_
-
-```diff
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/')({ component: Home })
-
-function Home() {
-  return (
--    <div className="p-8">
--      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
--      <p className="mt-4 text-lg">
--        Edit <code>src/routes/index.tsx</code> to get started.
--      </p>
--    </div>
-+    <div className="space-y-4">
-+      <h1 className="text-3xl font-bold">Coches en venta</h1>
-+      <p className="text-muted-foreground">
-+        Aquí aparecerá el listado de coches. De momento es un placeholder: los
-+        datos reales llegan en la guía <code>03-loaders</code>.
-+      </p>
-+    </div>
-  )
-}
+```ts
+export * from "./car-list.pod";
+export * from "./car-list.repository";
 ```
 
-Y ahora vamos a por ese detallede un coche, vamos a crear una ruta, en este caso:
+Ahora vamos a usar esto en la página de de listado de coches.
 
-- Creamos una carpeta `cars`
-- Dentro declaramos un fichero que tendrá el parametro de entrada.
-
-OJO de primeros al crear el fichero ya nos generar código tanStackStart (tenemos que tener levantado el proyecto).
-
-Ya podríamos navegar.
-
-Vamos ahora  mostrar el parámetro de navegación en la página (más adelante conectaremos con BBDD).
+_./src/routes/index.tsx_
 
 ```diff
 import { createFileRoute } from "@tanstack/react-router";
++ import {CarListPod, carListRepository } from '#/pods/car-list'
 
-export const Route = createFileRoute("/cars/$cardId")({
-  component: RouteComponent,
+export const Route = createFileRoute("/")({
++  loader: async () => {
++    const cars = await carListRepository.getCarList();
++    return { cars };
++  },
+  component: Home
 });
 
-function RouteComponent() {  
-+  // Leemos el parámetro de la URL de forma tipada: `carId` es exactamente el
-+  // nombre que pusimos tras el `$` en el fichero ($carId.tsx).
-+  const { carId } = Route.useParams();
+function Home() {
++  const { cars } = Route.useLoaderData();
 
--  return <div>Hello "/cars/$cardId"!</div>;
-+  return (
-+    <div className="space-y-4">
-+      <h1 className="text-3xl font-bold">Ficha del coche</h1>
-+      <p className="text-muted-foreground">
-+        Estás viendo la ficha del coche con identificador:
-+      </p>
-+      <p className="rounded-md bg-muted px-3 py-2 font-mono text-sm">
-+        carId = {carId}
-+      </p>
-+      <p className="text-muted-foreground">
-+        De momento es un placeholder: los datos reales del coche llegan en la
-+        guía <code>03-loaders</code>.
-+      </p>
-+    </div>
-+  );
+  return (
+-    <div className="space-y-4">
+-      <h1 className="text-3xl font-bold">Coches en venta</h1>
+-      <p className="text-muted-foreground">
+-        Aquí aparecerá el listado de coches. De momento es un placeholder: los
+-        datos reales llegan en la guía <code>03-loaders</code>.
+-      </p>
+-    </div>
++    <CarListPod cars={cars}>
+  );
 }
 ```
 
+Vamos al navegador y a ver si se muestra la lista...
 
+¡ Perfecto !
+
+Ahora que funciona, vamos a darle un poco de cariño al diseño, nos vamos al pod de `car-list` y creamos un card componente y despues un contenedor para mostrarlo.
+
+_./src/pods/car-list/car-card.component.tsx_
+
+```tsx
+import { Link } from "@tanstack/react-router";
+import type { CarSummary } from "#/pods/car-list/car-list.model";
+
+// Tarjeta de un coche en el listado. Es un <Link> a su ficha: como /cars/$carId es
+// una ruta con parámetro, el tipado exige `params={{ carId: car.id }}`.
+export function CarCard({ car }: { car: CarSummary }) {
+  return (
+    <Link
+      to="/cars/$carId"
+      params={{ carId: car.id }}
+      className="group block overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    >
+      <img
+        src={car.photo}
+        alt={`${car.make} ${car.model}`}
+        className="aspect-[16/10] w-full object-cover"
+        loading="lazy"
+      />
+      <div className="space-y-1 p-4">
+        <h2 className="font-semibold text-card-foreground">
+          {car.make} {car.model}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {car.year} · {car.km.toLocaleString("es-ES")} km
+        </p>
+        <p className="text-lg font-bold text-primary">{car.price} €</p>
+      </div>
+    </Link>
+  );
+}
+```
+
+Creamos un barrel:
+
+_./src/pods/car-list/components/index.ts_
+
+```ts
+export * from "./car-card.component";
+```
+
+Y ahora lo usamos dentro de `car-list.pod`:
+
+_./src/pods/car-list/car-list.pod.tsx_
+
+```diff
+import type { CarSummary } from "#/pods/car-list/car-list.model";
++ import {CarCard} from './components'
+
+export function CarListPod({ cars }: { cars: CarSummary[] }) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h1 className="display-title text-4xl font-bold text-foreground">
+          Coches en venta
+        </h1>
+        <p className="text-muted-foreground">
+          {cars.length} coches disponibles ahora mismo.
+        </p>
+      </div>
+
+-      <ul>
+-        {cars.map((car) => (
+-          <li key={car.id}>
+-            <p>{car.make} {car.model}<p/>
+-          </li>
+-        ))}
+-      </ul>
++      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
++        {cars.map((car) => (
++          <li key={car.id}>
++            <CarCard car={car} />
++          </li>
++        ))}
++      </ul>
+    </div>
+  );
+}
+```
+
+Y ya tenemos la lista, pero con datos mock, vamos a implementar el acceso real a base de datos.
