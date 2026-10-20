@@ -1,15 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { carListRepository, CarListPod } from "#/pods/car-list";
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  loader: async () => {
+    const cars = await carListRepository.getCarList();
+    return { cars };
+  },
+  component: Home,
+});
 
 function Home() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold">Coches en venta</h1>
-      <p className="text-muted-foreground">
-        Aquí aparecerá el listado de coches. De momento es un placeholder: los
-        datos reales llegan en la guía <code>03-loaders</code>.
-      </p>
-    </div>
-  );
+  const { cars } = Route.useLoaderData();
+
+  return <CarListPod cars={cars} />;
 }

@@ -55,7 +55,7 @@ _./src/pods/car-list/car-list.repository.ts_
 import type { CarSummary } from "./car-list.model";
 
 export const carListRepository = {
-  getCarList(): Promise<CarSummary[]> {
+  async getCarList(): Promise<CarSummary[]> {
     return [
       {
         id: "seat-leon",
@@ -145,7 +145,7 @@ export function CarListPod({ cars }: { cars: CarSummary[] }) {
       <ul>
         {cars.map((car) => (
           <li key={car.id}>
-            <p>{car.make} {car.model}<p/>
+            <p>{car.make} {car.model}</p>
           </li>
         ))}
       </ul>
@@ -165,11 +165,13 @@ export * from "./car-list.repository";
 
 Ahora vamos a usar esto en la página de de listado de coches.
 
+Que nos avisa que en la 7 lo eliminarán
+
 _./src/routes/index.tsx_
 
 ```diff
 import { createFileRoute } from "@tanstack/react-router";
-+ import {CarListPod, carListRepository } from '#/pods/car-list'
++ import {CarListPod, carListRepository } from '#pods/car-list'
 
 export const Route = createFileRoute("/")({
 +  loader: async () => {
@@ -190,7 +192,7 @@ function Home() {
 -        datos reales llegan en la guía <code>03-loaders</code>.
 -      </p>
 -    </div>
-+    <CarListPod cars={cars}>
++    <CarListPod cars={cars}/>
   );
 }
 ```
@@ -201,7 +203,7 @@ Vamos al navegador y a ver si se muestra la lista...
 
 Ahora que funciona, vamos a darle un poco de cariño al diseño, nos vamos al pod de `car-list` y creamos un card componente y despues un contenedor para mostrarlo.
 
-_./src/pods/car-list/car-card.component.tsx_
+_./src/pods/car-list/components/car-card.component.tsx_
 
 ```tsx
 import { Link } from "@tanstack/react-router";
