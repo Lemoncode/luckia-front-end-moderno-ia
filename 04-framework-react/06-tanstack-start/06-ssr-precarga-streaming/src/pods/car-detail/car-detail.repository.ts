@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { fetchCar } from "#/pods/car-detail/api/car-detail.api.server";
+import { fetchFinancingOffer } from "#/pods/car-detail/api/car-financing.api.server";
 import { mapCar } from "./car-detail.mapper";
 import type { Car } from "#/pods/car-detail/car-detail.model";
 
@@ -15,8 +16,17 @@ const getCarFn = createServerFn({ method: "GET" })
     return doc ? mapCar(doc) : null; // mapper -> model (plano) o null (-> notFound())
   });
 
+const getFinancingOfferFn = createServerFn({ method: "GET" })
+  .validator((carId: string) => carId)
+  .handler(async ({ data: carId }): Promise<string> =>
+    fetchFinancingOffer(carId),
+  );
+
 export const carDetailRepository = {
   getCar(carId: string): Promise<Car | null> {
     return getCarFn({ data: carId });
+  },
+  getFinancingOffer(carId: string): Promise<string> {
+    return getFinancingOfferFn({ data: carId });
   },
 };
