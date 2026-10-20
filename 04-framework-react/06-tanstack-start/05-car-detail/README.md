@@ -40,8 +40,8 @@ export interface CarDoc {
 _./src/pods/car-detail/api/car-detail.api.server.ts_
 
 ```ts
-import { getDb, toObjectId } from "#/common/db";
-import type { CarDoc } from "./car-detail.api-model";
+import { getDb, toObjectId } from "#/common/db.server";
+import type { CarDoc } from "./car-detail.api-model.server";
 
 export async function fetchCar(carId: string): Promise<CarDoc | null> {
   const _id = toObjectId(carId);
@@ -83,12 +83,40 @@ export interface Car {
 }
 ```
 
+Añadimos el mapper
+
+_./src/pods/car-detail/car-detail.mapper.ts_
+
+```ts
+import type { CarDoc } from "./api/car-detail.api-model.server";
+import type { Car } from "./car-detail.model";
+
+export function mapCar(doc: CarDoc): Car {
+  return {
+    id: doc._id.toString(),
+    make: doc.make,
+    model: doc.model,
+    price: doc.price,
+    year: doc.year,
+    km: doc.km,
+    fuelType: doc.fuelType,
+    transmission: doc.transmission,
+    power: doc.power,
+    color: doc.color,
+    description: doc.description,
+    photos: doc.photos,
+    seller: doc.seller,
+  };
+}
+
+```
+
 _./src/pods/car-detail/car-detail.repository.server.ts_
 
 ```ts
 import { createServerFn } from "@tanstack/react-start";
-import { fetchCar } from "#/pods/car-detail/api/car-detail.api";
-import { mapCar } from "#/pods/car-detail/car-detail.mapper";
+import { fetchCar } from "#/pods/car-detail/api/car-detail.api.server";
+import { mapCar } from "./car-detail.mapper";
 import type { Car } from "#/pods/car-detail/car-detail.model";
 
 // Server function con validador: recibe el `carId` como `ctx.data`.
@@ -110,11 +138,9 @@ export const carDetailRepository = {
 };
 ```
 
-Y el componente para mostrar el detalle de un coche:
+Y el componente para mostrar el detalle de un coche... para ello necesitamos crear varios subomponentes:
 
-Creamos varios subomponentes:
-
-_./src/pods/car-detail/compoennts/car-contact.component.ts_
+_./src/pods/car-detail/compoennts/car-contact.component.tsx_
 
 ```tsx
 import type { Car } from "../car-detail.model";
@@ -172,7 +198,7 @@ export function CarNotFound() {
 }
 ```
 
-_./src/pods/car-detail/components/car-specs.component.ts_
+_./src/pods/car-detail/components/car-specs.component.tsx_
 
 ```tsx
 import type { Car } from "../car-detail.model";
@@ -239,20 +265,19 @@ export function CarSpecs({ car }: { car: Car }) {
 
 Y vamos a exponer un barrel con todos los componentes:
 
-_./src/components/index.ts_
+_./src/pods/car-detail/components/index.ts_
 
 ```ts
-export * from './car-contact.component.ts';
-export * from './car-not-found.component.ts';
-export * from './car-specs.component.ts';
+export * from './car-contact.component';
+export * from './car-not-found.component';
+export * from './car-specs.component';
 ```
 
-y lo consumimos en el pod principal:
+y lo consumimos en el pod principal (lo creamos):
 
-_./src/pods/car-detail/components/car-detail.pod.ts_
+_./src/pods/car-detail/components/car-detail.pod.tsx_
 
 ```ts
-import { formatEur } from "#/common/format.helper";
 import { CarSpecs } from "#/pods/car-detail/components/car-specs.component";
 import { CarContact } from "#/pods/car-detail/components/car-contact.component";
 import type { Car } from "#/pods/car-detail/car-detail.model";
@@ -275,7 +300,7 @@ export function CarDetailPod({ car }: { car: Car }) {
             {car.make} {car.model}
           </h1>
           <p className="text-3xl font-bold text-primary">
-            {formatEur(car.price)}
+            {car.price} €
           </p>
         </div>
 
@@ -290,10 +315,20 @@ export function CarDetailPod({ car }: { car: Car }) {
 }
 ```
 
+Vamos a crear un barrel para exponer que exportamos a la página que lo vaya a consumir
+
+_./src/pods/car-detail/index.ts_
+
+```ts
+export {CarNotFound} from './components';
+export * from './car-detail.repository';
+export * from './car-detail.pod';
+```
+
 
 Ahora ya sólo nos queda irnos a la página de detalle de un coche leer el campo slug e invocarlo en el loader para mostrarlo en el detalle.
 
-_./src/routes/cars/$cardId.tsx_
+_./src/routes/cars/$carId.tsx_
 
 ```diff
 import { 
@@ -301,9 +336,7 @@ import {
 + notFound
 } from "@tanstack/react-router";
 
-+ import { carDetailRepository } from "#/pods/car-detail/car-detail.repository";
-+ import { CarDetailPod } from "#/pods/car-detail/car-detail.pod";
-+ import { CarNotFound } from "#/pods/car-detail/components/car-not-found.component";
++ import { carDetailRepository, CarDetailPod, CarNotFound } from "#/pods/car-detail";
 
 export const Route = createFileRoute("/cars/$carId")({
 +  loader: async ({ params }) => {
@@ -322,7 +355,7 @@ function RouteComponent() {
 +  const { car } = Route.useLoaderData();
 
 
-+  return <CarDetailPod car={car} />;
++  return (<CarDetailPod car={car} />)
 -  return (
 -    <div className="space-y-4">
 -      <h1 className="text-3xl font-bold">Ficha del coche</h1>
