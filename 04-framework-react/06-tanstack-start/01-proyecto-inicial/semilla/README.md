@@ -29,10 +29,12 @@ docker compose up -d
 Comprueba el estado:
 
 ```bash
-docker compose ps
+docker compose ps -a
 ```
 
-MongoDB y MinIO deben estar activos. El contenedor `compra-coches-createbuckets` puede aparecer como `Exited (0)`: es normal, porque solo crea el bucket `car-photos` y lo deja preparado para servir las fotos.
+MongoDB y MinIO deben estar activos `Up`. El contenedor `createbuckets` aparecerá como `Exited (0)`: es normal, porque solo crea el bucket `car-photos`, lo deja preparado para servir las fotos y termina.
+
+> Sin `-a`, `docker compose ps` solo muestra los contenedores en marcha, así que `createbuckets` no aparece.
 
 ### Si aparece `container name ... is already in use`
 
