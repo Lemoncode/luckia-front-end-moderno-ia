@@ -41,15 +41,15 @@ MongoDB y MinIO deben estar activos `Up`. El contenedor `createbuckets` aparecer
 Elimina el contenedor indicado por el error y vuelve a ejecutar `docker compose up -d`. Por ejemplo:
 
 ```bash
-docker rm -f compra-coches-mongo
+docker compose rm -sf mongo
 docker compose up -d
 ```
 
 Para los otros contenedores, usa el nombre correspondiente:
 
 ```bash
-docker rm -f compra-coches-minio
-docker rm -f compra-coches-createbuckets
+docker compose rm -sf minio
+docker compose rm -sf createbuckets
 ```
 
 Estos comandos eliminan solo contenedores, no los volúmenes con los datos. No añadas `-v`.
@@ -69,7 +69,7 @@ El resultado debería indicar que se han insertado 6 coches y subido 6 fotos. El
 Cuenta los coches insertados:
 
 ```bash
-docker exec compra-coches-mongo mongosh --quiet compra-coches --eval 'db.cars.countDocuments()'
+docker compose exec -T mongo mongosh --quiet compra-coches --eval 'db.cars.countDocuments()'
 ```
 
 Debe mostrar `6`. Para comprobar una foto, abre esta dirección en el navegador:
