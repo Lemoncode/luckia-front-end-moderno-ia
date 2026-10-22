@@ -1,6 +1,61 @@
 # Arrancar el proyecto y cargar los datos de ejemplo
 
-Estos pasos asumen que ya están preparados `docker-compose.yml`, `.env`, el script `scripts/seed.ts` y las fotos de `scripts/fotos/`.
+> Todos los comandos se ejecutan desde la raíz del proyecto, la carpeta donde están `package.json` y `docker-compose.yml`. En el repositorio del curso es la carpeta `semilla`.
+>
+> ```bash
+> cd semilla
+> ```
+
+## 0. Preparación
+
+> Si partes de la semilla del curso, todo esto ya está hecho salvo el `.env`: créalo y salta al paso 1.
+
+Estos pasos asumen que ya están preparados `docker-compose.yml`, el script `scripts/seed.ts` y las fotos de `scripts/fotos/`. Además, comprueba lo siguiente:
+
+**El script `seed` en `package.json`.** Añádelo o, si ya lo tienes de antes, cámbialo:
+
+```diff
+  "scripts": {
+    "dev": "...",
+-   "seed": "tsx scripts/seed.ts"
++   "seed": "tsx --env-file=.env scripts/seed.ts"
+  }
+```
+
+> `--env-file=.env` hace que el script lea las variables del `.env`. Si el archivo no existe, falla con `node: .env: not found`.
+
+**El `.env`.** Si no lo tienes en la raíz del proyecto, créalo con este contenido:
+
+```env
+MONGODB_URI=mongodb://localhost:27017
+MONGODB_DB=compra-coches
+MINIO_ENDPOINT=localhost
+MINIO_PORT=9000
+MINIO_USE_SSL=false
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=car-photos
+PUBLIC_MINIO_URL=http://localhost:9000
+```
+
+**Sin `dotenv`.** Si al principio de `scripts/seed.ts` aparece el import de `dotenv`, bórralo. Ya no hace falta, porque `--env-file=.env` carga el `.env`:
+
+```diff
+- import 'dotenv/config'
+```
+
+Si tenías `dotenv` instalado, quítalo:
+
+```bash
+pnpm remove dotenv
+```
+
+**Las dependencias del script:**
+
+```bash
+pnpm add -D tsx @types/node
+pnpm add mongodb minio
+```
 
 ## 1. Instalar dependencias
 
