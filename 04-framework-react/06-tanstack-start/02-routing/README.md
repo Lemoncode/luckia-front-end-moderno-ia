@@ -1,13 +1,13 @@
 # 02 · Routing: rutas, navegación y layout
 
-## 1. Que vamos a hacer
+## 1. Qué vamos a hacer
 
 Partimos del proyecto vacío funcionando.
 
 Ahora:
 
 - Vamos a añadir rutas de navegación:
-  - Home (`/`) que tendrá un listado de coche (de momento un placeholder).
+  - Home (`/`) que tendrá un listado de coches (de momento un placeholder).
   - `/cars/$carId` que mostrará el detalle de un coche.
 - Un **layout común** (una cabecera con navegación) que envuelve a todas las
   páginas, definido sobre `__root.tsx`.
@@ -16,7 +16,7 @@ Ahora:
 
 Al terminar esta guía tendrás, en tu proyecto **compra-coches**, el **esqueleto de
 navegación** de la aplicación montado con el **enrutado por ficheros** de TanStack
-Start/Router:
+Start/Router.
 
 ---
 
@@ -63,7 +63,7 @@ Reglas que usaremos:
 
 ### Paso 0
 
-Arranca el proyecto (le va hacer falta a TanStack Start para ir regenerando las rutas cuando añadamos ficheros).
+Arranca el proyecto (le va a hacer falta a TanStack Start para ir regenerando las rutas cuando añadamos ficheros).
 
 ```bash
 pnpm dev
@@ -71,11 +71,11 @@ pnpm dev
 
 ### Paso 1 — Añadir el layout común en `__root.tsx`
 
-Queremos una cabecer con navegación visibl en todas las páginas (puede que a futuro querramos poner un footer), para ello definimos un layout, en el mundo aspx lo llamaban un "master page".
+Queremos una cabecera con navegación visible en todas las páginas (puede que a futuro queramos poner un footer), para ello definimos un layout, en el mundo aspx lo llamaban un "master page".
 
-Antes de ponernos a crear esto, vamos a entender que trae ahora ese _root.tsx y para que sirve
+Antes de ponernos a crear esto, vamos a entender qué trae ahora ese `__root.tsx` y para qué sirve
 
-_root.tsx define la ruta raíz de la aplicación y el documento HTML que envuelve las páginas. Es el lugar común para configurar metadatos, estilos globales y herramientas compartidas.
+`__root.tsx` define la ruta raíz de la aplicación y el documento HTML que envuelve las páginas. Es el lugar común para configurar metadatos, estilos globales y herramientas compartidas.
 
 Abrimos el archivo y podemos ver:
 
@@ -91,11 +91,11 @@ Abrimos el archivo y podemos ver:
 
 - <Scripts /> carga los scripts necesarios para que la aplicación funcione en el navegador.
 
-¿Y ahora como encaja nuestro layout?
+¿Y ahora cómo encaja nuestro layout?
 
-- Importamos el component _Outlet_ que sirve para mostra el contenido dentro del layout.
+- Importamos el componente _Outlet_ que sirve para mostrar el contenido dentro del layout.
 
-_./src/_root.tsx_
+_./src/routes/\_\_root.tsx_
 
 ```diff
 import {
@@ -106,7 +106,7 @@ import {
 } from '@tanstack/react-router'
 ```
 
-- Creamos un componente que podemos llamar _AppLayout_ (podría ir en otro fichero), y ahí pintamos la cabecera y el pie de páginas, y dentro invocamos al outlet para pintar el resto de contenido (la página actual que se esté mostrando).
+- Creamos un componente que podemos llamar _AppLayout_ (podría ir en otro fichero), y ahí pintamos la cabecera y el pie de página, y dentro invocamos al outlet para pintar el resto de contenido (la página actual que se esté mostrando).
 
 ```diff
 + function AppLayout() {
@@ -150,7 +150,7 @@ Nos vamos al navegador y vemos el resultado.
 
 Vamos ahora a darle un poco de estilo a esa cabecera:
 
-_./src/_root.tsx_
+_./src/routes/\_\_root.tsx_
 
 ```diff
 import {
@@ -202,18 +202,18 @@ function AppLayout() {
 }
 ```
 
-Fijate que aquí nos un error en la ruta y parametros
+Fíjate que aquí nos da un error en la ruta y los parámetros
 
 ```
   to="/cars/$carId"
   params={{ carId: "demo" }}
 ```
 
-Esto es porque TanStack Router tipa las rutas de forma automática y ve que no existe en el arbol.
+Esto es porque TanStack Router tipa las rutas de forma automática y ve que no existe en el árbol.
 
 Lo primero en la página `home` vamos a cambiar el contenido:
 
-_./src/index.tsx_
+_./src/routes/index.tsx_
 
 ```diff
 import { createFileRoute } from '@tanstack/react-router'
@@ -232,28 +232,30 @@ function Home() {
 +      <h1 className="text-3xl font-bold">Coches en venta</h1>
 +      <p className="text-muted-foreground">
 +        Aquí aparecerá el listado de coches. De momento es un placeholder: los
-+        datos reales llegan en la guía <code>03-loaders</code>.
++        datos reales llegan en la guía <code>03-car-list-loader</code>.
 +      </p>
 +    </div>
   )
 }
 ```
 
-Y ahora vamos a por ese detallede un coche, vamos a crear una ruta, en este caso:
+Y ahora vamos a por ese detalle de un coche, vamos a crear una ruta, en este caso:
 
-- Creamos una carpeta `cars`
-- Dentro declaramos un fichero que tendrá el parametro de entrada.
+- Creamos una carpeta `cars` dentro de `src/routes`.
+- Dentro declaramos un fichero `$carId.tsx`, que tendrá el parámetro de entrada.
 
-OJO de primeros al crear el fichero ya nos generar código tanStackStart (tenemos que tener levantado el proyecto).
+OJO de primeras al crear el fichero ya nos genera código TanStack Start (tenemos que tener levantado el proyecto).
 
 Ya podríamos navegar.
 
-Vamos ahora  mostrar el parámetro de navegación en la página (más adelante conectaremos con BBDD).
+Vamos ahora a mostrar el parámetro de navegación en la página (más adelante conectaremos con BBDD).
+
+_./src/routes/cars/$carId.tsx_
 
 ```diff
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/cars/$cardId")({
+export const Route = createFileRoute("/cars/$carId")({
   component: RouteComponent,
 });
 
@@ -262,7 +264,7 @@ function RouteComponent() {
 +  // nombre que pusimos tras el `$` en el fichero ($carId.tsx).
 +  const { carId } = Route.useParams();
 
--  return <div>Hello "/cars/$cardId"!</div>;
+-  return <div>Hello "/cars/$carId"!</div>;
 +  return (
 +    <div className="space-y-4">
 +      <h1 className="text-3xl font-bold">Ficha del coche</h1>
@@ -274,7 +276,7 @@ function RouteComponent() {
 +      </p>
 +      <p className="text-muted-foreground">
 +        De momento es un placeholder: los datos reales del coche llegan en la
-+        guía <code>03-loaders</code>.
++        guía <code>03-car-list-loader</code>.
 +      </p>
 +    </div>
 +  );
