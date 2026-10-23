@@ -189,6 +189,8 @@ Y aquí paramos, si quieres seguir jugando:
 
 - Puedes crearte una cuenta gratuita de Resend y probar a que se envíe en un email de conifrmación.
 
+- Si tienes Pro de Content Island (si no pidonos upgrade), puedes también conectar el MCP y decirle que almacene todo el contenido en Content Island y de paso lo pase a Inglés, 
+
 - Puedes crear una intranet donde el administrador puede ver las fechas de reservas, cancelar:
   - Habría que implementar un login y seguridad puedes probar con Better Auth que tiene bastante resuelto y se integra con diferentes motores de bases de datos (incluido mongoDB).
 
