@@ -16,19 +16,21 @@ pnpx @tanstack/cli@latest create miproyecto
 
 Elegimos como framework `React`.
 
-Cómo toolchain `None`
+Como build tool escogemos `Vite`.
+
+Cómo toolchain `None`.
 
 Deployment adapter (Esto nos servirá para poder ejecutar código en servidor): Nitro (corre con node y no dependemos de proveedor concreto).
 
 En cuanto a páginas demo le decimos que no.
 
-De add-ons elegimos ninguno:
-
-**Elegimos shadcn**
+De add-ons elegimos **solo shadcn** (no marcamos ningún otro).
 
 Y de inicializar nuevo repo de Git, si partimos de proyecto en blacno, decimos que si.
 
 OJO ¿Ya está tailwind por defecto? **LA LECHE**
+
+Viene configurado porque shadcn lo necesita, si no usasemos shadcn sí haría falta configurarlo.
 
 # Apendice
 
