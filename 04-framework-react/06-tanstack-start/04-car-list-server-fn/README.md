@@ -76,7 +76,7 @@ _./src/pods/car-list/api/car-list.api.server.ts_
 
 ```ts
 import { getDb } from "#/common/db.server.ts";
-import type { CarListDoc } from "#/pods/car-list/api/car-list.api-model";
+import type { CarListDoc } from "./car-list.api-model.server";
 
 export async function fetchCarList(): Promise<CarListDoc[]> {
   try {

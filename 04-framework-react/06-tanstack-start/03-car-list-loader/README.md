@@ -125,7 +125,7 @@ Eso lo consumiremos desde el _loader_ de la página, punto inicial donde se carg
 
 Vamos ahora a poner un componente simple que muestre al listado de coches, para ello definimos lo que llamamos el _pod_ principal:
 
-_./src/pods/car-list/car-list.pod.ts_
+_./src/pods/car-list/car-list.pod.tsx_
 
 ```ts
 import type { CarSummary } from "#/pods/car-list/car-list.model";
@@ -171,7 +171,7 @@ _./src/routes/index.tsx_
 
 ```diff
 import { createFileRoute } from "@tanstack/react-router";
-+ import {CarListPod, carListRepository } from '#pods/car-list'
++ import {CarListPod, carListRepository } from '#/pods/car-list'
 
 export const Route = createFileRoute("/")({
 +  loader: async () => {

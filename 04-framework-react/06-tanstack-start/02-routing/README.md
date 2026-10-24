@@ -95,7 +95,7 @@ Abrimos el archivo y podemos ver:
 
 - Importamos el component _Outlet_ que sirve para mostra el contenido dentro del layout.
 
-_./src/_root.tsx_
+_./src/routes/_root.tsx_
 
 ```diff
 import {
@@ -107,6 +107,8 @@ import {
 ```
 
 - Creamos un componente que podemos llamar _AppLayout_ (podría ir en otro fichero), y ahí pintamos la cabecera y el pie de páginas, y dentro invocamos al outlet para pintar el resto de contenido (la página actual que se esté mostrando).
+
+_./src/routes/_root.tsx_
 
 ```diff
 + function AppLayout() {
@@ -213,7 +215,7 @@ Esto es porque TanStack Router tipa las rutas de forma automática y ve que no e
 
 Lo primero en la página `home` vamos a cambiar el contenido:
 
-_./src/index.tsx_
+_./src/routes/index.tsx_
 
 ```diff
 import { createFileRoute } from '@tanstack/react-router'
@@ -242,7 +244,7 @@ function Home() {
 Y ahora vamos a por ese detallede un coche, vamos a crear una ruta, en este caso:
 
 - Creamos una carpeta `cars`
-- Dentro declaramos un fichero que tendrá el parametro de entrada.
+- Dentro declaramos un fichero que tendrá el parametro de entrada `$carId.tsx`
 
 OJO de primeros al crear el fichero ya nos generar código tanStackStart (tenemos que tener levantado el proyecto).
 
@@ -281,4 +283,7 @@ function RouteComponent() {
 }
 ```
 
+Vemos que tal
+
+npm run dev
 
