@@ -10,7 +10,7 @@
     "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx --env-file=.env scripts/seed.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -20,7 +20,6 @@
     "@tanstack/react-start": "1.169.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "dotenv": "17.4.2",
     "lucide-react": "^0.577.0",
     "minio": "8.0.7",
     "mongodb": "7.5.0",
