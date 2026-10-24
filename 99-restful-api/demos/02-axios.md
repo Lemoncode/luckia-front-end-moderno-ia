@@ -1,6 +1,6 @@
 # 01 CRUD
 
-In this example we are going to replace mock API with real api requests.
+In this example we are going to call the API using Axios.
 
 # Steps to build it
 
@@ -84,8 +84,6 @@ const url = "/api/hotels";
 
 ```
 
-### Axios version
-
 _client/src/axios.client.ts_
 
 ```diff
@@ -144,8 +142,6 @@ export const getHotelCollection =  async (): Promise<HotelEntityApi[]> => {
 
 ## Update `client/src/axios.client.ts` with `getHotel` API method
 
-### Axios version
-
 _./src/axios.client.ts_
 
 ```diff
@@ -168,14 +164,14 @@ _./src/axios.client.ts_
 ```diff
 ...
 
-export const saveHotel = async (hotel: Hotel): Promise<boolean> => {
++export const saveHotel = async (hotel: Hotel): Promise<boolean> => {
 + if (hotel.id) {
 +   await axios.put<Hotel>(`${hotelListUrl}/${hotel.id}`, hotel);
 + } else {
 +   await axios.post<Hotel>(hotelListUrl, hotel);
 + }
-  return true;
-};
++ return true;
++};
 
 ```
 
