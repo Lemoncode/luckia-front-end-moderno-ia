@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { readFileSync } from 'node:fs'
 import { extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'

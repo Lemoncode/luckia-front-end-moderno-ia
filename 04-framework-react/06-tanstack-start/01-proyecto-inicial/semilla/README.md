@@ -1,6 +1,61 @@
 # Arrancar el proyecto y cargar los datos de ejemplo
 
-Estos pasos asumen que ya están preparados `docker-compose.yml`, `.env`, el script `scripts/seed.ts` y las fotos de `scripts/fotos/`.
+> Todos los comandos se ejecutan desde la raíz del proyecto, la carpeta donde están `package.json` y `docker-compose.yml`. En el repositorio del curso es la carpeta `semilla`.
+>
+> ```bash
+> cd semilla
+> ```
+
+## 0. Preparación
+
+> Si partes de la semilla del curso, todo esto ya está hecho salvo el `.env`: créalo y salta al paso 1.
+
+Estos pasos asumen que ya están preparados `docker-compose.yml`, el script `scripts/seed.ts` y las fotos de `scripts/fotos/`. Además, comprueba lo siguiente:
+
+**El script `seed` en `package.json`.** Añádelo o, si ya lo tienes de antes, cámbialo:
+
+```diff
+  "scripts": {
+    "dev": "...",
+-   "seed": "tsx scripts/seed.ts"
++   "seed": "tsx --env-file=.env scripts/seed.ts"
+  }
+```
+
+> `--env-file=.env` hace que el script lea las variables del `.env`. Si el archivo no existe, falla con `node: .env: not found`.
+
+**El `.env`.** Si no lo tienes en la raíz del proyecto, créalo con este contenido:
+
+```env
+MONGODB_URI=mongodb://localhost:27017
+MONGODB_DB=compra-coches
+MINIO_ENDPOINT=localhost
+MINIO_PORT=9000
+MINIO_USE_SSL=false
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=car-photos
+PUBLIC_MINIO_URL=http://localhost:9000
+```
+
+**Sin `dotenv`.** Si al principio de `scripts/seed.ts` aparece el import de `dotenv`, bórralo. Ya no hace falta, porque `--env-file=.env` carga el `.env`:
+
+```diff
+- import 'dotenv/config'
+```
+
+Si tenías `dotenv` instalado, quítalo:
+
+```bash
+pnpm remove dotenv
+```
+
+**Las dependencias del script:**
+
+```bash
+pnpm add -D tsx @types/node
+pnpm add mongodb minio
+```
 
 ## 1. Instalar dependencias
 
@@ -29,25 +84,27 @@ docker compose up -d
 Comprueba el estado:
 
 ```bash
-docker compose ps
+docker compose ps -a
 ```
 
-MongoDB y MinIO deben estar activos. El contenedor `compra-coches-createbuckets` puede aparecer como `Exited (0)`: es normal, porque solo crea el bucket `car-photos` y lo deja preparado para servir las fotos.
+MongoDB y MinIO deben estar activos `Up`. El contenedor `createbuckets` aparecerá como `Exited (0)`: es normal, porque solo crea el bucket `car-photos`, lo deja preparado para servir las fotos y termina.
+
+> Sin `-a`, `docker compose ps` solo muestra los contenedores en marcha, así que `createbuckets` no aparece.
 
 ### Si aparece `container name ... is already in use`
 
 Elimina el contenedor indicado por el error y vuelve a ejecutar `docker compose up -d`. Por ejemplo:
 
 ```bash
-docker rm -f compra-coches-mongo
+docker compose rm -sf mongo
 docker compose up -d
 ```
 
 Para los otros contenedores, usa el nombre correspondiente:
 
 ```bash
-docker rm -f compra-coches-minio
-docker rm -f compra-coches-createbuckets
+docker compose rm -sf minio
+docker compose rm -sf createbuckets
 ```
 
 Estos comandos eliminan solo contenedores, no los volúmenes con los datos. No añadas `-v`.
@@ -67,7 +124,7 @@ El resultado debería indicar que se han insertado 6 coches y subido 6 fotos. El
 Cuenta los coches insertados:
 
 ```bash
-docker exec compra-coches-mongo mongosh --quiet compra-coches --eval 'db.cars.countDocuments()'
+docker compose exec -T mongo mongosh --quiet compra-coches --eval 'db.cars.countDocuments()'
 ```
 
 Debe mostrar `6`. Para comprobar una foto, abre esta dirección en el navegador:
